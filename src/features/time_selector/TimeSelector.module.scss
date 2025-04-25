@@ -1,0 +1,22 @@
+.container{
+    background-color: black;
+    width: 300px;
+    height: 40px;
+    position: absolute;
+    z-index: 1000;
+    bottom: 50px;
+    right: 50px;
+    border-radius: 10px;
+    border: 1px solid gray;
+    display: flex;
+    // flex: 1;
+}
+
+.item{
+    flex: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    // width: 100%;
+}
