@@ -1,7 +1,8 @@
 import { useEffect, useRef } from "react";
-import {useSelector} from 'react-redux'
+import {useDispatch, useSelector} from 'react-redux'
 import statesFlu from '../../data/statesFlu'
 import statesPlu from "../../data/statesPlu";
+import { setOptions } from "../../store/modalChartSlice";
 import {getCurrentFluState, getCurrentPluState} from './MarkersUtil'
 
 const Markers = options =>{
@@ -10,6 +11,7 @@ const Markers = options =>{
     const markersFeatureGroup = useRef(new L.MarkersCanvas())
     const filter = useSelector(state=> state.filter)
     const context = useSelector(state=> state.context)
+    const dispatch = useDispatch()
 
     let markers_list = []
 
@@ -31,6 +33,9 @@ const Markers = options =>{
                 });
 
                 var marker = L.marker([station.latitude, station.longitude], {icon: icon, id:station.station_prefix_id, show: station.show}).bindPopup(`<b>${station.station_prefix_id}</b><br>ID: ${station.value}`)
+                marker.on('click', _=>{
+                    dispatch(setOptions({station_id: station.station_prefix_id}))
+                })
                 markers_list.push(marker)
             }
             
@@ -44,12 +49,12 @@ const Markers = options =>{
 
     function generateMarkerSVG(station){   
         
-        let html = '<svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">'
+        let html = '<svg viewBox="0 0 120 120" xmlns="http://www.w3.org/2000/svg">'
         let style = buildMarkerStyle(station)
 
         if(context.context === 'rain'){
-            html += `<circle cx="50" cy="50" r="40" style="${style}"/>`
-            html += `<text font-family="Arial, Helvetica, sans-serif" x="50%" y="55%" font-size="${70}" text-anchor="middle" dominant-baseline="middle" fill="white">${station.value.toFixed(0)}</text>`
+            html += `<circle cx="60" cy="60" r="60" style="${style}"/>`
+            html += `<text font-family="Arial, Helvetica, sans-serif" x="50%" y="55%" font-size="${70}" text-anchor="middle" dominant-baseline="middle" font-weight="bold" fill="white">${station.value.toFixed(0)}</text>`
         } else if(context.context === 'level'){
             html += `<circle cx="50" cy="50" r="30" style="${style}"/>`
         }        
@@ -66,7 +71,7 @@ const Markers = options =>{
         } else if(context.context === 'rain'){
             let state = getCurrentPluState(station)
 
-            return `fill:${statesPlu[state].color};stroke:black;stroke-width:3`
+            return `fill:${statesPlu[state].color};stroke:white;stroke-width:5`
         }
     } 
 

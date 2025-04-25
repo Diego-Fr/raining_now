@@ -1,0 +1,43 @@
+.dateContainer{
+    margin-top: 10px;
+    position:absolute;
+    background-color: white;
+    border: 1px solid gray;
+    padding: 0.5rem;
+    border-radius: 5px;
+    z-index: 999;
+}
+
+.container{
+    
+    padding: 20px;
+    position: relative;
+    width: 100%;
+    
+
+    .inputsContainer{
+        border: 1px solid rgb(194, 194, 194);
+        display: flex;
+        width: fit-content;
+        border-radius: 3px;
+        
+    }
+
+    .inputBox{
+        width: 90px;
+        border: none;
+        font-family: system-ui, Avenir, Helvetica, Arial, sans-serif;
+        text-align: center;
+        padding: 4px;
+        background-color: transparent;
+
+        &:focus{
+            outline: 0;
+        }
+        
+        &::after{
+            content: 'até';
+        }
+    }
+}
+

@@ -18,9 +18,8 @@ const stationSlice = createSlice({
 export const updateStations = _ => async (dispatch,getState) =>{
     const {context} = getState()
     
-    
     try {
-      const data = await fetchMeasurements(context.context)
+      const data = await fetchMeasurements(context)
       
       dispatch(setStations(data)) //atualizando lista
       dispatch(filterStations()) //filtrando a lista, e atualizando a lista

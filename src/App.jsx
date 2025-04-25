@@ -7,6 +7,7 @@ import Filter from './features/filter/Filter'
 import ContextMenu from './features/context_menu/ContextMenu'
 import LayerControl from './features/layer_control/LayerControl'
 import TimeSelector from './features/time_selector/TimeSelector'
+import ModalChart from './features/modal_chart/ModalChart'
 
 function App() {
   const [count, setCount] = useState(0)
@@ -15,9 +16,10 @@ function App() {
     <>
       {/* <Filter/> */}
       <Map/>
-      <ContextMenu/>
-      <LayerControl/>
-      <TimeSelector/>
+      {/* <ContextMenu/> */}
+      {/* <LayerControl/> */}
+      {/* <TimeSelector/> */}
+      <ModalChart/>
     </>
   )
 }

@@ -11,6 +11,7 @@ const Map = () =>{
     const mapInstanceRef = useRef(null)
     const markers = useSelector(state => state.map.markers)
     const context = useSelector(state => state.context)
+    const hours = useSelector(state=>context.hours)
 
     const dispatch = useDispatch()
 
@@ -44,7 +45,7 @@ const Map = () =>{
         dispatch(
             updateStations()
         )
-    },[context])
+    },[context, hours])
 
 
     return (
