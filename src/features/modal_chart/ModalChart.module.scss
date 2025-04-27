@@ -38,6 +38,7 @@
         padding: 3rem;
         padding-top: 0rem;
         height: 100%;
+        position: relative;
     }
     .title_container{
         
@@ -49,7 +50,33 @@
             width: 100%;
             font-weight: 600;
             padding: 1.5rem;
-            font-size: x-large;
+            font-size: xx-large;
+            text-align: left;
+        }
+
+        .prefix{
+            font-size: medium;
+            color: gray;
+        }
+    }
+
+    .resetZoomButton{
+        background-color: rgba(0,0,0,0.4);
+        border-radius: 3px;
+        color: white;
+        position: absolute;
+        top: 1rem;
+        right: 2rem;
+        font-size: small;
+        padding: 5px;
+        border: none;
+        transition: 0.3s all;
+        &:focus{
+            outline: none;
+        }
+
+        &:hover{
+            background-color: rgba(0,0,0,0.5);
         }
     }
 }

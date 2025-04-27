@@ -3,11 +3,18 @@ import { DayPicker } from "react-day-picker";
 import styles from './DatePicker.module.scss'
 import "react-day-picker/style.css";
 import moment from "moment";
-import { useSelector } from 'react-redux'
+import { useDispatch, useSelector } from 'react-redux'
+import { setEndDate, setStartDate } from "../../store/modalChartSlice";
+import { formatDateToBrazil } from '@/utils/dateUtils'
+import { ptBR } from "react-day-picker/locale";
 
 const DatePicker = () =>{
-    const [startDate, setStartDate] = useState(useSelector(state=>state.modalchart.start_date))
-    const [endDate, setEndDate] = useState(useSelector(state=>state.modalchart.end_date))
+    // const [startDate, setSD] = useState(useSelector(state=>state.modalchart.start_date))
+    // const [endDate, setED] = useState(useSelector(state=>state.modalchart.end_date))
+
+    const startDate = useSelector(state=> state.modalchart.start_date)
+    const endDate = useSelector(state=> state.modalchart.end_date)
+
     const [showStart, setShowStart] = useState(false)
     const [showEnd, setShowEnd] = useState(false)
     
@@ -16,6 +23,8 @@ const DatePicker = () =>{
 
     const inputEndRef = useRef()
     const calendarEndRef = useRef()
+
+    const dispatch = useDispatch()
 
     const handleClickOutside = e =>{        
         if (
@@ -38,47 +47,51 @@ const DatePicker = () =>{
           }
     }
 
-    useEffect(_=>{
-        console.log(endDate);
-        
-    }, [endDate])
-
-
     useEffect(() => {
         document.addEventListener('mousedown', handleClickOutside);
         return () => document.removeEventListener('mousedown', handleClickOutside);
     }, []);
 
-    const handleDateChange = (type,date) =>{        
-        if(type === 'start'){
-            setStartDate(moment(date.getTime()).format('DD/MM/YYYY'))            
-        } else {
-            setEndDate(moment(date.getTime()).format('DD/MM/YYYY'))
+    const handleDateChange = (type,date) =>{   
+        
+        if(date){
+            date = moment(date.getTime())
+            if(type === 'start'){
+                dispatch(setStartDate(date))   
+            } else {
+                if(!date.isAfter(moment())){
+                    dispatch(setEndDate(date))
+                }
+            }
         }
+        
     }
+    
 
     return (
         <div className={styles.container}>
             <div style={{width: 'fit-content'}}>
                 <div className={styles.inputsContainer}>
                     <div style={{ position:'relative'}}>
-                        <input readOnly={true} className={styles.inputBox} ref={inputStartRef} value={startDate} type="text" onFocus={_=> setShowStart(true)}></input>
+                        <input readOnly={true} className={styles.inputBox} ref={inputStartRef} value={formatDateToBrazil(startDate.clone(), 'DD-MM-YYYY')} type="text" onFocus={_=> setShowStart(true)}></input>
                         
                         { showStart && <div ref={calendarStartRef} className={styles.dateContainer}><DayPicker
                             animate
                             mode="single"
-                            selected={startDate}
+                            selected={formatDateToBrazil(startDate.clone())}
                             onSelect={e=>handleDateChange('start',e)}
+                            locale={ptBR}
                             /></div>}
                     </div>
                     <div style={{ position:'relative'}}>
-                        <input readOnly={true} className={styles.inputBox} value={endDate} ref={inputEndRef} type="text" onFocus={_=> setShowEnd(true)}></input>
+                        <input readOnly={true} className={styles.inputBox} value={formatDateToBrazil(endDate.clone(), 'DD-MM-YYYY')} ref={inputEndRef} type="text" onFocus={_=> setShowEnd(true)}></input>
                         
                         { showEnd && <div ref={calendarEndRef} className={styles.dateContainer}><DayPicker
                             animate
                             mode="single"
-                            selected={endDate}
+                            selected={formatDateToBrazil(endDate.clone())}
                             onSelect={e=>handleDateChange('end',e)}
+                            locale={ptBR}
                             /></div>}
                     </div>
                 </div>
