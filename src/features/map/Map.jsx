@@ -1,4 +1,4 @@
-import { useEffect, useRef } from "react"
+import { useEffect, useRef, useState } from "react"
 import { useSelector, useDispatch } from "react-redux";
 import { setMap } from "../../store/mapSlice";
 import Markers from "../markers/Markers";
@@ -12,6 +12,7 @@ const Map = () =>{
     const markers = useSelector(state => state.map.markers)
     const context = useSelector(state => state.context)
     const hours = useSelector(state=>context.hours)
+    const [blocked, setBlocked] = useState(true)
 
     const dispatch = useDispatch()
 
@@ -36,15 +37,18 @@ const Map = () =>{
 
             dispatch(setMap(map))
             
+            setBlocked(false)   
             
-            
-          }
+        }
     },[])
 
     useEffect(_=>{        
-        dispatch(
-            updateStations()
-        )
+        if(!blocked){
+            dispatch(
+                updateStations()
+            )
+        }     
+        
     },[context, hours])
 
 

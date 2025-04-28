@@ -1,5 +1,5 @@
 import { useEffect, useRef } from "react";
-import {useDispatch, useSelector} from 'react-redux'
+import {useDispatch, useSelector, useStore} from 'react-redux'
 import statesFlu from '../../data/statesFlu'
 import statesPlu from "../../data/statesPlu";
 import { setOptions } from "../../store/modalChartSlice";
@@ -10,18 +10,26 @@ const Markers = options =>{
     const map = useSelector((state) => state.map.map)
     const markersFeatureGroup = useRef(new L.MarkersCanvas())
     const filter = useSelector(state=> state.filter)
-    const context = useSelector(state=> state.context)
+    // const context = useSelector(state=> state.context)
     const dispatch = useDispatch()
+
+    const store = useStore()
+    const context = store.getState().context.context
 
     let markers_list = []
 
     const createMarkers = () =>{
+        
         markersFeatureGroup.current.clear()
         
         markers_list = []
-
+        
         stations.forEach(station=>{
+            // console.log(station.show);
+            
             if(station.show){
+                // console.log(context);
+                
                 const svgCode = generateMarkerSVG(station);
                 const encodedSvg = btoa(svgCode);
                 const dataURI = `data:image/svg+xml;base64,${encodedSvg}`;
@@ -52,23 +60,23 @@ const Markers = options =>{
         let html = '<svg viewBox="0 0 120 120" xmlns="http://www.w3.org/2000/svg">'
         let style = buildMarkerStyle(station)
 
-        if(context.context === 'rain'){
+        if(context === 'rain'){
             html += `<circle cx="60" cy="60" r="60" style="${style}"/>`
             html += `<text font-family="Arial, Helvetica, sans-serif" x="50%" y="55%" font-size="${70}" text-anchor="middle" dominant-baseline="middle" font-weight="bold" fill="white">${station.value.toFixed(0)}</text>`
-        } else if(context.context === 'level'){
+        } else if(context === 'level'){
             html += `<circle cx="50" cy="50" r="30" style="${style}"/>`
         }        
         
         return html + '</svg>'
     }
 
-    const buildMarkerStyle = station =>{
-        
-        if(context.context === 'level'){
+    const buildMarkerStyle = (station) =>{
+        if(context === 'level'){
             let state = getCurrentFluState(station)
+            // console.log(state);
             
             return `fill:${statesFlu[state].color};stroke:black;stroke-width:3`
-        } else if(context.context === 'rain'){
+        } else if(context === 'rain'){
             let state = getCurrentPluState(station)
 
             return `fill:${statesPlu[state].color};stroke:white;stroke-width:5`
@@ -81,12 +89,11 @@ const Markers = options =>{
             map.addLayer(markersFeatureGroup.current)
         }
 
-        if(map && stations?.length > 0){
+        if(map && stations?.length > 0){            
             createMarkers()
-            // dispatch(updateMarkers(markers))
             
         }
-    }, [map, stations])
+    }, [stations])
 
     return (
         <></>

@@ -9,8 +9,9 @@ const fetchMeasurements = async (context) =>{
     if(context.context === 'rain'){
         res = await axios.get(`https://cth.daee.sp.gov.br/sibh/api/v2/measurements/now?station_type_id=2&hours=${context.hours}&show_all=false&serializer=complete&public=true`)
         res = res?.data?.measurements
-    } else {
-        res = stationsFlu.measurements
+    } else if(context.context === 'level') {
+        res = await axios.get(`https://cth.daee.sp.gov.br/sibh/api/v2/measurements/now_flu?references[]=extravasation&references[]=emergency&references[]=alert&references[]=attention&with_one_ref=true`)
+        res = res?.data?.measurements
     }    
     
     return res

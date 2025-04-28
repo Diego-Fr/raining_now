@@ -8,18 +8,20 @@ import ContextMenu from './features/context_menu/ContextMenu'
 import LayerControl from './features/layer_control/LayerControl'
 import TimeSelector from './features/time_selector/TimeSelector'
 import ModalChart from './features/modal_chart/ModalChart'
+import Legend from './features/legend/Legend'
 
 function App() {
   const [count, setCount] = useState(0)
 
   return (
     <>
-      {/* <Filter/> */}
+      <Filter/>
       <Map/>
-      {/* <ContextMenu/> */}
+      <ContextMenu/>
       {/* <LayerControl/> */}
-      {/* <TimeSelector/> */}
+      <TimeSelector/>
       <ModalChart/>
+      <Legend/>
     </>
   )
 }

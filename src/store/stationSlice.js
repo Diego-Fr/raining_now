@@ -1,5 +1,6 @@
 import { createSlice } from "@reduxjs/toolkit";
 import { fetchMeasurements } from "../services/api";
+import { classifyStation } from "../utils/stationUtils";
 
 const initialState = {
     stations: []
@@ -17,9 +18,13 @@ const stationSlice = createSlice({
 
 export const updateStations = _ => async (dispatch,getState) =>{
     const {context} = getState()
+    dispatch(setStations([]))
     
-    try {
-      const data = await fetchMeasurements(context)
+    try {      
+      let data = await fetchMeasurements(context)
+      
+      data = data.map(x=>classifyStation(x,context.context)) //classificação do dado feita na obtenção do mesmo
+      // console.log(data);
       
       dispatch(setStations(data)) //atualizando lista
       dispatch(filterStations()) //filtrando a lista, e atualizando a lista
@@ -45,7 +50,7 @@ export const filterStations = _ => async (dispatch, getState) =>{
             shows.push(station.value >= 1)
           }
       } else {
-          shows.push(filter[field].includes(station[field])) //sempre array
+        shows.push(station[field] === undefined || filter[field].includes(station[field])) //sempre array
       }
     }
 

@@ -3,14 +3,18 @@ import statesPlu from "../../data/statesPlu"
 
 const getCurrentFluState = station =>{
     let keys = Object.keys(statesFlu)
-    
+
+    let state
+
     keys.forEach(key=>{
-        if(station.value >= station[key]){
-            return key
+        
+        if(station[key] && station.value >= parseFloat(station[key])){
+            
+            state = key
         } 
     })
 
-    return 'normal'
+    return state || 'normal'
 
 }
 

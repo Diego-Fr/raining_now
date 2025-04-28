@@ -33,7 +33,7 @@ const Filter = () =>{
         }
     }
 
-    useEffect(_=>{
+    useEffect(_=>{        
         dispatch(filterStations())
     },[filterOptions])
 

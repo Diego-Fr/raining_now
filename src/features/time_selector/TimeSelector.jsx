@@ -10,6 +10,8 @@ const TimeSelector = _=>{
     const [block, setBlock] = useState(false)
     const stations = useSelector(state=>state.station.stations)
     let timeoptions = {plu: [1,2,3,6,12,24,48,72]}
+    
+    const context = useSelector(state=>state.context.context)
 
     const clickHandler = time =>{
         if(!block){
@@ -23,9 +25,11 @@ const TimeSelector = _=>{
     },[stations])
 
     return (
-        <div className={styles.container}>
-            {timeoptions.plu.map((time, index)=> <div key={index} className={styles.item} onClick={_=>clickHandler(time)}>{time}</div> )}
-        </div>
+        context === 'rain' &&
+            <div className={styles.container}>
+                {timeoptions.plu.map((time, index)=> <div key={index} className={styles.item} onClick={_=>clickHandler(time)}>{time}</div> )}
+            </div>
+        
     )
 }
 

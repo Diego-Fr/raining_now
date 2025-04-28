@@ -1,0 +1,32 @@
+.container{
+    // background-color: white;
+    min-width: 200px;
+    // height: 50px;
+    position: absolute;
+    z-index: 1000;
+    bottom: 1.5rem;
+    left: 50%;
+    transform: translateX(-50%);
+    // border-radius: 5px;
+    // overflow: hidden;
+    // border: 1px solid gray;
+    display: flex;
+    gap: 5px;
+
+
+    .legendItem{
+        padding: 3px;
+        background-color: white;
+        font-size: 14px;
+        border-radius: 5px;
+        color: white;
+        min-width: 92px;
+        cursor: pointer;
+        transition: 0.3s all;
+
+        &:hover{
+            transform: translateY(-10%);
+        }
+    }
+
+}
