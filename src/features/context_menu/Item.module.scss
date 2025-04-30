@@ -1,3 +1,47 @@
-.title{
-    color: red;
+.icon{
+    
+    // min-height: 50px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    // gap: 5px;
+    flex-direction: column;
+    cursor: pointer;
+    // border-right: 3px solid transparent;
+
+    .iconWrapper{
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        flex-direction: column;
+        padding: 10px 15px;
+    }
+
+    .title{
+        font-size: small;
+        font-weight: 600;
+    }
+    .icon{
+        font-size: x-large;
+        height: fit-content;
+    }
+
+    &.active{
+        // border-right: 3px solid #5cdcf3;
+        background-color:  #777777;
+        .icon{
+            color: white;
+
+        }
+        .title{
+            color: white;
+
+        }
+    }
+
+    &.ppdc{
+        color: red;
+        text-shadow: 2px 2px 2px #CE5937;
+    }
 }
+

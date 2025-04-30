@@ -13,7 +13,7 @@ const Legend = () =>{
     
     useEffect(_=>{
         if(context){
-            let obj
+            let obj = {}
             switch(context){
                 case 'rain':
                     obj = statesPlu

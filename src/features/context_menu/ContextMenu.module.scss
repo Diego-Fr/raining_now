@@ -1,13 +1,14 @@
 .container{
     background-color: white;
-    width: 300px;
-    height: 500px;
+    min-width: 70px;
+    // height: 500px;
     position: absolute;
     z-index: 1000;
-    top: 50px;
-    left: 50px;
-    border-radius: 10px;
-    border: 1px solid gray;
-
+    top: 50%;
+    transform: translateY(-50%);
+    left: 0px;
+    border-radius: 0 5px 5px 0px;
+    // border: 1px solid rgb(192, 192, 192);
+    overflow: hidden;
 
 }

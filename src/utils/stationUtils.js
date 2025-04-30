@@ -28,6 +28,22 @@ const classifyStation = (station, context) =>{
     
 }
 
+const statsByCity = stations =>{
+    let obj = {}
+
+    stations.forEach(station=>{
+        obj[station.cod_ibge] =  obj[station.cod_ibge] || {max:-Infinity, min:Infinity, sum: 0, qtd: 0}
+
+        obj[station.cod_ibge].max = Math.max(obj[station.cod_ibge].max, station.value)
+        obj[station.cod_ibge].min = Math.min(obj[station.cod_ibge].min, station.value)
+        obj[station.cod_ibge].sum += station.value
+        obj[station.cod_ibge].qtd += 1
+    })    
+
+    return obj
+}
+
 export {
-    classifyStation
+    classifyStation,
+    statsByCity
 }

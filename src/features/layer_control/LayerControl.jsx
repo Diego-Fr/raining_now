@@ -22,8 +22,6 @@ const LayerControl = _ =>{
             layer.layer = undefined
         }
         
-
-        
     }
 
     return (

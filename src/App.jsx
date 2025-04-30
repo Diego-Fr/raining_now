@@ -9,6 +9,7 @@ import LayerControl from './features/layer_control/LayerControl'
 import TimeSelector from './features/time_selector/TimeSelector'
 import ModalChart from './features/modal_chart/ModalChart'
 import Legend from './features/legend/Legend'
+import SideChart from './features/sideChart/SideChart'
 
 function App() {
   const [count, setCount] = useState(0)
@@ -22,6 +23,7 @@ function App() {
       <TimeSelector/>
       <ModalChart/>
       <Legend/>
+      <SideChart/>
     </>
   )
 }

@@ -6,7 +6,7 @@ import stationsFlu from '../data/stationsFlu'
 const fetchMeasurements = async (context) =>{
      
     let res
-    if(context.context === 'rain'){
+    if(context.context === 'rain' || context.context === 'ppdc'){
         res = await axios.get(`https://cth.daee.sp.gov.br/sibh/api/v2/measurements/now?station_type_id=2&hours=${context.hours}&show_all=false&serializer=complete&public=true`)
         res = res?.data?.measurements
     } else if(context.context === 'level') {
@@ -28,6 +28,14 @@ const fetchStationMeasurements = async (
 
 }
 
+const feachCityLimiares = async() =>{
+    let res = await axios.get('https://cth.daee.sp.gov.br/sibh/api/v2/cities?parameter_type_ids[]=4')
+
+    res = res.data.map(x=> ({cod_ibge: x.cod_ibge, name: x.name, limiares: x.parameters[0].values['2024-01-01'].limiares}))
+
+    return res
+}
+
 export {
-    fetchMeasurements,fetchStationMeasurements
+    fetchMeasurements,fetchStationMeasurements,feachCityLimiares
 }

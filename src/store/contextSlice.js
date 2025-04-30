@@ -1,7 +1,7 @@
 import { createSlice } from "@reduxjs/toolkit"
 
 const initialState = {
-    context: 'level',
+    context: 'rain',
     hours: 72
 }
 

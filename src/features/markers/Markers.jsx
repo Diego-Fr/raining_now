@@ -10,11 +10,8 @@ const Markers = options =>{
     const map = useSelector((state) => state.map.map)
     const markersFeatureGroup = useRef(new L.MarkersCanvas())
     const filter = useSelector(state=> state.filter)
-    // const context = useSelector(state=> state.context)
+    const context = useSelector(state=> state.context.context)
     const dispatch = useDispatch()
-
-    const store = useStore()
-    const context = store.getState().context.context
 
     let markers_list = []
 
