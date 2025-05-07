@@ -16,11 +16,29 @@
         gap: 5px;
         justify-content: space-between;
         .title{
-            padding: 5px;
+            // padding: 5px;
             color: white;
             background-color: #343a40;
             border-radius: 5px;
             width: 100%;
+            display: flex;
+            justify-content: space-between;
+            overflow: hidden;
+            
+
+            .text{
+                width: 100%;
+                padding: 0.5rem;
+            }
+
+            .next{
+                cursor: pointer;
+                padding: 0.5rem;
+                // border-radius: 5px;
+                &:hover{
+                    background-color: lighten(#343a40, 10%)
+                }
+            }
         }
 
         .close{

@@ -1,0 +1,12 @@
+.container{
+    padding: 1.5rem;
+    .line{
+        display: flex;
+        justify-content: space-between;
+
+        &.title{
+            font-weight: 600;
+            margin-bottom: 10px;
+        }
+    }
+}

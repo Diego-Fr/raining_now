@@ -5,7 +5,7 @@ import {useDispatch, useSelector} from 'react-redux'
 import { fetchStationMeasurements } from '../../services/api'
 
 import DatePicker from './DatePicker'
-import { generatePluChart } from './ModalChartUtils'
+import { generatePluChart, generateFluChart } from './ModalChartUtils'
 import { setEndDate, setStartDate } from '../../store/modalChartSlice'
 import Loading from './Loading'
 
@@ -28,6 +28,8 @@ const ModalChart = () =>{
     const [stationPrefix, setStationPrefix] = useState()
     const [isLoading, setIsLoading] = useState(false)
     const [isZoomed, setIsZoomed] = useState(false)
+    const [noData, setNoData] = useState(false)
+    const context = useSelector(state=> state.context.context)
 
     const [measurements, setMeasurements] = useState([])
 
@@ -41,7 +43,8 @@ const ModalChart = () =>{
     const setMapTitle = (station_id) =>{
         let station = stations.find(x=> x.station_prefix_id.toString() === station_id.toString())
 
-        setStationName(station.station_name)
+        
+        setStationName(station.station_name || 'NOME DA ESTAÇÃO')
         setStationPrefix(station.prefix)
         
     }
@@ -59,24 +62,41 @@ const ModalChart = () =>{
             }        
             
             setMapTitle(chartOptions.station_id)
-
-            let res = await fetchStationMeasurements(chartOptions.station_id, {start_date: startDate.format('YYYY-MM-DD HH:mm'), end_date: endDate.format('YYYY-MM-DD HH:mm')})
-
-            setMeasurements(res)
+            let res
+            try{
+                res = await fetchStationMeasurements(chartOptions.station_id, {start_date: startDate.format('YYYY-MM-DD HH:mm'), end_date: endDate.format('YYYY-MM-DD HH:mm')})
+            } catch(e){
+                console.log('Erro ao buscar dados do posto');
+            }
             
-            setIsLoading(false)
+
+            if(res && res.length > 0){
+                //esconderá a mensagem de falta de dados
+                setNoData(false)
+
+                setMeasurements(res)
+            } else {
+                //exibirá uma mensagem no caso de falta de dados
+                setNoData(true)
+            }
+            
+            //aqui vai disparar a geração do chart com os novos dados
+            setIsLoading(false) 
         }
     }
     
-    const zoomEventHandle = _ =>{
-        console.log('toa qui');
-        
+    const zoomEventHandle = _ =>{        
         setIsZoomed(true)
     }
 
     const generateChart = async _ =>{
         if(counter != 1){
-            chartInstanceRef.current = await generatePluChart(measurements, chartRef.current, zoomEventHandle) 
+            if(context === 'rain'){
+                chartInstanceRef.current = await generatePluChart(measurements, chartRef.current, zoomEventHandle) 
+            } else if(context === 'level'){
+                chartInstanceRef.current = await generateFluChart(measurements, chartRef.current, zoomEventHandle) 
+            }
+            
         }                  
     }
 
@@ -124,8 +144,12 @@ const ModalChart = () =>{
                     {isLoading ? 
                         <Loading text="Carregando"/> : 
                         <>
-                            <canvas ref={chartRef}></canvas>
-                            {isZoomed && <button className={styles.resetZoomButton} onClick={_=>{resetChartZoom(false)}}>Remover Zoom</button>}
+                            {!noData ? 
+                            <>
+                                <canvas ref={chartRef}></canvas>
+                                {isZoomed && <button className={styles.resetZoomButton} onClick={_=>{resetChartZoom(false)}}>Remover Zoom</button>}
+                            </> : <div>Sem dado</div>
+                            }
                         </>
                         }
                 </div>

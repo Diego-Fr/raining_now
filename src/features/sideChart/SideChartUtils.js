@@ -89,8 +89,22 @@ const maxByCity = stations =>{
     
 }
 
+const maxByField = (stations, field) =>{
+
+    let objs = {}
+    stations.forEach(station=>{
+        let {value} = station
+        objs[station[field]] = objs[station[field]] || {...station}
+        objs[station[field]].value = Math.max(objs[station[field]].value || 0, value)
+    })    
+
+    return Object.entries(objs).map(x=>({[field]: x[0], ...x[1]}))
+
+}
+
 export {
     generateSideChart,
     top20rain,
-    maxByCity
+    maxByCity,
+    maxByField
 }
