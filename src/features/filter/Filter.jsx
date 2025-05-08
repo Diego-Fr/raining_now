@@ -1,9 +1,10 @@
 import { useEffect, useState } from 'react'
 import {useDispatch, useSelector} from 'react-redux'
 import styles from './Filter.module.scss'
-import Select from '../../components/form/Select'
+// import Select from '../../components/form/Select'
 import { setFilterOption } from '../../store/filterSlice'
 import { filterStations } from '../../store/stationSlice'
+import Select from 'react-select'
 
 
 const Filter = () =>{
@@ -12,6 +13,9 @@ const Filter = () =>{
 
     const filterOptions = useSelector(state => state.filter)
     const stations = useSelector(state => state.station.stations)
+
+    const [ugrhiValue, setUgrhiValue] = useState()
+
     const [filtersList, setFiltersList] = useState({
         cities: [],
         ugrhis: [],
@@ -27,7 +31,7 @@ const Filter = () =>{
                     objs[item[id_key]] = item[value_key]
                 // }
             })
-            return Object.entries(objs).map(([id, value])=>({id, value}))
+            return Object.entries(objs).map(([value, label])=>({value, label}))
         } else {
             return []
         }
@@ -38,7 +42,7 @@ const Filter = () =>{
         dispatch(filterStations())
     },[filterOptions])
 
-    useEffect(_=>{
+    useEffect(_=>{        
         setFiltersList({
             cities: buildUniqueList(stations, 'city_id', 'city'),
             ugrhis: buildUniqueList(stations, 'ugrhi_id', 'ugrhi_name'),
@@ -46,28 +50,46 @@ const Filter = () =>{
         })
     }, [stations])
 
+    useEffect(_=>{
+        // let value =  ugrhiValue ? [ugrhiValue] : [{value: []}]
+        // console.log(value);
+        
+        // dispatch(setFilterOption({field: 'city_id', value: value.value}))
+    }, [ugrhiValue])
+
     const handleSelectChange = (value, name) =>{
         dispatch(setFilterOption({field: name, value: [value]}))
     }
 
     return (
         <div className={styles.container}>
-            
-            <Select 
-                list={filtersList.ugrhis}
-                onChange={handleSelectChange}
-                name='ugrhi_id'
+            <div className={styles.title}>
+                FILTRAR
+            </div>
+            <div className={styles.formGroup}>
+                <label>Ugrhi</label>
+                <Select 
+                    options={filtersList.ugrhis}
+                    placeholder={'Selecionar'}
+                    
+                    />
+            </div>
+            <div className={styles.formGroup}>
+                <label>Subugrhi</label>
+                <Select 
+                    options={filtersList.subugrhis}
+                    placeholder={'Selecionar'}
+                    />
+            </div>
+            <div className={styles.formGroup}>
+                <label>Município</label>
+                <Select 
+                    options={filtersList.cities}
+                    placeholder={'Selecionar'}
+                    value={ugrhiValue}
+                    onChange={setUgrhiValue}
                 />
-            <Select 
-                list={filtersList.subugrhis}
-                onChange={handleSelectChange}
-                name='subugrhi_id'
-                />
-            <Select 
-                list={filtersList.cities}
-                onChange={handleSelectChange}
-                name='city_id'
-                />
+            </div>
         </div>
     )
 }

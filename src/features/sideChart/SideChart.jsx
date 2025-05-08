@@ -25,17 +25,14 @@ const SideChart = () =>{
 
     const [exibitionType, setExibitionType] = useState('chart')
 
-    // const contextsC
-
     const chartRef = useRef()
 
     const barClickHandler = item =>{        
         if(map && item){
-            if(menuContext === 'rain.point'){
+            if(menuContext === 'point'){
                 map.setView([item.latitude, item.longitude], 14)
-            } else if(menuContext === 'rain.city'){
-                console.log(item);
-                
+            } else if(menuContext === 'city'){
+                //zoom no muni e exibir limites                
             }
         }
     }

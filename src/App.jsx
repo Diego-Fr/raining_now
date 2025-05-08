@@ -23,7 +23,7 @@ function App() {
       <TimeSelector/>
       <ModalChart/>
       <Legend/>
-      <SideChart/>
+      {/* <SideChart/> */}
     </>
   )
 }

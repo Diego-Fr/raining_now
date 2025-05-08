@@ -17,7 +17,8 @@ const Table = ({stations,menuContext}) =>{
                 return maxByField(stations, 'ugrhi_name').sort((x,y) => y.value - x.value)
             }
             
-        }
+        } 
+        return []
         
         
     }, [stations,context,menuContext])
