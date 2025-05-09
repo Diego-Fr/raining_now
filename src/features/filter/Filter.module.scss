@@ -20,5 +20,12 @@
     .formGroup{
         margin-bottom: 15px;
         text-align: left;
+        display: flex;
+        flex-direction: column;
+
+        select{
+            border: none;
+            padding: 10px;
+        }
     }
 }

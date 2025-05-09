@@ -1,10 +1,10 @@
 import { useEffect, useState } from 'react'
 import {useDispatch, useSelector} from 'react-redux'
 import styles from './Filter.module.scss'
-// import Select from '../../components/form/Select'
+import Select from '../../components/form/Select'
 import { setFilterOption } from '../../store/filterSlice'
 import { filterStations } from '../../store/stationSlice'
-import Select from 'react-select'
+// import Select from 'react-select'
 
 
 const Filter = () =>{
@@ -50,11 +50,8 @@ const Filter = () =>{
         })
     }, [stations])
 
-    useEffect(_=>{
-        // let value =  ugrhiValue ? [ugrhiValue] : [{value: []}]
-        // console.log(value);
-        
-        // dispatch(setFilterOption({field: 'city_id', value: value.value}))
+    useEffect(_=>{        
+        // dispatch(setFilterOption({field: 'city_id', value: ugrhiValue}))
     }, [ugrhiValue])
 
     const handleSelectChange = (value, name) =>{
@@ -69,7 +66,7 @@ const Filter = () =>{
             <div className={styles.formGroup}>
                 <label>Ugrhi</label>
                 <Select 
-                    options={filtersList.ugrhis}
+                    list={filtersList.ugrhis}
                     placeholder={'Selecionar'}
                     
                     />
@@ -77,17 +74,17 @@ const Filter = () =>{
             <div className={styles.formGroup}>
                 <label>Subugrhi</label>
                 <Select 
-                    options={filtersList.subugrhis}
+                    list={filtersList.subugrhis}
                     placeholder={'Selecionar'}
                     />
             </div>
             <div className={styles.formGroup}>
                 <label>Município</label>
                 <Select 
-                    options={filtersList.cities}
+                    list={filtersList.cities}
                     placeholder={'Selecionar'}
                     value={ugrhiValue}
-                    onChange={setUgrhiValue}
+                    // onChange={e=>setUgrhiValue(e.value)}
                 />
             </div>
         </div>

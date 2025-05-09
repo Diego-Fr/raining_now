@@ -1,0 +1,52 @@
+.container{
+
+    .select{
+        border: 1px solid rgb(202, 202, 202);
+        border-radius: 3px;
+        padding: 10px;
+        padding-left: 15px;
+        box-sizing: border-box;
+        width: 100%;
+    }
+    
+    .optionsContainer{
+        // padding: 5px;
+        display: flex;
+        flex-direction: column;
+        position: absolute;
+        margin-top: 10px;
+        background-color: white;
+        width: auto;
+        max-height: 500px;
+        // overflow-y: scroll;
+        overflow-x: hidden;
+        width: 100%;
+        border-radius: 5px;
+        box-shadow: rgba(0, 0, 0, 0.1) 0px 4px 6px -1px, rgba(0, 0, 0, 0.06) 0px 2px 4px -1px;
+
+        .inputSearch{
+            padding-left: 15px;
+        }
+    
+        .itemsContainer{
+            .item{
+                padding-left: 15px;
+                padding-top: 5px;
+                padding-bottom: 5px;
+                width: 100%;
+                cursor: pointer;
+        
+                &:hover{
+                    background-color: #e6e6e6;
+                }
+        
+                &.active{
+                    background-color: #1981dd;
+                    color: white;
+                }
+            }
+        }   
+        
+    }
+}
+
