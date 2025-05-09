@@ -2,21 +2,17 @@ import { useEffect, useRef, useState } from "react"
 import styles from './Select.module.scss'
 
 const Select = options =>{
-    const {list,onChange, name} = options
+    const {list,onchange, field_id} = options
     const [show, setShow] = useState(false)
     const [selectOptions, setSelectOptions] = useState([])
     const listContainerRef = useRef()
     const selectRef = useRef()
     const containerRef = useRef()
     const [inputValue, setInputValue] = useState('')
-    const [listItems, setListItems] = useState()
+    const [searchValue, setSearchValue] = useState('')
+    const [listCopy, setListCopy] = useState([]) //helper para ter uma cópia da lista original
 
-    const clickHandler = (event) =>{
-        console.log('click');
-        
-        // let value = event.target.value
-        // onChange(value, name)
-    }
+
 
     const handleBlur = () =>{
         setTimeout(() => {
@@ -38,7 +34,20 @@ const Select = options =>{
     }
 
     useEffect(_=>{
+        if(listCopy.length === 0){
+            setListCopy([...list])
+        }
+    },[list])
+
+    useEffect(_=>{
+        let copy = list.filter(x=>  x.label.toLowerCase().includes(searchValue))
+        setListCopy([...copy])
+    }, [searchValue])
+
+
+    useEffect(_=>{
         setInputValue(selectOptions.length > 2 ? `${selectOptions.length} selecionados` : selectOptions.length > 0 ? selectOptions.map(y=> list.filter(x=>x.value === y)[0].label): 'Nenhum selecionado')
+        onchange({field: field_id, values: selectOptions})
     },[selectOptions])
     
     return (
@@ -48,14 +57,16 @@ const Select = options =>{
                     
                 {show ? 
                     <>
-                        <input type={'text'} className={styles.inputSearch} onFocus={_=>setShow(true)}/>
+                        <div className={styles.inputSearchWrapper}>
+                            <input type={'text'} value={searchValue} onChange={e=>setSearchValue(e.target.value)} placeholder="Buscar" className={styles.inputSearch} onFocus={_=>setShow(true)}/>
+                        </div>
                         <div 
                             className={styles.itemsContainer} 
                             onMouseDown={e=>{
                                 e.preventDefault()  
                             }}>
 
-                        { list.map((item, index)=>( 
+                        { listCopy.map((item, index)=>( 
                             <div className={`${styles.item} ${selectOptions.includes(item.value) ? styles.active : ''}`} onClick={_=>itemClick(item.value)} key={index}>
                                 {item.label}
                             </div> ))

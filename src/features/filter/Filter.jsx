@@ -54,8 +54,8 @@ const Filter = () =>{
         // dispatch(setFilterOption({field: 'city_id', value: ugrhiValue}))
     }, [ugrhiValue])
 
-    const handleSelectChange = (value, name) =>{
-        dispatch(setFilterOption({field: name, value: [value]}))
+    const onChangeHandle = ({field, values}) =>{
+        dispatch(setFilterOption({field, value: values}))
     }
 
     return (
@@ -68,7 +68,8 @@ const Filter = () =>{
                 <Select 
                     list={filtersList.ugrhis}
                     placeholder={'Selecionar'}
-                    
+                    field_id={'ugrhi_id'}
+                    onchange={onChangeHandle}
                     />
             </div>
             <div className={styles.formGroup}>
@@ -76,6 +77,8 @@ const Filter = () =>{
                 <Select 
                     list={filtersList.subugrhis}
                     placeholder={'Selecionar'}
+                    field_id={'subugrhi_id'}
+                    onchange={onChangeHandle}
                     />
             </div>
             <div className={styles.formGroup}>
@@ -83,8 +86,8 @@ const Filter = () =>{
                 <Select 
                     list={filtersList.cities}
                     placeholder={'Selecionar'}
-                    value={ugrhiValue}
-                    // onChange={e=>setUgrhiValue(e.value)}
+                    field_id={'city_id'}
+                    onchange={onChangeHandle}
                 />
             </div>
         </div>

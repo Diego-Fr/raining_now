@@ -18,17 +18,33 @@
         background-color: white;
         width: auto;
         max-height: 500px;
-        // overflow-y: scroll;
-        overflow-x: hidden;
+        
         width: 100%;
         border-radius: 5px;
         box-shadow: rgba(0, 0, 0, 0.1) 0px 4px 6px -1px, rgba(0, 0, 0, 0.06) 0px 2px 4px -1px;
 
-        .inputSearch{
-            padding-left: 15px;
+        .inputSearchWrapper{
+            padding: 10px;
+            width: 100%;
+            box-sizing: border-box;
+            .inputSearch{
+                width: 100%;
+                box-sizing: border-box;
+                border-radius: 5px;
+                padding: 10px;
+                border: 1px solid #c7c7c7;
+    
+                &:focus{
+                    outline: none;
+                }
+            }
         }
+
+        
     
         .itemsContainer{
+            overflow-y: scroll;
+            overflow-x: hidden;
             .item{
                 padding-left: 15px;
                 padding-top: 5px;

@@ -50,7 +50,7 @@ export const filterStations = _ => async (dispatch, getState) =>{
             shows.push(station.value >= 1)
           }
       } else {
-        shows.push(station[field] === undefined || filter[field].includes(station[field])) //sempre array
+        shows.push(station[field] === undefined || filter[field].length === 0 || filter[field].includes(station[field])) //sempre array
       }
     }
 
