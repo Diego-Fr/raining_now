@@ -5,6 +5,7 @@ const initialState = {
     station_id: null,
     start_date: moment().subtract(1, 'day').set({hour: 3, minute: 0}),
     end_date: moment().add(1, 'day').set({hour: 2, minute: 59}),
+    groupType: 'minute',
     counter: 1 //helper
 }
 
@@ -31,9 +32,7 @@ const modalChartSlice = createSlice({
                 state.end_date = moment()
             } else if(action.payload.isAfter(moment())){
                 state.end_date = moment()
-            } else {
-                console.log('NAO');
-                
+            } else {                
                 state.end_date = action.payload
             }
             state.end_date = state.end_date.add(1, 'day').set({hour: 2, minute:59})
@@ -41,12 +40,15 @@ const modalChartSlice = createSlice({
             
             
         },
+        setGroupType(state, action){
+            state.groupType = action.payload
+        },
         setOptions(state, action){
             return {...state, counter: state.counter + 1, ...action.payload}
         }
     }
 })
 
-export const {setStationId, setEndDate, setStartDate,setOptions} = modalChartSlice.actions
+export const {setStationId, setEndDate, setStartDate,setOptions,setGroupType} = modalChartSlice.actions
 
 export default modalChartSlice.reducer

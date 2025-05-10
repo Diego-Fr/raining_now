@@ -6,8 +6,9 @@ import { fetchStationMeasurements } from '../../services/api'
 
 import DatePicker from './DatePicker'
 import { generatePluChart, generateFluChart } from './ModalChartUtils'
-import { setEndDate, setStartDate } from '../../store/modalChartSlice'
+import { setEndDate, setStartDate, setGroupType } from '../../store/modalChartSlice'
 import Loading from './Loading'
+import Select from '../../components/form/select/Select'
 
 
 
@@ -15,34 +16,33 @@ import Loading from './Loading'
 
 const ModalChart = () =>{
 
-    const [show, setShow] = useState(false)
-    const [mapContainerSize, setMapContainerSize] = useState(500)
-    const chartRef = useRef()
-    const chartInstanceRef = useRef()
-    const counter = useSelector(state=>state.modalchart.counter)
-    const chartOptions = useSelector(state=>state.modalchart)
-    const titleRef = useRef()
-    const wrapperRef = useRef()
-    const stations = useSelector(state=> state.station.stations)
+    const [chartState, setChartState] = useState({
+        isZoomed: false,
+        noData:false,
+        isLoading: false,
+        show: false,
+        mapContainerSize: 500,
+    })
+
     const [stationName, setStationName] = useState()
     const [stationPrefix, setStationPrefix] = useState()
-    const [isLoading, setIsLoading] = useState(false)
-    const [isZoomed, setIsZoomed] = useState(false)
-    const [noData, setNoData] = useState(false)
-    const context = useSelector(state=> state.context.context)
-
     const [measurements, setMeasurements] = useState([])
 
-    const startDate = useSelector(state=> state.modalchart.start_date)
-    const endDate = useSelector(state=> state.modalchart.end_date)
+    const chartRef = useRef()
+    const chartInstanceRef = useRef()
+    const titleRef = useRef()
+    const wrapperRef = useRef()
 
-    const dispatch = useDispatch()
-    
-    
+    const chartOptions = useSelector(state=>state.modalchart)
+    const {counter,start_date, end_date, groupType } = chartOptions
+
+    const stations = useSelector(state=> state.station.stations)
+    const context = useSelector(state=> state.context.context)
+
+    const dispatch = useDispatch()    
 
     const setMapTitle = (station_id) =>{
         let station = stations.find(x=> x.station_prefix_id.toString() === station_id.toString())
-
         
         setStationName(station.station_name || 'NOME DA ESTAÇÃO')
         setStationPrefix(station.prefix)
@@ -53,8 +53,14 @@ const ModalChart = () =>{
         
         if(counter != 1){
 
-            setShow(true)
-            setIsLoading(true)
+            
+            setChartState(state=>({
+                ...state,
+                show:true,
+                isLoading: true
+            }))
+            
+            
             setChartSize()
  
             if(chartInstanceRef.current){
@@ -62,9 +68,10 @@ const ModalChart = () =>{
             }        
             
             setMapTitle(chartOptions.station_id)
+            
             let res
             try{
-                res = await fetchStationMeasurements(chartOptions.station_id, {start_date: startDate.format('YYYY-MM-DD HH:mm'), end_date: endDate.format('YYYY-MM-DD HH:mm')})
+                res = await fetchStationMeasurements(chartOptions.station_id, {start_date: start_date.format('YYYY-MM-DD HH:mm'), end_date: end_date.format('YYYY-MM-DD HH:mm'), groupType})
             } catch(e){
                 console.log('Erro ao buscar dados do posto');
             }
@@ -72,21 +79,32 @@ const ModalChart = () =>{
 
             if(res && res.length > 0){
                 //esconderá a mensagem de falta de dados
-                setNoData(false)
+                setChartState(state => ({
+                    ...state,
+                    noData: false
+                }))
 
                 setMeasurements(res)
             } else {
                 //exibirá uma mensagem no caso de falta de dados
-                setNoData(true)
+                setChartState(state => ({
+                    ...state,
+                    noData: true
+                }))
             }
             
             //aqui vai disparar a geração do chart com os novos dados
-            setIsLoading(false) 
+            setChartState(state=>({
+                ...state, isLoading: false
+            }))
         }
     }
     
     const zoomEventHandle = _ =>{        
-        setIsZoomed(true)
+        setChartState(state => ({
+            ...state,
+            isZoomed: true
+        }))
     }
 
     const generateChart = async _ =>{
@@ -104,14 +122,16 @@ const ModalChart = () =>{
         
         await new Promise(resolve => setTimeout(resolve, 1)) //workaround
 
-        setMapContainerSize(wrapperRef.current.offsetHeight - titleRef.current.offsetHeight) 
+        setChartState(state=>({
+            ...state, mapContainerSize: wrapperRef.current.offsetHeight - titleRef.current.offsetHeight
+        }))
     }
 
     useEffect(_=>{
-        if(!isLoading){            
+        if(!chartState.isLoading){            
             generateChart()
         }
-    }, [isLoading])
+    }, [chartState.isLoading])
 
     useEffect(_=>{
         dispatch(setStartDate())
@@ -119,35 +139,63 @@ const ModalChart = () =>{
         // generateChart()
     }, [counter])
 
-    useEffect(_=>{
-        getMeasurements()
+    // useEffect(_=>{
         
-    }, [startDate, endDate])
+        
+    // }, [start_date, end_date])
+
+    useEffect(_=>{        
+        getMeasurements()
+    },[start_date, end_date, groupType])
+
 
     const outsideClick = () =>{
-        setShow(false)
+        setChartState(state=>({
+            ...state, show: false
+        }))
     }
 
     const resetChartZoom = () =>{
-        setIsZoomed(false)
+        setChartState(state=>({
+            ...state,
+            isZoomed: false
+        }))
         chartInstanceRef.current.resetZoom()
     }
 
+    const groupSelectOnChange = values =>{
+        let item = values.values[0] //sempre retorna array
+
+        dispatch(setGroupType(item))
+        
+    }
+
     return (
-        <div onClick={_=>{outsideClick()}} className={`${styles.container} ${show ? styles.show : ''}`}>
-            <div onClick={e=>e.stopPropagation()} className={styles.wrapper} ref={wrapperRef}>
+        <div onMouseDown={_=>{outsideClick()}} className={`${styles.container} ${chartState.show ? styles.show : ''}`}>
+            <div onMouseDown={e=>e.stopPropagation()} className={styles.wrapper} ref={wrapperRef}>
                 <div ref={titleRef} className={styles.title_container}>
                     <div className={styles.title}><div>{stationName}</div><div className={styles.prefix}>{stationPrefix}</div></div>
                     <DatePicker/>
+                    <Select 
+                        label='Agrupamento'
+                        list={[{label: 'Coleta', value: 'minute'},{label:'Hora', value: 'hour'}, {label: 'Dia', value: 'day'}]}
+                        placeholder={'Selecionar'}
+                        field_id={'group_type'}
+                        searchable={false}
+                        selected='minute'
+                        multiple={false}
+                        allowEmpty={false}
+                        onchange={groupSelectOnChange}
+                        />
                 </div>
-                <div className={styles.body} style={{height: mapContainerSize}}>
-                    {isLoading ? 
+                <div className={styles.body} style={{height: chartState.mapContainerSize}}>
+                    {chartState.isLoading ? 
                         <Loading text="Carregando"/> : 
                         <>
-                            {!noData ? 
+                            {!chartState.noData ? 
                             <>
                                 <canvas ref={chartRef}></canvas>
-                                {isZoomed && <button className={styles.resetZoomButton} onClick={_=>{resetChartZoom(false)}}>Remover Zoom</button>}
+                                {chartState.isZoomed && <button className={styles.resetZoomButton} onClick={_=>{resetChartZoom(false)}}>Remover Zoom</button>}
                             </> : <div>Sem dado</div>
                             }
                         </>

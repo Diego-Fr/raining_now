@@ -1,5 +1,5 @@
 .container{
-
+    position: relative;
     .select{
         border: 1px solid rgb(202, 202, 202);
         border-radius: 3px;
@@ -11,6 +11,7 @@
     
     .optionsContainer{
         // padding: 5px;
+        z-index: 999;
         display: flex;
         flex-direction: column;
         position: absolute;
@@ -21,7 +22,8 @@
         
         width: 100%;
         border-radius: 5px;
-        box-shadow: rgba(0, 0, 0, 0.1) 0px 4px 6px -1px, rgba(0, 0, 0, 0.06) 0px 2px 4px -1px;
+        overflow: hidden;
+        box-shadow: rgba(0, 0, 0, 0.3) 0px 4px 6px -1px, rgba(0, 0, 0, 0.06) 0px 2px 4px -1px;
 
         .inputSearchWrapper{
             padding: 10px;
@@ -43,13 +45,17 @@
         
     
         .itemsContainer{
-            overflow-y: scroll;
+            overflow-y: auto;
             overflow-x: hidden;
+            box-sizing: border-box;
+            border-top: 1px solid rgb(243, 243, 243);
             .item{
                 padding-left: 15px;
                 padding-top: 5px;
                 padding-bottom: 5px;
+                padding-right: 5px;
                 width: 100%;
+                box-sizing: border-box;
                 cursor: pointer;
         
                 &:hover{

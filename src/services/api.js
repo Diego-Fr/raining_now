@@ -19,10 +19,15 @@ const fetchMeasurements = async (context) =>{
 
 const fetchStationMeasurements = async (
     station_id,
-    { start_date = moment().utc().subtract(1, 'day').format('YYYY-MM-DD HH:mm'), end_date = moment().utc().format('YYYY-MM-DD HH:mm')} = {}
+    { 
+        start_date = moment().utc().subtract(1, 'day').format('YYYY-MM-DD HH:mm'), 
+        end_date = moment().utc().format('YYYY-MM-DD HH:mm'),
+        groupType='minute'
+    } = {},
+    
 )=>{
     
-    let res = await axios.get(`https://cth.daee.sp.gov.br/sibh/api/v2/measurements?station_prefix_ids[]=${station_id}&start_date=${start_date}&end_date=${end_date}`)
+    let res = await axios.get(`https://cth.daee.sp.gov.br/sibh/api/v2/measurements?station_prefix_ids[]=${station_id}&start_date=${start_date}&end_date=${end_date}&group_type=${groupType}`)
 
     return res.data.measurements
 
@@ -36,6 +41,19 @@ const feachCityLimiares = async() =>{
     return res
 }
 
+
+const feachCitiesBbox = async(cods) =>{
+    let res = await axios.get(`https://cth.daee.sp.gov.br/sibh/api/v2/cities?with_bbox=true&${cods.map(cod=> `cod_ibges[]=${cod}`).join('&')}`)
+
+    return res.data
+}
+
+const feachSubugrhisBbox = async(cods) =>{
+    let res = await axios.get(`https://cth.daee.sp.gov.br/sibh/api/v2/subugrhis?with_bbox=true&${cods.map(cod=> `cods[]=${cod.replace('.','')}`).join('&')}`)
+
+    return res.data
+}
+
 export {
-    fetchMeasurements,fetchStationMeasurements,feachCityLimiares
+    fetchMeasurements,fetchStationMeasurements,feachCityLimiares,feachCitiesBbox,feachSubugrhisBbox
 }

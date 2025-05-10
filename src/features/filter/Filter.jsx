@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react'
 import {useDispatch, useSelector} from 'react-redux'
 import styles from './Filter.module.scss'
-import Select from '../../components/form/Select'
+import Select from '../../components/form/select/Select'
 import { setFilterOption } from '../../store/filterSlice'
 import { filterStations } from '../../store/stationSlice'
 // import Select from 'react-select'
