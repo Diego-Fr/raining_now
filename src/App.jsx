@@ -19,7 +19,7 @@ function App() {
       <Filter/>
       <Map/>
       <ContextMenu/>
-      {/* <LayerControl/> */}
+      <LayerControl/>
       <TimeSelector/>
       <ModalChart/>
       <Legend/>
