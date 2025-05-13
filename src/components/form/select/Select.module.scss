@@ -8,6 +8,19 @@
         box-sizing: border-box;
         width: 100%;
     }
+
+    .inputContainer{
+        display: flex;
+        position: relative;
+        .chevron{
+            position: absolute;
+            right: 10px;
+            top: 50%;
+            transform: translateY(-50%);
+            font-size: x-small;
+            cursor: pointer;
+        }
+    }
     
     .optionsContainer{
         // padding: 5px;

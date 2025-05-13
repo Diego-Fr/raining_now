@@ -10,6 +10,7 @@ import TimeSelector from './features/time_selector/TimeSelector'
 import ModalChart from './features/modal_chart/ModalChart'
 import Legend from './features/legend/Legend'
 import SideChart from './features/sideChart/SideChart'
+import { ToastContainer } from 'react-toastify'
 
 function App() {
   const [count, setCount] = useState(0)
@@ -23,6 +24,12 @@ function App() {
       <TimeSelector/>
       <ModalChart/>
       <Legend/>
+      <ToastContainer
+          position="bottom-right"
+          autoClose={2000}
+          pauseOnFocusLoss={false}
+          theme="dark"
+      /> 
       {/* <SideChart/> */}
     </>
   )

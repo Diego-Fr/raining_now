@@ -2,7 +2,7 @@ import { createSlice } from "@reduxjs/toolkit"
 
 const initialState = {
     context: 'rain',
-    hours: 72
+    hours: 24
 }
 
 const contextSlice = createSlice({

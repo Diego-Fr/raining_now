@@ -2,6 +2,7 @@ import axios from 'axios'
 import moment from 'moment'
 import stations from '../data/stations'
 import stationsFlu from '../data/stationsFlu'
+import { id } from 'react-day-picker/locale'
 
 const fetchMeasurements = async (context) =>{
      
@@ -54,6 +55,14 @@ const feachSubugrhisBbox = async(cods) =>{
     return res.data
 }
 
+const updateMeasurementStatus = async(id, status, token) =>{
+    let res = await axios.post(`https://cth.daee.sp.gov.br/sibh/api/v2/measurements/${id}/classification`, {
+        status: status
+    }, {headers:{Authorization: `Bearer ${token}`}})
+
+    return res.data
+}
+
 export {
-    fetchMeasurements,fetchStationMeasurements,feachCityLimiares,feachCitiesBbox,feachSubugrhisBbox
+    fetchMeasurements,fetchStationMeasurements,feachCityLimiares,feachCitiesBbox,feachSubugrhisBbox,updateMeasurementStatus
 }

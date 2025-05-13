@@ -1,8 +1,10 @@
 import { useEffect, useRef, useState } from "react"
 import styles from './Select.module.scss'
+import { FaChevronDown } from "react-icons/fa";
+
 
 const Select = options =>{
-    const {list,onchange, field_id, searchable=true, minWidth=200, selected, multiple=true, allowEmpty=true, label} = options
+    const {list,onchange, field_id, searchable=true, minWidth=200, selected, multiple=true, allowEmpty=true, label, orderBy} = options
     const [show, setShow] = useState(false)
     const [selectOptions, setSelectOptions] = useState([])
     const listContainerRef = useRef()
@@ -14,9 +16,9 @@ const Select = options =>{
 
 
     //fechar caixa no click fora
-    const handleBlur = (force=false) =>{
+    const handleBlur = (e) =>{
         setTimeout(() => {
-            if (!listContainerRef.current.contains(document.activeElement) || force) {
+            if (!listContainerRef.current.contains(e.relatedTarget)) {
                 setShow(false);
             }
           }, 0);
@@ -44,9 +46,14 @@ const Select = options =>{
     }
 
     //criando cópia da lista quando a lista é definida/alterada
-    useEffect(_=>{
+    useEffect(_=>{        
         if(listCopy.length === 0){
-            setListCopy([...list])
+            if(orderBy){                
+                let ordered = list.sort((x,y)=>x.label.localeCompare(y.label))
+                setListCopy([...ordered])
+            } else {
+                setListCopy([...list])
+            }
         }
     },[list])
 
@@ -62,7 +69,7 @@ const Select = options =>{
     useEffect(_=>{
         
         if(list?.length > 0){            
-            setInputValue(selectOptions.length > 2 ? `${selectOptions.length} selecionados` : selectOptions.length > 0 ? selectOptions.map(y=> list.filter(x=>x.value === y)[0].label): 'Nenhum selecionado')
+            setInputValue(selectOptions.length > 1 ? `${selectOptions.length} selecionados` : selectOptions.length > 0 ? selectOptions.map(y=> list.filter(x=>x.value === y)[0].label): 'Nenhum selecionado')
             if(onchange){
                 onchange({field: field_id, values: selectOptions})
             }
@@ -97,15 +104,20 @@ const Select = options =>{
     }, [])
     
     return (
-        <div ref={containerRef} className={styles.container}>
+        <div ref={containerRef} className={styles.container} onBlur={handleBlur}>
             {label && <label>{label}</label>}
-            <input value={inputValue} readOnly ref={selectRef} className={styles.select} onFocus={_=>setShow(true)} onBlur={handleBlur}/>
+            <div className={styles.inputContainer} onFocus={_=>setShow(true)} >
+                <input value={inputValue} readOnly ref={selectRef} className={styles.select} />
+                
+                <FaChevronDown onClick={_=>selectRef.current.focus()} className={styles.chevron}/>
+            </div>
+            
             <div ref={listContainerRef} className={styles.optionsContainer} style={{minWidth: minWidth}} tabIndex={-1} >
                     
                 {show ? 
                     <>
                         {searchable && <div className={styles.inputSearchWrapper}>
-                            <input type={'text'} value={searchValue} onChange={e=>setSearchValue(e.target.value)} placeholder="Buscar" className={styles.inputSearch} onFocus={_=>setShow(true)}/>
+                            <input type={'text'} value={searchValue} onChange={e=>setSearchValue(e.target.value)} placeholder="Buscar" className={styles.inputSearch}/>
                         </div>}
                         
                         <div 

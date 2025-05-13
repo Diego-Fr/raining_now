@@ -9,6 +9,7 @@ import { generatePluChart, generateFluChart } from './ModalChartUtils'
 import { setEndDate, setStartDate, setGroupType } from '../../store/modalChartSlice'
 import Loading from './Loading'
 import Select from '../../components/form/select/Select'
+import StatusBox from './StatusBox'
 
 
 
@@ -22,6 +23,7 @@ const ModalChart = () =>{
         isLoading: false,
         show: false,
         mapContainerSize: 500,
+        selectedMeasurement: null
     })
 
     const [stationName, setStationName] = useState()
@@ -110,7 +112,7 @@ const ModalChart = () =>{
     const generateChart = async _ =>{
         if(counter != 1){
             if(context === 'rain'){
-                chartInstanceRef.current = await generatePluChart(measurements, chartRef.current, zoomEventHandle) 
+                chartInstanceRef.current = await generatePluChart(measurements, chartRef.current, zoomEventHandle,chartSeriesClick) 
             } else if(context === 'level'){
                 chartInstanceRef.current = await generateFluChart(measurements, chartRef.current, zoomEventHandle) 
             }
@@ -167,7 +169,25 @@ const ModalChart = () =>{
         let item = values.values[0] //sempre retorna array
 
         dispatch(setGroupType(item))
+    }
+
+    const chartSeriesClick = (item) =>{
         
+        if(item){
+            if(context === 'rain'){                
+                setChartState(state=>({
+                    ...state,
+                    selectedMeasurement: item
+                }))
+            }
+        }
+    }
+
+    const statusBoxClose = () =>{
+        setChartState(state=>({
+            ...state,
+            selectedMeasurement: undefined
+        }))
     }
 
     return (
@@ -176,6 +196,7 @@ const ModalChart = () =>{
                 <div ref={titleRef} className={styles.title_container}>
                     <div className={styles.title}><div>{stationName}</div><div className={styles.prefix}>{stationPrefix}</div></div>
                     <DatePicker/>
+                    <StatusBox selectedMeasurement={chartState.selectedMeasurement} statusBoxClose={statusBoxClose}/>
                     <Select 
                         label='Agrupamento'
                         list={[{label: 'Coleta', value: 'minute'},{label:'Hora', value: 'hour'}, {label: 'Dia', value: 'day'}]}

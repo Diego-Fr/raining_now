@@ -6,9 +6,10 @@ import {formatDateToBrazil} from '@/utils/dateUtils'
 
 Chart.register(BarController, BarElement, CategoryScale, Filler, zoomPlugin, LinearScale, Tooltip, Legend,TimeScale,LineController,LineElement,PointElement)
 
-const generatePluChart = async (measurements, chart_element, zoomEventHandle) =>{
+const generatePluChart = async (measurements, chart_element, zoomEventHandle,chartSeriesClick) =>{
+    console.log(measurements);
     
-    let data = measurements.map(m=> ({x: formatDateToBrazil(m.date).toDate(), y:m.value})).sort((x,y)=> x.x - y.x )
+    let data = measurements.map(m=> ({id:m.measurement_id, classification: m.measurement_classification_type_id, date:m.date,  x: formatDateToBrazil(m.date).toDate(), y:m.value})).sort((x,y)=> x.x - y.x )
     let acumData = data.reduce((acc, measurement, index) => { 
         acc[index - 1] ? acc.push({x: measurement.x, y: acc[index-1].y + measurement.y}) : 
         acc.push({x: measurement.x, y:measurement.y}); return acc}
@@ -33,7 +34,7 @@ const generatePluChart = async (measurements, chart_element, zoomEventHandle) =>
                 backgroundColor: 'rgba(20, 167, 224, 0.05)',
                 fill: true,
                 type: 'line',
-                pointRadius: 0,
+                pointRadius: 1,
                 tension: 0.1
             },
 
@@ -84,6 +85,16 @@ const generatePluChart = async (measurements, chart_element, zoomEventHandle) =>
                 }
                 
             },
+            onClick:(e, elements) => {
+                if (elements.length > 0) {
+                    const index = elements[0].index;
+                    
+                    if(chartSeriesClick && data[index]){
+                        chartSeriesClick(data[index])
+                    }
+                    
+                }
+            }
            
             
         }

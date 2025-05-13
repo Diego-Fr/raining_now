@@ -1,0 +1,71 @@
+.container{
+    background-color: white;
+    width: 200px;
+    // height: 200px;
+    border: 1px solid #ededed;
+    position: absolute;
+    right: 20px;
+    z-index: 9999999;
+    transform: translate(0%, -50%);
+    top: 50%;
+    border-radius: 4px;
+    // overflow: hidden;
+    box-shadow: rgba(0, 0, 0, 0.16) 3px 3px 1px, rgba(0, 0, 0, 0.23) 3px 3px 6px;
+
+    &.show{
+        animation-name: show;
+        animation-duration: 0.3s;
+        animation-fill-mode: forwards;
+    }
+
+    .title{
+        font-weight: 600;
+        text-align: left;
+        padding: 10px;
+    }
+
+    .saveButton{
+        background-color: rgb(22, 89, 214);
+        width: 90%;
+        border-radius: 0px;
+        color: white;
+        margin-bottom: 5px;
+    }
+
+    .label{
+        text-align: left;
+        margin-bottom: 3px;
+        font-size: small;
+    }
+
+    .stat{
+        font-size: small;
+        text-align: left;
+        margin-bottom: 3px;
+    }
+
+    
+
+    .titleContainer{
+        display: flex;
+        justify-content: space-between;
+        .closeButton{
+            background-color: transparent;
+            width: 1px;
+            height: 1px;
+            border: none;
+            &:hover{
+                border: none;
+            }
+
+            &:focus{
+                outline: none;
+            }
+        }
+    }
+}
+
+@keyframes show {
+    0%{ opacity: 1;transform: translate(50%, -50%);}
+    100%{opacity: 1;transform: translate(0%, -50%)}
+}

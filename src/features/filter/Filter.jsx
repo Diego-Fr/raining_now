@@ -70,6 +70,7 @@ const Filter = () =>{
                     placeholder={'Selecionar'}
                     field_id={'ugrhi_id'}
                     onchange={onChangeHandle}
+                    orderBy={'desc'}
                     />
             </div>
             <div className={styles.formGroup}>
@@ -79,6 +80,7 @@ const Filter = () =>{
                     placeholder={'Selecionar'}
                     field_id={'subugrhi_id'}
                     onchange={onChangeHandle}
+                    orderBy={'desc'}
                     />
             </div>
             <div className={styles.formGroup}>
@@ -88,6 +90,7 @@ const Filter = () =>{
                     placeholder={'Selecionar'}
                     field_id={'city_id'}
                     onchange={onChangeHandle}
+                    orderBy={'desc'}
                 />
             </div>
         </div>
