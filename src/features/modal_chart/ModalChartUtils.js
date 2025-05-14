@@ -7,8 +7,7 @@ import {formatDateToBrazil} from '@/utils/dateUtils'
 Chart.register(BarController, BarElement, CategoryScale, Filler, zoomPlugin, LinearScale, Tooltip, Legend,TimeScale,LineController,LineElement,PointElement)
 
 const generatePluChart = async (measurements, chart_element, zoomEventHandle,chartSeriesClick) =>{
-    console.log(measurements);
-    
+        
     let data = measurements.map(m=> ({id:m.measurement_id, classification: m.measurement_classification_type_id, date:m.date,  x: formatDateToBrazil(m.date).toDate(), y:m.value})).sort((x,y)=> x.x - y.x )
     let acumData = data.reduce((acc, measurement, index) => { 
         acc[index - 1] ? acc.push({x: measurement.x, y: acc[index-1].y + measurement.y}) : 

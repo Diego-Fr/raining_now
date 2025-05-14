@@ -1,22 +1,68 @@
 .container{
-    background-color: black;
-    width: 300px;
-    height: 40px;
+    background-color: #2b2d42;
+    // width: 300px;
+    // height: 35px;
     position: absolute;
     z-index: 1000;
-    bottom: 50px;
-    right: 50px;
-    border-radius: 10px;
-    border: 1px solid gray;
+    bottom: 70px;
+    left: 50%;
+    transform: translateX(-50%);
+    border-radius: 5px;
+    // border: 1px solid gray;
+    color: white;
     display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    gap: 2px;
     // flex: 1;
+
+    .itemsContainer{
+        display: flex;
+        height: 100%;
+        height: 35px;
+
+        .item{
+            flex: 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            width: 50px;
+            // width: 100%;
+        
+            &.active{
+                background-color: lighten(#2b2d42, 20%);
+                // background-color: lighten(#0077b6, 20%);
+                // background-color: lighten(#2b2d42, 20%);
+                font-weight: 600;
+            }
+        }
+    }
+
+    .customContainer{
+        height: 0px;
+        overflow: hidden;
+        display: none;
+        align-items: center;
+        justify-content: center;
+
+        .formGroup{
+            display: flex;
+            flex-direction: column;
+            padding: 5px;
+        }
+
+        &.show{
+            display: flex;
+            animation-name: show;
+            animation-duration: 0.3s;
+            animation-fill-mode: forwards;
+        }
+    }
 }
 
-.item{
-    flex: 1;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    cursor: pointer;
-    // width: 100%;
+@keyframes show {
+    0%{height: 0px};
+    100%{height: 50px;}
 }
+

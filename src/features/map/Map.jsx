@@ -8,6 +8,7 @@ import 'leaflet-markers-canvas'
 import { getGeoCities } from "../../utils/geoLayers";
 import { featurePPDCStyle, geoLayersToFeatureGroupPPDC } from "./MapUtils";
 import { feachCityLimiares } from "../../services/api";
+import { ToastContainer, toast } from 'react-toastify'
 
 const Map = () =>{
     const mapRef = useRef(null);
@@ -24,6 +25,8 @@ const Map = () =>{
     const [cityGeoJSONs, setCityGeoJSONs] = useState()
     const [cityFeatureGroup, setCityFeatureGroup] = useState()
     const [cityLimiares, setCityLimiares] = useState()
+
+    const stationContext = useSelector(state=>state.station)
 
     
     const removeCityFeatureFromMap = () =>{
@@ -65,6 +68,12 @@ const Map = () =>{
         }     
         
     },[context, hours])
+
+    useEffect(_=>{
+        if(stationContext.loadingError){
+            toast.error('Erro ao buscar medições ')
+        }
+    }, [stationContext.loadingError])
 
     useEffect(_=>{
         const run = async () =>{
