@@ -32,11 +32,10 @@ export const updateStations = _ => async (dispatch,getState) =>{
     dispatch(setStationsLoading(true))
     
     try {      
+
       let data = await fetchMeasurements(context)
       
-      
       data = data.map(x=>classifyStation(x,context.context)) //classificação do dado feita na obtenção do mesmo
-      // console.log(data);
       
       dispatch(setStations(data)) //atualizando lista
       dispatch(filterStations()) //filtrando a lista, e atualizando a lista

@@ -2,7 +2,8 @@ import { createSlice } from "@reduxjs/toolkit"
 
 const initialState = {
     context: 'rain',
-    hours: 24
+    hours: 1,
+    endDate: undefined
 }
 
 const contextSlice = createSlice({
@@ -14,10 +15,15 @@ const contextSlice = createSlice({
         },
         setHours(state, action){
             state.hours = action.payload
+        },
+        setEndDate(state, action){
+            const {hours, endDate} = action.payload
+            state.hours = hours
+            state.endDate = endDate
         }
     }
 })
 
-export const {setContext, setHours} =  contextSlice.actions
+export const {setContext, setHours,setEndDate} =  contextSlice.actions
 
 export default contextSlice.reducer

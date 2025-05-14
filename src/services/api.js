@@ -1,14 +1,18 @@
 import axios from 'axios'
 import moment from 'moment'
-import stations from '../data/stations'
-import stationsFlu from '../data/stationsFlu'
-import { id } from 'react-day-picker/locale'
 
-const fetchMeasurements = async (context) =>{
-     
+const fetchMeasurements = async (context) =>{     
     let res
     if(context.context === 'rain' || context.context === 'ppdc'){
-        res = await axios.get(`https://cth.daee.sp.gov.br/sibh/api/v2/measurements/now?station_type_id=2&hours=${context.hours}&show_all=false&serializer=complete&public=true`)
+        let url = `https://cth.daee.sp.gov.br/sibh/api/v2/measurements/now?station_type_id=2&hours=${context.hours}&show_all=false&serializer=complete&public=true`
+
+        if(context.endDate != undefined){           
+            //esperando que seja moment
+            url += `&from_date=${context.endDate.add(3, 'hours').format('YYYY-MM-DD HH:mm')}`
+        }
+
+        res = await axios.get(url)
+
         res = res?.data?.measurements
     } else if(context.context === 'level') {
         res = await axios.get(`https://cth.daee.sp.gov.br/sibh/api/v2/measurements/now_flu?references[]=extravasation&references[]=emergency&references[]=alert&references[]=attention&with_one_ref=true`)
