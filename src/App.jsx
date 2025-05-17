@@ -12,6 +12,7 @@ import Legend from './features/legend/Legend'
 import SideChart from './features/sideChart/SideChart'
 import { ToastContainer } from 'react-toastify'
 import Loader from './features/loader/Loader'
+import Radar from './features/radar/Radar'
 
 function App() {
   const [count, setCount] = useState(0)
@@ -32,6 +33,7 @@ function App() {
           theme="dark"
       /> 
       <Loader/>
+      <Radar/>
       {/* <SideChart/> */}
     </>
   )
