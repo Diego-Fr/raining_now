@@ -67,6 +67,12 @@ const updateMeasurementStatus = async(id, status, token) =>{
     return res.data
 }
 
+const getRadarLastImagesKeys = async (radarName) =>{
+    let res = await axios.get(`https://cth.daee.sp.gov.br/sibh/api/v2/s3/radar/${radarName}/last_images`)
+
+    return res.data.Contents
+}
+
 export {
-    fetchMeasurements,fetchStationMeasurements,feachCityLimiares,feachCitiesBbox,feachSubugrhisBbox,updateMeasurementStatus
+    fetchMeasurements,fetchStationMeasurements,feachCityLimiares,feachCitiesBbox,feachSubugrhisBbox,updateMeasurementStatus,getRadarLastImagesKeys
 }
