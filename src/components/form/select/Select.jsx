@@ -69,7 +69,7 @@ const Select = options =>{
     useEffect(_=>{
         
         if(list?.length > 0){            
-            setInputValue(selectOptions.length > 1 ? `${selectOptions.length} selecionados` : selectOptions.length > 0 ? selectOptions.map(y=> list.filter(x=>x.value === y)[0].label): 'Nenhum selecionado')
+            setInputValue(selectOptions.length > 1 ? `${selectOptions.length} selecionados` : selectOptions.length > 0 ? selectOptions.map(y=> list.filter(x=>x.value === y)[0]?.label): 'Nenhum selecionado')
             if(onchange){
                 onchange({field: field_id, values: selectOptions})
             }

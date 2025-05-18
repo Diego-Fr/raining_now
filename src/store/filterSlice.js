@@ -1,7 +1,12 @@
 import { createSlice } from "@reduxjs/toolkit";
 
 const initialState = {
-    showZero:false
+    filterOptions:{
+        showZero:false
+    },
+    filterFormOptions:{
+        show:false
+    }
 }
 
 const filterSlice = createSlice({
@@ -10,11 +15,21 @@ const filterSlice = createSlice({
     reducers:{
         setFilterOption(state, action){            
             const {field, value}= action.payload;
-            state[field] = value
+            state.filterOptions  = {
+                ...state.filterOptions,
+                [field]:value
+            }
+        },
+        setFilterFormOption(state, action){            
+            const {field, value}= action.payload;
+            state.filterFormOptions = {
+                ...state.filterFormOptions,
+                [field]:value
+            }
         }
     }
 })
 
-export const {setFilterOption} = filterSlice.actions
+export const {setFilterOption,setFilterFormOption} = filterSlice.actions
 
 export default filterSlice.reducer

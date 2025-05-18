@@ -1,20 +1,25 @@
 .container{
     background-color: white;
     width: 300px;
-    // height: 500px;
     position: absolute;
     z-index: 1000;
     top: 50px;
-    left: 50px;
+    left: 75px;
     border-radius: 10px;
-    border: 1px solid #e1e1e1;
-    display: block;
+    // border: 1px solid #e1e1e1;
+    box-shadow: rgba(0, 0, 0, 0.15) 1.95px 1.95px 2.6px;
+    display: none;
     padding: 1.5rem;
 
     .title{
         font-weight: 600;
         text-align: left;
+        padding-bottom: 20px;
         margin-bottom: 20px;
+        border-bottom: 1px solid rgb(230, 230, 230);
+        display: flex;
+        align-items: center;
+        font-size: larger;
     }
 
     .formGroup{
@@ -27,5 +32,26 @@
             border: none;
             padding: 10px;
         }
+
+        label{
+            font-weight: 600;
+            
+        }
+    }
+
+    &.show{
+        display: block;
+        animation-name: show;
+        animation-duration: 0.3s;
+        animation-fill-mode: forwards;
+    }
+}
+
+@keyframes show {
+    0% {
+        transform: translate(-100%, 0%);
+    }
+    100% {
+        transform: translate(-0%, 0%);
     }
 }

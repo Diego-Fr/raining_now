@@ -5,6 +5,7 @@ import styles from './Timeline.module.scss'
 import { getImages, positionFollower, showCircle } from './Utils'
 import moment from 'moment'
 import { FaPlay, FaPause } from "react-icons/fa6";
+import { toast } from 'react-toastify'
 
 
 const Timeline = () =>{
@@ -15,7 +16,7 @@ const Timeline = () =>{
     
     const [config, setConfig] = useState({
         active:true,
-        showingIndex: 2,
+        showingIndex: 0,
         showingCircle: false,
         speed: 1,
         play: true,
@@ -41,7 +42,12 @@ const Timeline = () =>{
         const Images = async () =>{
 
             let images =  await getImages()
-            setItems(images.map(x=>({link:x.link, key: x.key})))    
+            if(images.length > 0){
+                setItems(images.map(x=>({link:x.link, key: x.key})))    
+            } else {
+                toast.info('Sem imagens de radar')
+            }
+            
         }
 
         Images()
@@ -51,7 +57,7 @@ const Timeline = () =>{
         
     },[])
 
-    useEffect(_=>{
+    useEffect(_=>{        
         if(map && config.active && items?.length > 0){
                         
             positionFollower(followerRef.current,  itemsRef.current[config.showingIndex],config.showingIndex)
@@ -144,38 +150,40 @@ const Timeline = () =>{
     }
 
     return (
-        <div ref={containerRef} className={styles.container}>
-            <div type='button' className={styles.playButton} onClick={playButtonClickHandler}>
-                {config.play ? 
-                    <FaPause /> :
-                    <FaPlay />
-                }
-            </div>
-            <div className={styles.itemsWrapper}>
-                <div className={styles.followContainer}>
-                    <div ref={followerHoverRef} className={`${styles.followWrapper} ${styles.follow} ${config.showHoverFollowing ? styles.show : ''} `}></div>
-                    <div ref={followerRef} className={styles.followWrapper}>{items[config.showingIndex] && moment(parseDateFromKey(items[config.showingIndex]?.key), 'YYYYMMDDHHmm').subtract(3, 'hours').format('DD-MM-YYYY HH:mm')}</div>
+        items.length > 0 &&
+            <div ref={containerRef} className={styles.container}>
+                <div type='button' className={styles.playButton} onClick={playButtonClickHandler}>
+                    {config.play ? 
+                        <FaPause /> :
+                        <FaPlay />
+                    }
                 </div>
-                <div className={styles.itemsContainer}>
-                {
-                    items?.map((item, index)=> <div 
-                        onClick={_=>itemClickHandler(index)}
-                        onMouseEnter={_=>itemMouseEnterHandler(index)} 
-                        onMouseLeave={_=>itemMouseLeaveHandler()} 
-                        key={index} 
-                        ref={el=>itemsRef.current[index] = el} 
-                        className={`${styles.item} 
-                        ${config.showingIndex === index ? styles.active : ''}`}></div> 
-                    )
-                }
-                </div>
-                <div className={styles.bottomWrapper}>
-                    <div className={styles.speedContainer}>
-                        {config.speedOptions.map(x=> <div onClick={_=>speedButtonClickHandler(x)} className={`${styles.item} ${x === config.speed ? styles.active : ''}`}>{x}x</div> )}
+                <div className={styles.itemsWrapper}>
+                    <div className={styles.followContainer}>
+                        <div ref={followerHoverRef} className={`${styles.followWrapper} ${styles.follow} ${config.showHoverFollowing ? styles.show : ''} `}></div>
+                        <div ref={followerRef} className={styles.followWrapper}>{items[config.showingIndex] && moment(parseDateFromKey(items[config.showingIndex]?.key), 'YYYYMMDDHHmm').subtract(3, 'hours').format('DD-MM-YYYY HH:mm')}</div>
+                    </div>
+                    <div className={styles.itemsContainer}>
+                    {
+                        items?.map((item, index)=> <div 
+                            onClick={_=>itemClickHandler(index)}
+                            onMouseEnter={_=>itemMouseEnterHandler(index)} 
+                            onMouseLeave={_=>itemMouseLeaveHandler()} 
+                            key={index} 
+                            ref={el=>itemsRef.current[index] = el} 
+                            className={`${styles.item} 
+                            ${config.showingIndex >= index ? styles.active : ''}`}></div> 
+                        )
+                    }
+                    </div>
+                    <div className={styles.bottomWrapper}>
+                        <div className={styles.speedContainer}>
+                            {config.speedOptions.map((x,index)=> <div key={index} onClick={_=>speedButtonClickHandler(x)} className={`${styles.item} ${x === config.speed ? styles.active : ''}`}>{x}x</div> )}
+                        </div>
                     </div>
                 </div>
             </div>
-        </div>
+        
     )
 }
 

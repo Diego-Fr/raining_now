@@ -2,8 +2,7 @@ import { getRadarLastImagesKeys } from "../../services/api";
 
 const getImages = async () =>{
 
-    let keys  = await getRadarLastImagesKeys('pnova')
-    console.log(keys);
+    let keys  = await getRadarLastImagesKeys('pnova') || []
     
     return keys.map(key=>({
         key: key.Key,

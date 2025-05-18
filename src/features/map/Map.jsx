@@ -40,7 +40,7 @@ const Map = () =>{
             updateStations()
         )
         if (mapRef.current && !mapInstanceRef.current) {
-            const map = L.map(mapRef.current).setView([-23.55, -46.63], 8)
+            const map = L.map(mapRef.current, {zoomControl: false}).setView([-23.55, -46.63], 8)
       
             L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
               attribution: '&copy; OpenStreetMap contributors',

@@ -52,10 +52,12 @@ export const filterStations = _ => async (dispatch, getState) =>{
   
   const {station, filter} = getState()
   const stations = station.stations
+  // console.log(filter);
   
   let updated_stations = stations.map(station=>{
     let shows = [];
-    for(let field in filter){
+    for(let field in filter.filterOptions){
+      // console.log(field);
       
       if(field === 'showZero'){
           //lógica a parte
@@ -65,7 +67,7 @@ export const filterStations = _ => async (dispatch, getState) =>{
             shows.push(station.value >= 1)
           }
       } else {
-        shows.push(station[field] === undefined || filter[field].length === 0 || filter[field].includes(station[field])) //sempre array
+        shows.push(station[field] === undefined || filter.filterOptions[field].length === 0 || filter.filterOptions[field].includes(station[field])) //sempre array
       }
     }
 

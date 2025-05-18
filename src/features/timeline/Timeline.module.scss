@@ -20,10 +20,11 @@
         .itemsContainer{
             display: flex;
             width: 100%;
-            // border-bottom: 2px solid rgb(49, 79, 104);
+            // border: 1px solid rgb(107, 107, 107);
             box-shadow: rgba(0, 0, 0, 0.4) 0px 2px 4px, rgba(0, 0, 0, 0.3) 0px 7px 13px -3px, rgba(0, 0, 0, 0.2) 0px -3px 0px inset;
-            border-radius: 3px;
-            // overflow: hidden;
+            
+            border-radius: 7px;
+            overflow: hidden;
     
             .item{
                 flex: 1;
@@ -31,16 +32,17 @@
                 width: 100%;
                 min-height: 10px;
                 font-size: x-small;
-                background-color: rgb(44, 128, 255);
+                background-color: rgb(0, 0, 0, 0.4);
+                backdrop-filter: blur(1px);
                 
                 cursor: pointer;
         
                 &:not(:first-child){
-                    border-left: 1px solid rgb(126, 171, 230);
+                    // border-left: 1px solid rgb(126, 171, 230);
                 }
     
                 &.active{
-                    background-color: white;
+                    background-color: rgb(255, 255, 255);
                 }
     
                 &:hover{
@@ -87,13 +89,15 @@
                 position: absolute;
                 transform: translate(-50%, -100%);
                 transition: 0.3s left;
-                background-color: white;
+                background-color: rgb(255, 166, 2);
+                color: white;
                 border-radius: 3px;
                 padding: 2px 10px;
                 font-size: small;
                 font-weight: 600;
                 box-shadow: rgba(0, 0, 0, 0.24) 0px 3px 8px;
                 white-space: nowrap;
+                border: 1px solid white;
                 z-index: 999;
 
                 &.follow{
@@ -101,6 +105,7 @@
                     z-index: 9999;
                     background-color: rgba(255,255,255,0.9);
                     font-size: x-small;
+                    color: rgb(255, 166, 2);
                 }
 
                 &.show{

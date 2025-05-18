@@ -8,10 +8,11 @@ import { feachCitiesBbox, feachSubugrhisBbox } from '../../services/api'
 const LayerControl = _ =>{
 
     const map = useSelector(state=> state.map.map)
-    const filterOptions = useSelector(state=>state.filter)
+    const filterOptions = useSelector(state=>state.filter.filterOptions)
     const stations = useSelector(state=> state.station.stations)
     const [layersShowing, setLayersShowing] = useState({
-        'city_id': {show: false, layer:undefined}
+        'city_id': {show: false, layer:undefined},
+        'state': {show:true, layer:undefined}
     })
 
     
@@ -34,8 +35,17 @@ const LayerControl = _ =>{
     }
 
     useEffect(_=>{
+        if(map && !layersShowing.state.layer){
+            console.log('mostrar');
+            
+
+            let f = showLayer(map, `geonode:limiteestadualsp`)
+            console.log(f);
+            
+            setLayersShowing(state=>({...layersShowing, 'state': {...state.state, layer: f} }))
+        }
         
-    }, [layersShowing])
+    }, [map])
 
     useEffect(_=>{
         let {city_id, subugrhi_id, ugrhi_id } = filterOptions
@@ -55,7 +65,7 @@ const LayerControl = _ =>{
             let items = {}
             
             stations.forEach(station=>{
-                if(item.includes(station[key].toString())){
+                if(item.includes(station[key]?.toString())){
                     if(key === 'city_id'){
                         items[station.cod_ibge] = undefined
                     } else if(key === 'subugrhi_id'){                        
@@ -71,11 +81,11 @@ const LayerControl = _ =>{
             if(layersShowing[key]?.layer){
                 
                 
-                layersShowing[key].layer.remove()
-                setLayersShowing(prev =>({
-                    ...prev,
-                    [key]: ({...prev[key], show: prev[key].show})
-                }))
+                // layersShowing[key].layer.remove()
+                // setLayersShowing(prev =>({
+                //     ...prev,
+                //     [key]: ({...prev[key], show: prev[key].show})
+                // }))
 
             } 
             
