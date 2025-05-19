@@ -103,11 +103,15 @@ const SideChart = () =>{
             <div className={styles.titleContainer}><div className={styles.title}><div className={styles.text}>{charTitle}</div><div className={styles.next} onClick={nextContext}>></div></div><div className={styles.close}><IoClose/></div></div>
             
             <div className={styles.chartContainer}>
-                <ContextSelector setExibitionType={setExibitionType}/>
+                <div>
+                    <ContextSelector setExibitionType={setExibitionType}/>
+                </div>
+                <div style={{height: '100%'}}>
                 {  exibitionType === 'chart' ?
                      <canvas ref={chartRef}></canvas> : 
                      <Table stations={stations} menuContext={menuContext}/>
                 }
+                </div>
             </div>
         </div>
     )

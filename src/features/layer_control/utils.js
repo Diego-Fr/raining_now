@@ -1,10 +1,9 @@
-const showLayer = (map, layer_name, filter) =>{
+const addLayer = (map, layer_name, filter, options) =>{
     let l = L.tileLayer.wms('https://geodados.daee.sp.gov.br/geoserver/ows', {
         layers: layer_name,
         format: 'image/png8',
         transparent: true,
-        // styles: 'estadual_chuva_agora',
-        attribution: '© Seu GeoNode',
+        styles: options.style || '',
         CQL_FILTER: filter || ''
     }).addTo(map)
     return l
@@ -36,5 +35,5 @@ const getBoundingBox  = (bboxes) => {
   }
 
 export {
-    showLayer,getBoundingBox
+  addLayer,getBoundingBox
 }

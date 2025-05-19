@@ -5,6 +5,7 @@ import stationSlice from './stationSlice'
 import contextSlice from './contextSlice'
 import modalChartSlice from './modalChartSlice'
 import authSlice from './authSlice'
+import radarSlice from './radarSlice'
 
 export const store = configureStore({
     reducer: {
@@ -13,7 +14,8 @@ export const store = configureStore({
         station: stationSlice,
         context: contextSlice,
         modalchart: modalChartSlice,
-        auth: authSlice
+        auth: authSlice,
+        radar: radarSlice
     },
     //desativando analise de serialização para poder salvar um L.map na variavel map
     middleware: (getDefaultMiddleware) => getDefaultMiddleware({

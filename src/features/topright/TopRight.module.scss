@@ -1,0 +1,13 @@
+.container{
+    position: absolute;
+    top: 2%;
+    right: 2%;
+    // background-color: white;
+    z-index: 99999;
+
+    .logo{
+        width: 150px;
+        filter: drop-shadow(1px 1px 1px black);
+        // height: 200px;
+    }
+}

@@ -1,9 +1,18 @@
+import { useState } from 'react'
+import styles from './ContextSelector.module.scss'
+
 const ContextSelector = ({setExibitionType}) =>{
-    
-    
-    return <div style={{display:'flex', justifyContent: 'space-between', padding:'1.5rem', paddingTop: '0.5rem', paddingBottom:'0rem'}}>
-        <div onClick={_=>setExibitionType('chart')}>Gráfico</div>
-        <div onClick={_=>setExibitionType('table')}>Tabela</div>
+
+    const [active, setActive] = useState('chart')
+
+    const clickHandler = context => {
+        setActive(context)
+        setExibitionType(context)
+    }
+
+    return <div className={styles.container}>
+        <div onClick={_=>clickHandler('chart')} className={`${styles.button} ${active === 'chart' ? styles.active : ''}`}>Gráfico</div>
+        <div onClick={_=>clickHandler('table')} className={`${styles.button} ${active === 'table' ? styles.active : ''}`}>Tabela</div>
     </div>
 }
 

@@ -1,6 +1,6 @@
 import styles from './ContextMenu.module.scss'
 import Item from './Item'
-import {useDispatch} from 'react-redux'
+import {useDispatch, useSelector} from 'react-redux'
 import {setContext} from '../../store/contextSlice'
 
 import { BsFillCloudRainFill } from "react-icons/bs";
@@ -12,6 +12,7 @@ import { MdLandslide } from "react-icons/md";
 
 const ContextMenu = () =>{
 
+    const stationsOptions = useSelector(state=>state.station)
     const dispatch = useDispatch()
 
     const items = [
@@ -20,8 +21,10 @@ const ContextMenu = () =>{
         {id: 'ppdc', title: 'PPDC', icon:<MdLandslide/>}
     ]
 
-    const itemClickHandler = id =>{        
-        dispatch(setContext(id))
+    const itemClickHandler = id =>{  
+        if(!stationsOptions.stationsLoading){
+            dispatch(setContext(id))
+        }
     }
 
     return (

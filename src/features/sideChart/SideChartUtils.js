@@ -10,7 +10,7 @@ Chart.register(BarController, BarElement, CategoryScale, Filler, zoomPlugin, Lin
 
 const generateSideChart = async (dataList, chart_element, onBarClick = () => {}, onHover = () => {}, labelField = 'prefix', valueField = 'value') =>{
     
-    dataList = dataList.sort((x,y)=> y.value - x.value ) //ordenando
+    dataList = dataList.sort((x,y)=> y.value - x.value ).filter(x=>x.value >= 1) //ordenando
     let data = dataList.map(m=> m[valueField].toFixed(1))
     let labels = dataList.map(m=>  m[labelField].substring(0,15))    
     

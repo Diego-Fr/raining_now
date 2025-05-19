@@ -1,0 +1,19 @@
+.container{
+    display:flex;
+    justify-content: space-between;
+    flex: 1;
+
+    .button{
+        font-weight: 600;
+        width: 100%;
+        cursor: pointer;
+        padding: 1.5rem; 
+        padding-top: 0.5rem;
+        padding-bottom:0 rem;
+
+        &.active{
+            background-color: blue;
+        }
+    }
+}
+

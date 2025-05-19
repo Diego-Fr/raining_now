@@ -2,7 +2,7 @@ import styles from './LayerControl.module.scss'
 import layerControlList from '../../data/layerControlList'
 import {useSelector} from 'react-redux'
 import { useEffect, useState } from 'react'
-import { getBoundingBox, showLayer } from './utils'
+import { getBoundingBox, addLayer } from './utils'
 import { feachCitiesBbox, feachSubugrhisBbox } from '../../services/api'
 
 const LayerControl = _ =>{
@@ -20,7 +20,7 @@ const LayerControl = _ =>{
     const clickHandler = layer =>{
         // console.log(id,map);
         // if(!layer.layer){
-        //     let l = showLayer(map, layer.layer_name, "cd_mun='3550308'")
+        //     let l = addLayer(map, layer.layer_name, "cd_mun='3550308'")
         //     layer.layer = l
         // } else {
         //     layer.layer.remove()
@@ -36,11 +36,8 @@ const LayerControl = _ =>{
 
     useEffect(_=>{
         if(map && !layersShowing.state.layer){
-            console.log('mostrar');
             
-
-            let f = showLayer(map, `geonode:limiteestadualsp`)
-            console.log(f);
+            let f = addLayer(map, `geonode:limiteestadualsp`, '', {style:'estadual_chuva_agora'})
             
             setLayersShowing(state=>({...layersShowing, 'state': {...state.state, layer: f} }))
         }
@@ -78,19 +75,10 @@ const LayerControl = _ =>{
                 
             })
                 
-            if(layersShowing[key]?.layer){
-                
-                
-                // layersShowing[key].layer.remove()
-                // setLayersShowing(prev =>({
-                //     ...prev,
-                //     [key]: ({...prev[key], show: prev[key].show})
-                // }))
-
-            } 
+            layersShowing[key]?.layer?.remove()
             
-            let l = showLayer(map, `geonode:${namesByKey[key].layer}`, `${namesByKey[key].field} in (${Object.keys(items).map(x=> x )})`)
-            
+            let l = addLayer(map, `geonode:${namesByKey[key].layer}`, `${namesByKey[key].field} in (${Object.keys(items).map(x=> x )})`)
+            // l.addTo(map)
             setLayersShowing(prev => ({
                 ...prev,
                 [key]: {...prev[key], layer: l}
@@ -102,7 +90,8 @@ const LayerControl = _ =>{
 
             
         } else if(counter.length === 0 && map){
-            Object.values(layersShowing).map(x=> x.layer?.remove())
+            
+            Object.keys(layersShowing).filter(x=>['city_id', 'subugrhi_id'].includes(x)).map(x=> layersShowing[x].layer?.remove())
             map.fitBounds([
                 [-25.3, -53.1],
                 [-19.7, -44.2]

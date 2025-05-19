@@ -14,6 +14,7 @@ import { ToastContainer } from 'react-toastify'
 import Loader from './features/loader/Loader'
 import Timeline from './features/timeline/Timeline'
 import Topleft from './features/topleft/Topleft'
+import TopRight from './features/topright/TopRight'
 
 function App() {
   const [count, setCount] = useState(0)
@@ -36,7 +37,8 @@ function App() {
       <Loader/>
       <Timeline/>
       <Topleft/>
-      {/* <SideChart/> */}
+      <TopRight/>
+      <SideChart/>
     </>
   )
 }

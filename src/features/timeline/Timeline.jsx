@@ -12,13 +12,14 @@ const Timeline = () =>{
 
     const [items, setItems] = useState([])
     const map = useSelector(state=>state.map.map)
+    const radarOptions = useSelector(state=>state.radar)
     // const [active, setActive] = useState(true)
     
     const [config, setConfig] = useState({
         active:true,
         showingIndex: 0,
         showingCircle: false,
-        speed: 1,
+        speed: 5,
         play: true,
         showHoverFollowing: false,
         speedOptions: [1, 2, 5]
@@ -50,15 +51,13 @@ const Timeline = () =>{
             
         }
 
-        Images()
-
-        
+        Images()        
         
         
     },[])
 
     useEffect(_=>{        
-        if(map && config.active && items?.length > 0){
+        if(map && config.active && items?.length > 0 && radarOptions.show){
                         
             positionFollower(followerRef.current,  itemsRef.current[config.showingIndex],config.showingIndex)
             
@@ -94,7 +93,8 @@ const Timeline = () =>{
             
         }
         
-    }, [map, items, config.active, config.showingIndex, config.play])
+    }, [map, items, config.active, config.showingIndex, config.play,radarOptions.show])
+
 
     const itemClickHandler = (index) =>{   
         // console.log(index);
@@ -150,7 +150,7 @@ const Timeline = () =>{
     }
 
     return (
-        items.length > 0 &&
+        items.length > 0 && radarOptions.show &&
             <div ref={containerRef} className={styles.container}>
                 <div type='button' className={styles.playButton} onClick={playButtonClickHandler}>
                     {config.play ? 
