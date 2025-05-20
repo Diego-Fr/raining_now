@@ -9,7 +9,9 @@ const geoLayersToFeatureGroupPPDC = (layers=[], stations, citiesLimiares) =>{
     layers.forEach(layer=>{
         L.geoJSON(layer, {
             onEachFeature: (feature, l) =>{
-                const {cd_mun} = l.feature.properties
+                console.log(l.feature.properties);
+                
+                const {cd_mun,nm_mun} = l.feature.properties
                 let stat = stats[cd_mun]
                 
                 let limiar = citiesLimiares.find(x=>x.cod_ibge.toString() === cd_mun.toString())
@@ -29,6 +31,14 @@ const geoLayersToFeatureGroupPPDC = (layers=[], stations, citiesLimiares) =>{
                         opacity: 0.8
                     })
                 }
+
+                l.bindTooltip(`${nm_mun}<br>
+                            ${stat?.max >= 0 ? `<b>Acc: ${stat.max.toFixed(2)} mm</b> <br>` : ''}
+                            ${limiar?.limiares['ppdc'] ? `PPDC ${limiar?.limiares['ppdc']}` : limiar?.limiares['ipt'] ? `IPT ${limiar?.limiares['ipt']}` : ''}
+                            `, {
+                    sticky: true, // segue o mouse
+                    direction: 'top'
+                });
                 
                 
                 

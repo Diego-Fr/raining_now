@@ -14,6 +14,7 @@ const LayerControl = _ =>{
         'city_id': {show: false, layer:undefined},
         'state': {show:true, layer:undefined}
     })
+    const context = useSelector(state=>state.context.context)
 
     
 
@@ -78,12 +79,14 @@ const LayerControl = _ =>{
             layersShowing[key]?.layer?.remove()
             
             if(namesByKey[key]){
-                let l = addLayer(map, `geonode:${namesByKey[key].layer}`, `${namesByKey[key].field} in (${Object.keys(items).map(x=> x )})`)
-                // l.addTo(map)
-                setLayersShowing(prev => ({
-                    ...prev,
-                    [key]: {...prev[key], layer: l}
-                }))
+                if(context != 'ppdc'){
+                    let l = addLayer(map, `geonode:${namesByKey[key].layer}`, `${namesByKey[key].field} in (${Object.keys(items).map(x=> x )})`)
+                    // l.addTo(map)
+                    setLayersShowing(prev => ({
+                        ...prev,
+                        [key]: {...prev[key], layer: l}
+                    }))
+                }                 
 
                 namesByKey[key].feachFunc(Object.keys(items)).then(resp=>{
                     map.fitBounds(getBoundingBox(resp.map(x=>x.bbox_json)))

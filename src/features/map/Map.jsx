@@ -86,6 +86,10 @@ const Map = () =>{
                         
                         setCityGeoJSONs(res.features)
                     } else {
+                        if(cityFeatureGroup){
+                            cityFeatureGroup.remove()
+                            setCityFeatureGroup(null)
+                        }
                         
                         let featureGroup = geoLayersToFeatureGroupPPDC(cityGeoJSONs, stations,cityLimiares)
 
