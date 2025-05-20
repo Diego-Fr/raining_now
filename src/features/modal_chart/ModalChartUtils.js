@@ -3,8 +3,11 @@ import { Chart, PointElement, BarController, Filler, LineElement,LineController,
 import 'chartjs-adapter-moment';
 import zoomPlugin from 'chartjs-plugin-zoom';
 import {formatDateToBrazil} from '@/utils/dateUtils'
+import annotationPlugin from 'chartjs-plugin-annotation';
+import statesFlu from '@data/statesFlu'
+import {locale} from '@utils/locale'
 
-Chart.register(BarController, BarElement, CategoryScale, Filler, zoomPlugin, LinearScale, Tooltip, Legend,TimeScale,LineController,LineElement,PointElement)
+Chart.register(BarController, BarElement, CategoryScale, Filler, zoomPlugin, LinearScale, Tooltip, Legend,TimeScale,LineController,LineElement,PointElement,annotationPlugin)
 
 const generatePluChart = async (measurements, chart_element, zoomEventHandle,chartSeriesClick) =>{
         
@@ -102,10 +105,39 @@ const generatePluChart = async (measurements, chart_element, zoomEventHandle,cha
     return chart
 }
 
-const generateFluChart = async (measurements, chart_element, zoomEventHandle) =>{
-    let data = measurements.map(m=> ({x: formatDateToBrazil(m.date).toDate(), y:m.value})).sort((x,y)=> x.x - y.x )    
+const generateFluChart = async (measurements, chart_element, zoomEventHandle, stationInfo) =>{
+    console.log(stationInfo);
+    
+    let data = measurements.map(m=> ({x: formatDateToBrazil(m.date).toDate(), y:m.value/100})).sort((x,y)=> x.x - y.x )    
     let data_vazao = measurements.map(m=> ({x: formatDateToBrazil(m.date).toDate(), y:m.read_value})).sort((x,y)=> x.x - y.x ).filter(x=>x.y != undefined)
     
+    let plotlines = {}
+    let available_plots = ['extravasation', 'emergency', 'alert', 'attention']
+
+    available_plots.map(label=>{
+        if(stationInfo[label]){
+            plotlines[label] = {
+                type: 'line',
+                yMin: parseFloat(stationInfo[label])/100,
+                yMax: parseFloat(stationInfo[label])/100,
+                borderColor: statesFlu[label].color,
+                borderWidth: 2,
+                label: {
+                  display: true,
+                  enabled: true,
+                  content: locale.t(label),
+                  position: 'start',
+                  backgroundColor: statesFlu[label].color,
+                  font: {
+                    weight: 'bold',
+                    size: 10
+                  }
+                }
+              }
+        }
+    })    
+    
+
     let datasets = [
         {
             label: 'Nível',
@@ -160,14 +192,16 @@ const generateFluChart = async (measurements, chart_element, zoomEventHandle) =>
                 y: {
                     beginAtZero: false,
                     title: {
-                        display: false
+                        display: true,
+                        text: 'Nível (m)'
                     },
                     position: 'left'
                 },
                 y1: {
                     beginAtZero: false,
                     title: {
-                        display: false
+                        display: true,
+                        text: 'Vazão (m³/s)'
                     },
                     position: 'right'
                 }
@@ -188,7 +222,12 @@ const generateFluChart = async (measurements, chart_element, zoomEventHandle) =>
                 },
                 legend: {
                     position: 'bottom'
-                }
+                },
+                annotation: {
+                    annotations: {
+                      ...plotlines
+                    }
+                  }
                 
             },
            

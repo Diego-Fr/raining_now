@@ -27,6 +27,8 @@ const DatePicker = () =>{
     const dispatch = useDispatch()
 
     const handleClickOutside = e =>{        
+        console.log(e);
+        
         if (
             (inputStartRef.current && inputStartRef.current.contains(e.target)) ||
             (calendarStartRef.current && calendarStartRef.current.contains(e.target))
@@ -47,10 +49,6 @@ const DatePicker = () =>{
           }
     }
 
-    useEffect(() => {
-        document.addEventListener('mousedown', handleClickOutside);
-        return () => document.removeEventListener('mousedown', handleClickOutside);
-    }, []);
 
     const handleDateChange = (type,date) =>{   
         
@@ -66,14 +64,31 @@ const DatePicker = () =>{
         }
         
     }
+
+    const handleBlur = (e) =>{
+        setTimeout(() => {
+            if (!calendarStartRef.current.contains(e.relatedTarget)) {
+                setShowStart(false);
+            }
+          }, 0);
+    }
+
+    const handleBlurEnd = (e) =>{        
+        setTimeout(() => {
+            if (!calendarEndRef.current.contains(e.relatedTarget)) {
+                setShowEnd(false);
+            }
+          }, 0);
+    }
     
 
     return (
         <div className={styles.container}>
             <div style={{width: 'fit-content'}}>
+                <div>Periodo</div>
                 <div className={styles.inputsContainer}>
                     <div style={{ position:'relative'}}>
-                        <input readOnly={true} className={styles.inputBox} ref={inputStartRef} value={formatDateToBrazil(startDate.clone(), 'DD-MM-YYYY')} type="text" onFocus={_=> setShowStart(true)}></input>
+                        <input readOnly className={styles.inputBox} ref={inputStartRef} value={formatDateToBrazil(startDate.clone(), 'DD-MM-YYYY')} type="text" onBlur={e=>handleBlur(e)} onFocus={_=> setShowStart(true)}></input>
                         
                         { showStart && <div ref={calendarStartRef} className={styles.dateContainer}><DayPicker
                             animate
@@ -84,7 +99,7 @@ const DatePicker = () =>{
                             /></div>}
                     </div>
                     <div style={{ position:'relative'}}>
-                        <input readOnly={true} className={styles.inputBox} value={formatDateToBrazil(endDate.clone(), 'DD-MM-YYYY')} ref={inputEndRef} type="text" onFocus={_=> setShowEnd(true)}></input>
+                        <input readOnly={true} className={styles.inputBox} value={formatDateToBrazil(endDate.clone(), 'DD-MM-YYYY')} ref={inputEndRef} type="text" onBlur={e=>handleBlurEnd(e)} onFocus={_=> setShowEnd(true)}></input>
                         
                         { showEnd && <div ref={calendarEndRef} className={styles.dateContainer}><DayPicker
                             animate

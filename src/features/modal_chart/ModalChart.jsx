@@ -26,8 +26,13 @@ const ModalChart = () =>{
         selectedMeasurement: null
     })
 
-    const [stationName, setStationName] = useState()
-    const [stationPrefix, setStationPrefix] = useState()
+    const [stationInfo, setStationInfo] = useState({
+        station_name: '',
+        station_prefix: '',
+        station_owner: '',
+        lat: '', lng: ''
+    })
+
     const [measurements, setMeasurements] = useState([])
 
     const chartRef = useRef()
@@ -43,11 +48,19 @@ const ModalChart = () =>{
 
     const dispatch = useDispatch()    
 
-    const setMapTitle = (station_id) =>{
+    const setStation = (station_id) =>{
         let station = stations.find(x=> x.station_prefix_id.toString() === station_id.toString())
-        
-        setStationName(station.station_name || 'NOME DA ESTAÇÃO')
-        setStationPrefix(station.prefix)
+
+        setStationInfo(state=>({
+            ...state,
+            station_name:station.station_name || 'NOME DO POSTO',
+            station_prefix: station.prefix,
+            station_owner: station.station_owner,
+            extravasation: station.extravasation,
+            emergency: station.emergency,
+            alert: station.alert,
+            attention: station.attention
+        }))
         
     }
 
@@ -69,7 +82,7 @@ const ModalChart = () =>{
                 chartInstanceRef.current.destroy()
             }        
             
-            setMapTitle(chartOptions.station_id)
+            setStation(chartOptions.station_id)
             
             let res
             try{
@@ -114,7 +127,7 @@ const ModalChart = () =>{
             if(context === 'rain'){
                 chartInstanceRef.current = await generatePluChart(measurements, chartRef.current, zoomEventHandle,chartSeriesClick) 
             } else if(context === 'level'){
-                chartInstanceRef.current = await generateFluChart(measurements, chartRef.current, zoomEventHandle) 
+                chartInstanceRef.current = await generateFluChart(measurements, chartRef.current, zoomEventHandle, stationInfo) 
             }
             
         }                  
@@ -194,20 +207,29 @@ const ModalChart = () =>{
         <div onMouseDown={_=>{outsideClick()}} className={`${styles.container} ${chartState.show ? styles.show : ''}`}>
             <div onMouseDown={e=>e.stopPropagation()} className={styles.wrapper} ref={wrapperRef}>
                 <div ref={titleRef} className={styles.title_container}>
-                    <div className={styles.title}><div>{stationName}</div><div className={styles.prefix}>{stationPrefix}</div></div>
-                    <DatePicker/>
+                    <div className={styles.title_wrapper}>
+                        <div className={styles.title}><div>{stationInfo.station_name}</div><div className={styles.prefix}>{stationInfo.station_prefix}</div></div>
+                    </div>
+                    <div className={styles.fieldsWrapper}>
+                        <DatePicker/>
+                        <div style={{padding: '20px'}}>
+                            <Select 
+                                label='Agrupamento'
+                                list={[{label: 'Coleta', value: 'minute'},{label:'Hora', value: 'hour'}, {label: 'Dia', value: 'day'}]}
+                                placeholder={'Selecionar'}
+                                field_id={'group_type'}
+                                searchable={false}
+                                selected='minute'
+                                multiple={false}
+                                allowEmpty={false}
+                                onchange={groupSelectOnChange}
+                            />
+                        </div>
+                        
+                    </div>
+
                     <StatusBox selectedMeasurement={chartState.selectedMeasurement} statusBoxClose={statusBoxClose}/>
-                    <Select 
-                        label='Agrupamento'
-                        list={[{label: 'Coleta', value: 'minute'},{label:'Hora', value: 'hour'}, {label: 'Dia', value: 'day'}]}
-                        placeholder={'Selecionar'}
-                        field_id={'group_type'}
-                        searchable={false}
-                        selected='minute'
-                        multiple={false}
-                        allowEmpty={false}
-                        onchange={groupSelectOnChange}
-                        />
+                    
                 </div>
                 <div className={styles.body} style={{height: chartState.mapContainerSize}}>
                     {chartState.isLoading ? 

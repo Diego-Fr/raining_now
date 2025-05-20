@@ -77,16 +77,19 @@ const LayerControl = _ =>{
                 
             layersShowing[key]?.layer?.remove()
             
-            let l = addLayer(map, `geonode:${namesByKey[key].layer}`, `${namesByKey[key].field} in (${Object.keys(items).map(x=> x )})`)
-            // l.addTo(map)
-            setLayersShowing(prev => ({
-                ...prev,
-                [key]: {...prev[key], layer: l}
-            }))
+            if(namesByKey[key]){
+                let l = addLayer(map, `geonode:${namesByKey[key].layer}`, `${namesByKey[key].field} in (${Object.keys(items).map(x=> x )})`)
+                // l.addTo(map)
+                setLayersShowing(prev => ({
+                    ...prev,
+                    [key]: {...prev[key], layer: l}
+                }))
 
-            namesByKey[key].feachFunc(Object.keys(items)).then(resp=>{
-                map.fitBounds(getBoundingBox(resp.map(x=>x.bbox_json)))
-            })
+                namesByKey[key].feachFunc(Object.keys(items)).then(resp=>{
+                    map.fitBounds(getBoundingBox(resp.map(x=>x.bbox_json)))
+                })
+            }
+            
 
             
         } else if(counter.length === 0 && map){

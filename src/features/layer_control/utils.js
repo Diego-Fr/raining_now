@@ -1,4 +1,4 @@
-const addLayer = (map, layer_name, filter, options) =>{
+const addLayer = (map, layer_name, filter, options={}) =>{
     let l = L.tileLayer.wms('https://geodados.daee.sp.gov.br/geoserver/ows', {
         layers: layer_name,
         format: 'image/png8',

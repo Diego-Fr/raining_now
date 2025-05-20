@@ -77,7 +77,7 @@ const SideChart = () =>{
             if(menuContext === 'point'){
                 return stationsOptions.stations?.slice().filter(x=>x.show).sort((x,y)=>y.value-x.value).slice(0,20) || []
             } else if(menuContext === 'city') {
-                return maxByCity(stationsOptions.stations.filter(x=>x.show)).sort((x,y) => y.value - x.value).slice(0,20)
+                return maxByField(stationsOptions.stations.filter(x=>x.show), 'city').sort((x,y) => y.value - x.value).slice(0,20)
             } else if(menuContext === 'ugrhi') {
                 return maxByField(stationsOptions.stations.filter(x=>x.show), 'ugrhi_name').sort((x,y) => y.value - x.value)
             }
@@ -87,7 +87,7 @@ const SideChart = () =>{
         }
         return []
         
-    }, [stationsOptions.stations])
+    }, [stationsOptions.stations, context, menuContext])
 
     useEffect(_=>{
         if(context === 'rain'){
