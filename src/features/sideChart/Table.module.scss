@@ -1,8 +1,30 @@
 .container{
-    padding: 1.5rem;
+    overflow-y: scroll;
+    height: 100%;
+    
+    &::-webkit-scrollbar {
+        width: 5px;       /* Largura da barra de rolagem vertical */
+        height: 0px;       /* Define 0 para ignorar a horizontal */
+    }
+
+    &::-webkit-scrollbar-track {
+        background: #6b6b6b;
+    }
+
+    &::-webkit-scrollbar-thumb {
+        background-color: rgb(107, 196, 255);
+        border-radius: 10px;
+        // border: 1px solid rgb(20, 166, 202);
+    }
+
     .line{
+        padding: 0.2rem 1.5rem;
         display: flex;
         justify-content: space-between;
+        
+        &:not(:first-child):not(:last-child){
+            border-bottom: 1px solid rgb(85, 85, 85);
+        }
 
         &.title{
             font-weight: 600;
