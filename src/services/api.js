@@ -67,8 +67,8 @@ const updateMeasurementStatus = async(id, status, token) =>{
     return res.data
 }
 
-const getRadarLastImagesKeys = async (radarName) =>{
-    let res = await axios.get(`https://cth.daee.sp.gov.br/sibh/api/v2/s3/radar/${radarName}/last_images`)
+const getRadarLastImagesKeys = async (radarName, hours) =>{
+    let res = await axios.get(`https://cth.daee.sp.gov.br/sibh/api/v2/s3/radar/last_images?radar_name=${radarName}&hours=${hours}`)
 
     return res.data.Contents
 }

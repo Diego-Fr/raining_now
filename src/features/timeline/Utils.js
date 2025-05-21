@@ -1,8 +1,8 @@
 import { getRadarLastImagesKeys } from "../../services/api";
 
-const getImages = async () =>{
+const getImages = async (hours=2) =>{
 
-    let keys  = await getRadarLastImagesKeys('pnova') || []
+    let keys  = await getRadarLastImagesKeys('pnova', hours) || []
     
     return keys.map(key=>({
         key: key.Key,
@@ -13,7 +13,7 @@ const getImages = async () =>{
 }
 
 const showCircle = map =>{
-    L.circle([-23.600795, -45.97279], {
+    let l = L.circle([-23.600795, -45.97279], {
         radius: 203140, //em metros - raiz quadrada da Área / PI = raio
         color:'black',
         opacity: 0.5,
@@ -21,6 +21,8 @@ const showCircle = map =>{
         dashArray: '5, 10',
         weight: 2
     }).addTo(map);
+
+    return l
 }
 
 const positionFollower = (follower, item, number) =>{

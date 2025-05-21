@@ -9,6 +9,9 @@ import moment from 'moment'
 import { toast } from 'react-toastify';
 import { setEndDate } from '../../store/contextSlice';
 
+import { LuCalendarClock } from "react-icons/lu";
+
+
 const TimeSelector = _=>{
 
     const dispatch = useDispatch()
@@ -97,7 +100,7 @@ const TimeSelector = _=>{
                     </button>
                 </div>
                 <div className={styles.itemsContainer}>
-                    {timeoptions.plu.map((time, index)=> <div key={index} className={`${styles.item} ${context.hours === time && !context.endDate ? styles.active : ''}`} onClick={_=>clickHandler(time)}>{time === 999 ? 'cu' : time}{time === 999 ? '' : time > 1 ? 'hs' : 'h'}</div> )}
+                    {timeoptions.plu.map((time, index)=> <div key={index} className={`${styles.item} ${context.hours === time && !context.endDate ? styles.active : ''}`} onClick={_=>clickHandler(time)}>{time === 999 ?  <LuCalendarClock /> : time}{time === 999 ? '' : time > 1 ? 'hs' : 'h'}</div> )}
                 </div>
             </div>
         

@@ -12,10 +12,6 @@ const Table = ({stations,menuContext}) =>{
     const context = useSelector(state=> state.context.context)
     // console.log(stations);
     
-    useEffect(_=>{
-        console.log(stations);
-        
-    }, [stations])
 
     
     return <>

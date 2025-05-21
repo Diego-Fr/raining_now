@@ -5,7 +5,8 @@ import { classifyStation } from "../utils/stationUtils";
 const initialState = {
     stations: [],
     stationsLoading: false,
-    loadingError: false
+    loadingError: false,
+    updateTimer: false
 }
 
 const stationSlice = createSlice({
@@ -20,16 +21,23 @@ const stationSlice = createSlice({
         },
         setLoadingError(state, action){
           state.loadingError = action.payload
+        },
+        setUpdateTimer(state, action){
+          state.updateTimer = action.payload
         }
     }
 })
 
 export const updateStations = _ => async (dispatch,getState) =>{
-    const {context} = getState()
+    const {context, station} = getState()
     
     dispatch(setStations([]))
 
     dispatch(setStationsLoading(true))
+
+    if(station.updateTimer){
+      clearTimeout(station.updateTimer)  
+    }
     
     try {      
 
@@ -41,6 +49,13 @@ export const updateStations = _ => async (dispatch,getState) =>{
       dispatch(filterStations()) //filtrando a lista, e atualizando a lista
       dispatch(setLoadingError(false))
       dispatch(setStationsLoading(false))
+
+      let t = setTimeout(_=>{        
+        dispatch(updateStations())
+      }, 1000*60) //1 minuto
+
+      dispatch(setUpdateTimer(t))
+
     } catch (err) {
       dispatch(setStationsLoading(false))
       dispatch(setLoadingError(true))
@@ -81,6 +96,6 @@ export const filterStations = _ => async (dispatch, getState) =>{
   
 }
 
-export const {setStations,setStationsLoading,setLoadingError} = stationSlice.actions
+export const {setStations,setStationsLoading,setLoadingError,setUpdateTimer} = stationSlice.actions
 
 export default stationSlice.reducer

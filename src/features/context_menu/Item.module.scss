@@ -31,7 +31,9 @@
     &.active{
         // border-right: 3px solid #5cdcf3;
         background-color:  rgba(0, 204, 255, 0.7);
-        border-bottom: 1px solid white;
+        &:not(:last-child){
+            border-bottom: 1px solid white;
+        }
         // border-top: 1px solid white;
         .icon{
             color: white;

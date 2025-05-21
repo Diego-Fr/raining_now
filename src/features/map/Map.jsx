@@ -9,6 +9,7 @@ import { getGeoCities } from "../../utils/geoLayers";
 import { featurePPDCStyle, geoLayersToFeatureGroupPPDC } from "./MapUtils";
 import { feachCityLimiares } from "../../services/api";
 import { ToastContainer, toast } from 'react-toastify'
+import { setHours } from "../../store/contextSlice";
 
 const Map = () =>{
     const mapRef = useRef(null);
@@ -61,7 +62,13 @@ const Map = () =>{
     },[])
 
     useEffect(_=>{        
-        if(!blocked){
+        if(!blocked){            
+            //alterar as horas pra 72
+            if(context.context === 'ppdc' && hours != 72){
+                dispatch(setHours(72))
+                return;
+            } 
+            
             dispatch(
                 updateStations()
             )

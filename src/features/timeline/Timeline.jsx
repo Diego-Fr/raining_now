@@ -13,6 +13,8 @@ const Timeline = () =>{
     const [items, setItems] = useState([])
     const map = useSelector(state=>state.map.map)
     const radarOptions = useSelector(state=>state.radar)
+    const stationOptions = useSelector(state=>state.station)
+    const contextOptions = useSelector(state=>state.context)
     // const [active, setActive] = useState(true)
     
     const [config, setConfig] = useState({
@@ -24,10 +26,7 @@ const Timeline = () =>{
         showHoverFollowing: false,
         speedOptions: [1, 2, 5]
     })
-    
-    const [showingItemConfig, setShowingItemConfig] = useState({
-        date: undefined
-    })
+
 
     const showingOverlay  = useRef()
     const itemsRef = useRef([])
@@ -42,23 +41,33 @@ const Timeline = () =>{
     useEffect(_=>{
         const Images = async () =>{
 
-            let images =  await getImages()
+            let images =  await getImages(contextOptions.hours)
+            
             if(images.length > 0){
                 setItems(images.map(x=>({link:x.link, key: x.key})))    
             } else {
-                toast.info('Sem imagens de radar')
+                setItems([])
+                toast.info('Sem imagens de radar no período')
             }
             
         }
-
-        Images()        
+        
+        if(stationOptions.stations.length > 0 && contextOptions.context && contextOptions.hours && radarOptions.show){            
+            Images()      
+        }      
         
         
-    },[])
+    },[stationOptions.stations])
 
     useEffect(_=>{        
         if(map && config.active && items?.length > 0 && radarOptions.show){
-                        
+            if(!itemsRef.current[config.showingIndex]){
+                setConfig(state=>({
+                    ...state,
+                    showingIndex: 0
+                }))
+                return
+            }
             positionFollower(followerRef.current,  itemsRef.current[config.showingIndex],config.showingIndex)
             
             // followerRef.current.innerHTML = moment(items[config.showingIndex]?.key, 'YYYY-MM-DD HH:mm').format('DD-MM-YYYY HH:mm')
@@ -72,11 +81,11 @@ const Timeline = () =>{
             
             if(!config.showingCircle){
 
-                showCircle(map)
+                let l = showCircle(map)
 
                 setConfig(state=>({
                     ...state,
-                    showingCircle: true
+                    showingCircle: l
                 }))
             }
 
@@ -91,6 +100,18 @@ const Timeline = () =>{
                 return () => clearTimeout(timer);
             }
             
+        } else {
+            if(showingOverlay.current){
+                map.removeLayer(showingOverlay.current)
+            }
+
+            if(config.showingCircle){
+                map.removeLayer(config.showingCircle)
+                setConfig(state=>({
+                    ...state,
+                    showingCircle: false
+                }))
+            }
         }
         
     }, [map, items, config.active, config.showingIndex, config.play,radarOptions.show])

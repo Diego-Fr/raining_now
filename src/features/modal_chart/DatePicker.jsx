@@ -56,9 +56,11 @@ const DatePicker = () =>{
             date = moment(date.getTime())
             if(type === 'start'){
                 dispatch(setStartDate(date))   
+                setShowStart(false);
             } else {
                 if(!date.isAfter(moment())){
                     dispatch(setEndDate(date))
+                    setShowEnd(false);
                 }
             }
         }
@@ -73,7 +75,9 @@ const DatePicker = () =>{
           }, 0);
     }
 
-    const handleBlurEnd = (e) =>{        
+    const handleBlurEnd = (e) =>{  
+        
+              
         setTimeout(() => {
             if (!calendarEndRef.current.contains(e.relatedTarget)) {
                 setShowEnd(false);

@@ -15,6 +15,7 @@ import Loader from './features/loader/Loader'
 import Timeline from './features/timeline/Timeline'
 import Topleft from './features/topleft/Topleft'
 import TopRight from './features/topright/TopRight'
+import TopLoader from './features/loader/top_loader/TopLoader'
 
 function App() {
   const [count, setCount] = useState(0)
@@ -39,6 +40,7 @@ function App() {
       <Topleft/>
       <TopRight/>
       <SideChart/>
+      <TopLoader/>
     </>
   )
 }

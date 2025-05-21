@@ -9,7 +9,6 @@ const geoLayersToFeatureGroupPPDC = (layers=[], stations, citiesLimiares) =>{
     layers.forEach(layer=>{
         L.geoJSON(layer, {
             onEachFeature: (feature, l) =>{
-                console.log(l.feature.properties);
                 
                 const {cd_mun,nm_mun} = l.feature.properties
                 let stat = stats[cd_mun]
@@ -33,14 +32,18 @@ const geoLayersToFeatureGroupPPDC = (layers=[], stations, citiesLimiares) =>{
                 }
 
                 l.bindTooltip(`${nm_mun}<br>
-                            ${stat?.max >= 0 ? `<b>Acc: ${stat.max.toFixed(2)} mm</b> <br>` : ''}
+                            ${stat?.max >= 0 ? `<span style='color:var(--toastify-color-info);font-weight:600;font-size:larger'>Acc: ${stat.max.toFixed(2)} mm</span> <br>` : ''}
                             ${limiar?.limiares['ppdc'] ? `PPDC ${limiar?.limiares['ppdc']}` : limiar?.limiares['ipt'] ? `IPT ${limiar?.limiares['ipt']}` : ''}
                             `, {
-                    sticky: true, // segue o mouse
-                    direction: 'top'
+                    sticky: true, 
+                    // permanent: false,
+                    direction: 'top',
+                    interactive: false
                 });
-                
-                
+
+                l.on('mouseout', function () {
+                    l.closeTooltip();
+                });                
                 
             }
         }).addTo(featureGroup)

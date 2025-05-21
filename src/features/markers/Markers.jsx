@@ -37,7 +37,7 @@ const Markers = options =>{
                     iconAnchor: [9, 9]
                 });
 
-                var marker = L.marker([station.latitude, station.longitude], {icon: icon, id:station.station_prefix_id, show: station.show}).bindPopup(`<b>${station.station_prefix_id}</b><br>ID: ${station.value}`)
+                var marker = L.marker([station.latitude, station.longitude], {icon: icon, id:station.station_prefix_id, show: station.show})
                 marker.on('click', _=>{
                     dispatch(setOptions({station_id: station.station_prefix_id}))
                 })

@@ -90,7 +90,6 @@ const ModalChart = () =>{
             } catch(e){
                 console.log('Erro ao buscar dados do posto');
             }
-            
 
             if(res && res.length > 0){
                 //esconderá a mensagem de falta de dados
@@ -208,7 +207,7 @@ const ModalChart = () =>{
             <div onMouseDown={e=>e.stopPropagation()} className={styles.wrapper} ref={wrapperRef}>
                 <div ref={titleRef} className={styles.title_container}>
                     <div className={styles.title_wrapper}>
-                        <div className={styles.title}><div>{stationInfo.station_name}</div><div className={styles.prefix}>{stationInfo.station_prefix}</div></div>
+                        <div className={styles.title}><div>{stationInfo.station_name}</div><div className={styles.prefix}>{stationInfo.station_prefix} - {stationInfo.station_owner}</div></div>
                     </div>
                     <div className={styles.fieldsWrapper}>
                         <DatePicker/>
