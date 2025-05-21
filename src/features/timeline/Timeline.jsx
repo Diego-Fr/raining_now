@@ -57,7 +57,7 @@ const Timeline = () =>{
         }      
         
         
-    },[stationOptions.stations])
+    },[stationOptions.stations,radarOptions.show])
 
     useEffect(_=>{        
         if(map && config.active && items?.length > 0 && radarOptions.show){
@@ -72,12 +72,18 @@ const Timeline = () =>{
             
             // followerRef.current.innerHTML = moment(items[config.showingIndex]?.key, 'YYYY-MM-DD HH:mm').format('DD-MM-YYYY HH:mm')
             
-            if(showingOverlay.current){                
-                map.removeLayer(showingOverlay.current)
+            if(showingOverlay.current){
+                showingOverlay.current.setUrl(items[config.showingIndex].link, imageBounds);
+            } else {
+                let overlay = L.imageOverlay(items[config.showingIndex].link, imageBounds).addTo(map)
+                showingOverlay.current = overlay
             }
+
+            // if(showingOverlay.current){                
+            //     map.removeLayer(showingOverlay.current)
+            // }
             
-            let overlay = L.imageOverlay(items[config.showingIndex].link, imageBounds).addTo(map)
-            showingOverlay.current = overlay
+            
             
             if(!config.showingCircle){
 
