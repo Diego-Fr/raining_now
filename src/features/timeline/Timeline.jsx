@@ -1,25 +1,32 @@
 
 import { useEffect, useRef, useState } from 'react'
-import { useSelector } from 'react-redux'
+import { useDispatch, useSelector } from 'react-redux'
 import styles from './Timeline.module.scss'
 import { getImages, positionFollower, showCircle } from './Utils'
 import moment from 'moment'
 import { FaPlay, FaPause } from "react-icons/fa6";
 import { toast } from 'react-toastify'
+import Draggable from './Draggable'
+import {setTimelineItems,setTimelineShowingIndex} from '@store/timelineSlice'
 
 
 const Timeline = () =>{
 
-    const [items, setItems] = useState([])
+    const timelineOptions = useSelector(state=>state.timeline)
+    const items = useSelector(state=>state.timeline.items)
     const map = useSelector(state=>state.map.map)
     const radarOptions = useSelector(state=>state.radar)
     const stationOptions = useSelector(state=>state.station)
     const contextOptions = useSelector(state=>state.context)
-    // const [active, setActive] = useState(true)
     
+    const draggableContainer = useRef()
+    
+    const [followConfig, setFollowConfig] = useState({
+        left: 0
+    })
+
     const [config, setConfig] = useState({
         active:true,
-        showingIndex: 0,
         showingCircle: false,
         speed: 5,
         play: true,
@@ -37,6 +44,7 @@ const Timeline = () =>{
 
     const imageBounds = [[-21.425445, -48.290929], [-25.740584, -43.577082]];
 
+    const dispatch = useDispatch()
 
     useEffect(_=>{
         const Images = async () =>{
@@ -44,7 +52,7 @@ const Timeline = () =>{
             let images =  await getImages(contextOptions.hours)
             
             if(images.length > 0){
-                setItems(images.map(x=>({link:x.link, key: x.key})))    
+                dispatch(setTimelineItems(images.map(x=>({link:x.link, key: x.key}))))
             } else {
                 setItems([])
                 toast.info('Sem imagens de radar no período')
@@ -61,21 +69,25 @@ const Timeline = () =>{
 
     useEffect(_=>{        
         if(map && config.active && items?.length > 0 && radarOptions.show){
-            if(!itemsRef.current[config.showingIndex]){
+            // console.log('tetnado',items?.length);
+            // console.log(items[timelineOptions.showingIndex]);
+            
+            if(!items[timelineOptions.showingIndex]){
                 setConfig(state=>({
                     ...state,
                     showingIndex: 0
                 }))
                 return
             }
-            positionFollower(followerRef.current,  itemsRef.current[config.showingIndex],config.showingIndex)
+            // positionFollower(followerRef.current,  itemsRef.current[timelineOptions.showingIndex],timelineOptions.showingIndex)
             
-            // followerRef.current.innerHTML = moment(items[config.showingIndex]?.key, 'YYYY-MM-DD HH:mm').format('DD-MM-YYYY HH:mm')
+            // followerRef.current.innerHTML = moment(items[timelineOptions.showingIndex]?.key, 'YYYY-MM-DD HH:mm').format('DD-MM-YYYY HH:mm')
             
-            if(showingOverlay.current){
-                showingOverlay.current.setUrl(items[config.showingIndex].link, imageBounds);
+            if(showingOverlay.current){                
+                showingOverlay.current.setUrl(items[timelineOptions.showingIndex].link, imageBounds);
             } else {
-                let overlay = L.imageOverlay(items[config.showingIndex].link, imageBounds).addTo(map)
+                console.log(items[timelineOptions.showingIndex]);
+                let overlay = L.imageOverlay(items[timelineOptions.showingIndex].link, imageBounds).addTo(map)
                 showingOverlay.current = overlay
             }
 
@@ -97,10 +109,7 @@ const Timeline = () =>{
 
             if(config.play){
                 const timer = setTimeout(_=>{
-                    setConfig(state => ({
-                        ...state,
-                        showingIndex:  state.showingIndex + 1 === items.length ? 0 : state.showingIndex + 1
-                    }))
+                    dispatch(setTimelineShowingIndex(timelineOptions.showingIndex + 1 === items.length ? 0 : timelineOptions.showingIndex + 1))
                 },((Math.max(...config.speedOptions) - config.speed + 1)) * 1000)
                 
                 return () => clearTimeout(timer);
@@ -120,32 +129,7 @@ const Timeline = () =>{
             }
         }
         
-    }, [map, items, config.active, config.showingIndex, config.play,radarOptions.show])
-
-
-    const itemClickHandler = (index) =>{   
-        // console.log(index);
-        setConfig(state => ({
-            ...state,
-            showingIndex:  items[index] ? index : state.showingIndex
-        }))
-        itemMouseLeaveHandler()
-
-    }
-
-    const itemMouseEnterHandler = (index) =>{
-        // let itemsRef.current[index]);
-        if(index != config.showingIndex){
-            setConfig(state=>({
-                ...state,
-                showHoverFollowing: true
-            }))
-            let follower = followerHoverRef.current
-            positionFollower(follower, itemsRef.current[index], index)
-            follower.innerHTML = moment(parseDateFromKey(items[index]?.key), 'YYYYMMDDHHmm').subtract(3, 'hours').format('DD-MM-YYYY HH:mm')
-        }
-        
-    }
+    }, [map, items, config.active, timelineOptions.showingIndex, config.play,radarOptions.show])
 
     const itemMouseLeaveHandler = (index) =>{
         // let itemsRef.current[index]);
@@ -176,6 +160,20 @@ const Timeline = () =>{
         }))
     }
 
+    const onMoveHandler = data =>{
+        let item_size = data.total / items.length
+        let index = Math.round(data.left / item_size)
+        
+
+        dispatch(setTimelineShowingIndex(items[index] ? index : timelineOptions.showingIndex))
+        
+
+        setFollowConfig(state=>({
+            ...state,
+            left: data.left
+        }))
+    }
+
     return (
         items.length > 0 && radarOptions.show &&
             <div ref={containerRef} className={styles.container}>
@@ -186,11 +184,14 @@ const Timeline = () =>{
                     }
                 </div>
                 <div className={styles.itemsWrapper}>
-                    <div className={styles.followContainer}>
-                        <div ref={followerHoverRef} className={`${styles.followWrapper} ${styles.follow} ${config.showHoverFollowing ? styles.show : ''} `}></div>
-                        <div ref={followerRef} className={styles.followWrapper}>{items[config.showingIndex] && moment(parseDateFromKey(items[config.showingIndex]?.key), 'YYYYMMDDHHmm').subtract(3, 'hours').format('DD-MM-YYYY HH:mm')}</div>
-                    </div>
-                    <div className={styles.itemsContainer}>
+                    {/* <div ref={followContainerRef} className={styles.followContainer}>
+                        
+                    </div> */}
+
+                <div ref={followerHoverRef} className={`${styles.followWrapper} ${styles.follow} ${config.showHoverFollowing ? styles.show : ''} `}></div>
+                <div style={{left:followConfig.left}} ref={followerRef} className={styles.followWrapper}>{items[timelineOptions.showingIndex] && moment(parseDateFromKey(items[timelineOptions.showingIndex]?.key), 'YYYYMMDDHHmm').subtract(3, 'hours').format('DD-MM-YYYY HH:mm')}</div>
+
+                    {/* <div className={styles.itemsContainer}>
                     {
                         items?.map((item, index)=> <div 
                             onClick={_=>itemClickHandler(index)}
@@ -198,10 +199,12 @@ const Timeline = () =>{
                             onMouseLeave={_=>itemMouseLeaveHandler()} 
                             key={index} 
                             ref={el=>itemsRef.current[index] = el} 
-                            className={`${styles.item} 
-                            ${config.showingIndex >= index ? styles.active : ''}`}></div> 
+                            className={`${styles.item} ${timelineOptions.showingIndex >= index ? styles.active : ''}`}></div> 
                         )
                     }
+                    </div> */}
+                    <div className={styles.timeline} ref={draggableContainer}>
+                        <Draggable containerRef={draggableContainer} onMove={onMoveHandler}></Draggable>
                     </div>
                     <div className={styles.bottomWrapper}>
                         <div className={styles.speedContainer}>

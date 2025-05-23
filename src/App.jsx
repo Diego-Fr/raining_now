@@ -11,9 +11,12 @@ import { ToastContainer } from 'react-toastify'
 import Loader from './features/loader/Loader'
 import Topleft from './features/topleft/Topleft'
 import TopRight from './features/topright/TopRight'
+import Timeline from './features/timeline/Timeline'
+
+
 
 const ModalChart = lazy(_=> import('./features/modal_chart/ModalChart'))
-const Timeline = lazy(_=> import('./features/timeline/Timeline'))
+
 const SideChart = lazy(_=> import('./features/sideChart/SideChart'))
 const TopLoader = lazy(_=> import('./features/loader/top_loader/TopLoader'))
 const ContextMenu = lazy(_=> import('./features/context_menu/ContextMenu'))
@@ -32,20 +35,22 @@ function App() {
       <Legend/>
       
       <Loader/>
+      <Timeline/>
       <Suspense fallback={null}>
-        <Timeline/>
+        
         <ToastContainer
           position="bottom-right"
           autoClose={2000}
           pauseOnFocusLoss={false}
           theme="dark"
         /> 
-        <ModalChart/>
+        
         <SideChart/>
         <TopLoader/>
         <ContextMenu/>
       </Suspense>
       
+      <ModalChart/>
       <Topleft/>
       <TopRight/>
       
