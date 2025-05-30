@@ -2,17 +2,15 @@ import { useEffect, useRef, useState } from 'react';
 import styles from './Draggable.module.scss'
 import {useSelector} from 'react-redux'
 
-const Draggable = ({containerRef, onMove}) =>{
+const Draggable = ({containerRef, onMove, text}) =>{
 
     const itemRef = useRef()
     const [position, setPosition] = useState({
-        left:0,
-        block:false
+        left:0
     })
 
     const positionRef = useRef(position)
-
-    const interv = useRef()
+    const internalUpdateRef = useRef(false)
 
     const [followOptions, setFollow] = useState({
         active: false
@@ -34,39 +32,28 @@ const Draggable = ({containerRef, onMove}) =>{
             active: false
         }))
     }
-
-    const block = () =>{
-        // if(!interv){
-        //     console.log('BLOQUEANDO');
-        //     interv = setTimeout(_=>{
-        //         positionRef.current.block = true
-        //         interv=undefined
-        //     },300)
-        // } else {
-        //     console.log('ta bloqueado');
-            
-        // }
-    }
     
-    const mouseMove = e =>{        
+    //mouse move event
+    const mouseMove = (e) =>{        
         
         let bounds = containerRef.current.getBoundingClientRect()
         let itemBounds = itemRef.current.getBoundingClientRect()
 
         let newLeft = e.clientX - bounds.left - (itemBounds.width / 2)
 
-        let step = bounds.width / timelineOptions.items.length
-
+        let step = bounds.width / (timelineOptions.items.length - 1)
+        newLeft = newLeft < 0 ? 0 : newLeft > bounds.width ? bounds.width : newLeft
         
-        if(Math.abs(newLeft % step) <= (step*0.2) && newLeft != positionRef.current.left){
+        // if(Math.abs(newLeft % step) <= (step*0.2) && newLeft != positionRef.current.left){
+        if(newLeft != positionRef.current.left){
+            internalUpdateRef.current = true
             setPosition(state=>({
                 ...state,
-                left: newLeft < 0 ? 0 : newLeft > bounds.width ? bounds.width : newLeft,
+                left: newLeft,
                 
-            }))
-            console.log('tentando lboquear');
-            
-            block()            
+            }))          
+
+            positionRef.current.left = newLeft
         }
         
     }
@@ -75,22 +62,36 @@ const Draggable = ({containerRef, onMove}) =>{
         return el.getBoundingClientRect()
     }
 
-    useEffect(_=>{
-        positionRef.current = position
-    },[position])
-
-
+    //quando a position do handler for alterada
     useEffect(_=>{
         let bounds = getBounds(containerRef.current)
-        onMove && !positionRef.current.block ? 
+        
+        //verificando tbm se a alteração da posição foi interna ou externa
+        onMove && internalUpdateRef.current ?
             onMove({...position, total:bounds.width}) 
             : null
+
     },[position])
+
+    //quando alterar o current index por outras vias, como play automático
+    useEffect(_=>{
+        let bounds = containerRef.current.getBoundingClientRect()
+
+        let step = bounds.width / (timelineOptions.items.length - 1)
+
+        let left = step * timelineOptions.showingIndex
+        internalUpdateRef.current = false
+        
+        setPosition(state=>({
+            ...state,
+            left: left,
+        }))        
+        
+    },[timelineOptions.showingIndex])
 
     useEffect(_=>{
         
         if(timelineOptions.items.length > 0 && containerRef.current){
-            console.log('tem');
             
             let width = getBounds(containerRef.current).width
             let step = width / timelineOptions.items.length
@@ -121,7 +122,10 @@ const Draggable = ({containerRef, onMove}) =>{
     
 
     return (
-        <div ref={itemRef}  style={{...position}} className={styles.container} onMouseDown={mouseDown} onMouseUp={mouseUp}></div>
+        <div style={{...position}} className={styles.dragWrapper}>
+            <div className={styles.text}>{text}</div>
+            <div ref={itemRef} className={styles.container} onMouseDown={mouseDown} onMouseUp={mouseUp}></div>
+        </div>
     )
 }
 
