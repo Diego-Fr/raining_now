@@ -41,7 +41,7 @@ const Timeline = () =>{
 
     const containerRef = useRef()
 
-    const imageBounds = [[-21.425445, -48.290929], [-25.740584, -43.577082]];
+    const imageBounds = [[-21.444795, -48.33879], [-25.756795, -43.60679]];
 
     const dispatch = useDispatch()
 
