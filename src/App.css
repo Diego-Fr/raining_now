@@ -6,6 +6,8 @@
   width: 100%;
   height: 100%;
   user-select: none;
+  color-scheme: light;
+  color: #213547;
 }
 
 .logo {
