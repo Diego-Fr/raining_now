@@ -6,6 +6,7 @@ import {useDispatch, useSelector} from 'react-redux'
 import { setFilterFormOption } from '../../store/filterSlice';
 import spaguaslogocolored from '@assets/SP-Águas---Branco.png'
 import { setShow } from '../../store/radarSlice';
+import { setShow as setShowSidemenu } from '../../store/sideMenuSlice'
 import { GiRadarDish } from "react-icons/gi";
 
 
@@ -15,10 +16,11 @@ const Topleft = () =>{
     const dispatch = useDispatch()
     const filterFormOptions = useSelector(state=>state.filter.filterFormOptions)
     const radarOptions = useSelector(state=>state.radar)
+    
     const items = [
         {id: 'filter', label: 'filtrar', icon: !filterFormOptions.show ? <FaFilter/> : <FaTimes/>, onclick: filterToggle},
         {id: 'radar', label: 'radar', icon: <GiRadarDish/>, onclick: radarToggle},
-        {id: 'info', label: 'filtrar', icon: <FaInfo/>},
+        {id: 'info', label: 'filtrar', icon: <FaInfo/>, onclick: infoToggle},
     ]
 
     function radarToggle(){
@@ -29,6 +31,10 @@ const Topleft = () =>{
 
     function filterToggle(){
        dispatch(setFilterFormOption({field:'show', value:!filterFormOptions.show}))
+    }
+
+    function infoToggle(){
+        
     }
 
     return (

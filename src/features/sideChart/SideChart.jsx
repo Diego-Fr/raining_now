@@ -1,4 +1,4 @@
-import {useSelector} from 'react-redux'
+import {useDispatch, useSelector} from 'react-redux'
 
 import styles from "./SideChart.module.scss"
 import { useEffect, useMemo, useRef, useState } from 'react'
@@ -7,11 +7,12 @@ import { IoClose, IoChevronForward } from "react-icons/io5";
 import Table from './Table';
 import ContextSelector from './ContextSelector'
 import { classifyStation } from '../../utils/stationUtils';
+import { setShow } from '../../store/sideMenuSlice';
 
 
 
 const SideChart = () =>{
-
+    const dispatch = useDispatch()
     const stationsOptions = useSelector(state=>state.station)
     const context = useSelector(state=>state.context.context)
     const map = useSelector((state) => state.map.map)
@@ -19,6 +20,7 @@ const SideChart = () =>{
     const [menuContext, setMenuContext] = useState('point')
     const [menuLimit, setMenuLimit] = useState(20)
     const [charTitle, setChartTitle] = useState('')
+    const sidemenu = useSelector(state=>state.sidemenu)
     
     const menuContextAvailables = {
         rain: ['point', 'city', 'ugrhi']
@@ -127,8 +129,12 @@ const SideChart = () =>{
         
     },[topStations, exibitionType,menuContext])    
 
+    const closeClick = () =>{
+        dispatch(setShow(false))
+    }
+
     return (
-        <div className={styles.container}>
+        <div className={`${styles.container} ${sidemenu.show ? styles.show : ''}`}>
             <div className={styles.titleContainer}>
                 <div className={styles.title}>
                     {/* titulo do sidebar */}
@@ -140,7 +146,7 @@ const SideChart = () =>{
                 </div>
 
                 {/* close button */}
-                <div className={styles.close}><IoClose/></div>
+                <div className={styles.close} onClick={closeClick}><IoClose/></div>
             </div>
             
             <div className={styles.chartContainer}>
