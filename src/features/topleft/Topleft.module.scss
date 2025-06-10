@@ -53,3 +53,16 @@
         }
     }
 }
+
+@media only screen and (max-height: 730px) {
+    .container{
+        .itemsWrapper{
+            .item{
+                font-size: smaller;
+                padding: 10px;
+                width: 15px;
+                height: 15px;
+            }
+        }
+    }
+}

@@ -51,3 +51,13 @@
     }
 }
 
+@media only screen and (max-height: 730px) {
+    .icon{
+        .iconWrapper{
+            padding: 8px 10px;
+        }
+        .icon{
+            font-size: large;
+        }
+    }
+}

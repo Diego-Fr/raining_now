@@ -8,7 +8,7 @@
     position: absolute;
     transform: translate(-50%, 0%);
     z-index: 999;
-    bottom: 120px;
+    bottom: 7.5rem;
     left: 50%;
     gap: 10px;
     
@@ -142,9 +142,11 @@
         }
     }
 
-    
+}
 
-    
 
-    
+@media only screen and (max-height: 800px) {
+    .container{
+        bottom: 5.0rem;
+    }
 }

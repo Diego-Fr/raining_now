@@ -97,3 +97,16 @@
         opacity: 1;
     }
 }
+
+@media only screen and (max-width: 1200px) {
+    .container{
+        width: 250px;
+    }
+}
+
+
+@media only screen and (max-height: 650px) {
+    .container{
+        top: 20px;
+    }
+}
