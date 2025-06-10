@@ -4,7 +4,6 @@ import styles from './Filter.module.scss'
 import Select from '../../components/form/select/Select'
 import { setFilterOption } from '../../store/filterSlice'
 import { filterStations } from '../../store/stationSlice'
-import { FaFilter } from "react-icons/fa6";
 import { IoFilterSharp } from "react-icons/io5";
 // import Select from 'react-select'
 

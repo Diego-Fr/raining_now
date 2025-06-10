@@ -1,5 +1,6 @@
-import { useEffect, useRef, useState } from "react";
-import { DayPicker } from "react-day-picker";
+import React, { Suspense, useEffect, useRef, useState } from "react";
+
+const DayPicker = React.lazy(() => import('react-day-picker').then(module => ({ default: module.DayPicker })));
 import styles from './DatePicker.module.scss'
 import "react-day-picker/style.css";
 import moment from "moment";
@@ -84,6 +85,10 @@ const DatePicker = () =>{
             }
           }, 0);
     }
+
+    useEffect(_=>{
+        import('react-day-picker')
+    },[])
     
 
     return (
@@ -93,18 +98,20 @@ const DatePicker = () =>{
                 <div className={styles.inputsContainer}>
                     <div style={{ position:'relative'}}>
                         <input readOnly className={styles.inputBox} ref={inputStartRef} value={formatDateToBrazil(startDate.clone(), 'DD-MM-YYYY')} type="text" onBlur={e=>handleBlur(e)} onFocus={_=> setShowStart(true)}></input>
+                        <Suspense fallback={<div></div>}>
+                            { showStart && <div ref={calendarStartRef} className={styles.dateContainer}><DayPicker
+                                                animate
+                                                mode="single"
+                                                selected={formatDateToBrazil(startDate.clone())}
+                                                onSelect={e=>handleDateChange('start',e)}
+                                                locale={ptBR}
+                                            /></div>}
+                        </Suspense>
                         
-                        { showStart && <div ref={calendarStartRef} className={styles.dateContainer}><DayPicker
-                            animate
-                            mode="single"
-                            selected={formatDateToBrazil(startDate.clone())}
-                            onSelect={e=>handleDateChange('start',e)}
-                            locale={ptBR}
-                            /></div>}
                     </div>
                     <div style={{ position:'relative'}}>
                         <input readOnly={true} className={styles.inputBox} value={formatDateToBrazil(endDate.clone(), 'DD-MM-YYYY')} ref={inputEndRef} type="text" onBlur={e=>handleBlurEnd(e)} onFocus={_=> setShowEnd(true)}></input>
-                        
+                        <Suspense fallback={<div></div>}>
                         { showEnd && <div ref={calendarEndRef} className={styles.dateContainer}><DayPicker
                             animate
                             mode="single"
@@ -112,6 +119,7 @@ const DatePicker = () =>{
                             onSelect={e=>handleDateChange('end',e)}
                             locale={ptBR}
                             /></div>}
+                        </Suspense>
                     </div>
                 </div>
                 <div style={{display: 'flex', justifyContent: 'space-between', fontSize: 'smaller'}}><div>Início</div><div>Fim</div></div>

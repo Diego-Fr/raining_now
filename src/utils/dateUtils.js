@@ -1,4 +1,4 @@
-import moment from 'moment-timezone';
+import moment from 'moment';
 
 const formatDateToBrazil = (utcDate, format) => {
     if (!utcDate) return '';

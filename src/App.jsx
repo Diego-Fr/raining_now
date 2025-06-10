@@ -1,6 +1,6 @@
 import { useState, lazy, Suspense } from 'react'
 import './App.css'
-import Map from './features/map/Map'
+// import Map from './features/map/Map'
 import Filter from './features/filter/Filter'
 
 import LayerControl from './features/layer_control/LayerControl'
@@ -14,7 +14,7 @@ import TopRight from './features/topright/TopRight'
 import Timeline from './features/timeline/Timeline'
 
 
-
+const Map = lazy(_=> import('./features/map/Map'))
 const ModalChart = lazy(_=> import('./features/modal_chart/ModalChart'))
 
 const SideChart = lazy(_=> import('./features/sideChart/SideChart'))
@@ -27,7 +27,7 @@ function App() {
   return (
     <>
       <Filter/>
-      <Map/>
+      
       
       <LayerControl/>
       <TimeSelector/>
@@ -37,7 +37,7 @@ function App() {
       <Loader/>
       <Timeline/>
       <Suspense fallback={null}>
-        
+        <Map/>
         <ToastContainer
           position="bottom-right"
           autoClose={2000}
@@ -48,9 +48,10 @@ function App() {
         <SideChart/>
         <TopLoader/>
         <ContextMenu/>
+        <ModalChart/>
       </Suspense>
       
-      <ModalChart/>
+      
       <Topleft/>
       <TopRight/>
       
