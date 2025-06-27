@@ -1,0 +1,53 @@
+
+.titleContainer{
+    width: 100%;
+    box-sizing: border-box;
+    padding: 20px 30px;
+    
+    .title{
+        box-sizing: border-box;
+        font-weight: 600;
+        font-size: x-large;
+        width: 100%;
+        text-align: left;
+        margin-bottom: 0px;
+    }
+    .subtitle{
+        box-sizing: border-box;
+        font-size: small;
+        width: 100%;
+        text-align: left;
+    }
+}
+
+.bodyContainer{
+    padding: 5px 30px;
+    .formGroup{
+        text-align: left;
+        display: flex;
+        flex-direction: column;
+        margin-bottom: 20px;
+        input{
+            border: 1px solid rgb(158, 158, 158);
+            border-radius: 5px;
+            padding: 5px 10px;
+            height: 30px;
+            outline: none;   
+            &:focus{
+                border: 1px solid rgb(9, 170, 103);
+            }
+        }
+
+        button{
+            margin-top: 10px;
+            background-color: rgb(9, 170, 103);
+            color: white;
+            outline: none;
+            border: none;
+            &:hover{
+                border: none;
+            }
+        }
+    }
+}
+

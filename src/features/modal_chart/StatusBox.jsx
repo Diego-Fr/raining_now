@@ -13,14 +13,16 @@ const StatusBox = opts =>{
     const userToken = useSelector(state=> state.auth.token)
     const userRoles = useSelector(state=> state.auth.roles)
 
-    const clickHandler = async () =>{
+    const clickHandler = async () =>{        
         try{
-            if(classificationTypeId){
-                await updateMeasurementStatus(selectedMeasurement.id, classificationTypeId,token)
+            if(classificationTypeId){                
+                await updateMeasurementStatus(selectedMeasurement.id, classificationTypeId,userToken)
                 toast.success('Medição atualizada') 
             }
             
         } catch(e){
+            console.log(e);
+            
             toast.error("Erro ao atualizar status da medição!")
         }
         

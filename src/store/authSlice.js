@@ -1,19 +1,80 @@
 import { createSlice } from "@reduxjs/toolkit"
+import { getUserData } from "../utils/authUtils"
 
 const initialState = {
     name: '',
-    token: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOnsiaWQiOiIyMjgiLCJlbWFpbCI6ImRpZWdvLmZyZWl0YXMucHJvZmVzc2lvbmFsQG91dGxvb2suY29tIiwibmFtZSI6IkRpZWdvIEZyZWl0YXMgZGUgU291c2EiLCJlbmNyeXB0ZWRfcGFzc3dvcmQiOiIkMmEkMTIkVkFFNi9QNTMuaEt6U0tERDNxcEk2T3VLRm82U3VXd3hhSXlJaGFFaGJWLmhjZ0t3ejZMMzIifSwicm9sZXMiOlsiZGV2Il0sImlhdCI6MTc0NzE1NzE2NywiZXhwIjoxNzQ3MTYwNzY3fQ.gQdIBkneRrULc5QooI5dejY7DT_7e7wwinSpNSNZ6Fk',
-    roles: ['dev']
+    token: '',
+    roles: [],
+    showLoginScreen: false,
+    expires: undefined,
+    user: {}
+}
+
+export const updateToken = ({token, roles, expires}) => async (dispatch) => {
+
+    dispatch(setToken(token))
+    dispatch(setExpires(expires))
+
+    localStorage.setItem('sibh_user_token', token)
+}
+
+export const updateMe = ({email, name, roles,exp}) => async (dispatch) =>{
+    
+    dispatch(setRoles(roles))
+    dispatch(setUser({email, name, exp}))
+}
+
+export const logOut = _ => async (dispatch) =>{    
+    dispatch(setUser({}))
+    dispatch(setToken(undefined))
+    dispatch(setRoles([]))
+
+    localStorage.removeItem('sibh_user_token')
+    localStorage.removeItem('sibh_user_expires')
+}
+
+export const getMeData = (token) => async (dispatch) =>{
+    let response
+    try{
+        response = await getUserData(token)
+    } catch(e){
+        console.log('Erro ao buscar informações do usuário');
+        dispatch(logOut())
+        return
+    }
+    
+    const {email, name, roles,exp} = response
+    dispatch(updateMe({email, name, roles,exp}))
+    dispatch(setExpires(exp))
+    
+    localStorage.setItem('sibh_user_expires', exp)
 }
 
 const authSlice = createSlice({
-    name: 'context',
+    name: 'auth',
     initialState,
     reducers:{
-
+        setShowLoginScren(state, action){
+            state.showLoginScreen = action.payload
+        },
+        setToken(state, action){
+            state.token = action.payload
+        },
+        setRoles(state, action){
+            state.roles = action.payload
+        },
+        setUser(state, action){
+            const {name, email, exp} = action.payload
+            state.user.name = name
+            state.user.email = email
+            state.expires = exp
+        },
+        setExpires(state, action){
+            state.expires = action.payload
+        }
     }
 })
 
-export const {} =  authSlice.actions
+export const {setShowLoginScren,setToken,setRoles,setUser,setExpires} =  authSlice.actions
 
 export default authSlice.reducer

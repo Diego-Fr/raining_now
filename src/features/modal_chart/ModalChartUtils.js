@@ -11,7 +11,7 @@ Chart.register(BarController, BarElement, CategoryScale, Filler, zoomPlugin, Lin
 
 const generatePluChart = async (measurements, chart_element, zoomEventHandle,chartSeriesClick) =>{
         
-    let data = measurements.map(m=> ({id:m.measurement_id, classification: m.measurement_classification_type_id, date:m.date,  x: formatDateToBrazil(m.date).toDate(), y:m.value})).sort((x,y)=> x.x - y.x )
+    let data = measurements.map(m=> ({id:m.measurement_id, classification: m.measurement_classification_type_id, date:m.date,  x: formatDateToBrazil(m.date).toDate(), y:m.value, color: 'rgba(20, 167, 224, 0.9)'})).sort((x,y)=> x.x - y.x )
     let acumData = data.reduce((acc, measurement, index) => { 
         acc[index - 1] ? acc.push({x: measurement.x, y: acc[index-1].y + measurement.y}) : 
         acc.push({x: measurement.x, y:measurement.y}); return acc}
@@ -25,7 +25,7 @@ const generatePluChart = async (measurements, chart_element, zoomEventHandle,cha
             {
                 label: 'Chuva',
                 data,
-                backgroundColor: 'rgba(20, 167, 224, 0.9)',
+                backgroundColor: data.map(x=>x.classification.toString() === '4' ? 'red' : 'rgba(20, 167, 224, 0.9)') ,
                 borderRadius: 1,
                 type: 'bar',
             },

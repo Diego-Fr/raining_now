@@ -27,12 +27,17 @@ const fetchStationMeasurements = async (
     { 
         start_date = moment().utc().subtract(1, 'day').format('YYYY-MM-DD HH:mm'), 
         end_date = moment().utc().format('YYYY-MM-DD HH:mm'),
-        groupType='minute'
+        groupType='minute',
+        token = ''
     } = {},
     
 )=>{
     
-    let res = await axios.get(`https://cth.daee.sp.gov.br/sibh/api/v2/measurements?station_prefix_ids[]=${station_id}&start_date=${start_date}&end_date=${end_date}&group_type=${groupType}`)
+    let res = await axios.get(`${import.meta.env.VITE_API_BASE_URL}measurements?station_prefix_ids[]=${station_id}&start_date=${start_date}&end_date=${end_date}&group_type=${groupType}`, {
+        headers:{
+            Authorization: `Bearer ${token}`
+        }
+    })
 
     return res.data.measurements
 
@@ -60,6 +65,8 @@ const feachSubugrhisBbox = async(cods) =>{
 }
 
 const updateMeasurementStatus = async(id, status, token) =>{
+    console.log(token);
+    
     let res = await axios.post(`https://cth.daee.sp.gov.br/sibh/api/v2/measurements/${id}/classification`, {
         status: status
     }, {headers:{Authorization: `Bearer ${token}`}})

@@ -1,4 +1,4 @@
-import { useState, lazy, Suspense } from 'react'
+import { useState, lazy, Suspense, useEffect } from 'react'
 import './App.css'
 // import Map from './features/map/Map'
 import Filter from './features/filter/Filter'
@@ -12,7 +12,11 @@ import Loader from './features/loader/Loader'
 import Topleft from './features/topleft/Topleft'
 import TopRight from './features/topright/TopRight'
 import Timeline from './features/timeline/Timeline'
+import LoginComponent from './features/login/LoginComponent'
 
+import {useDispatch, useSelector} from 'react-redux'
+import { getMeData, setExpires, setToken } from './store/authSlice'
+import { isLogged } from './utils/authUtils'
 
 const Map = lazy(_=> import('./features/map/Map'))
 const ModalChart = lazy(_=> import('./features/modal_chart/ModalChart'))
@@ -22,7 +26,23 @@ const TopLoader = lazy(_=> import('./features/loader/top_loader/TopLoader'))
 const ContextMenu = lazy(_=> import('./features/context_menu/ContextMenu'))
 
 function App() {
-  const [count, setCount] = useState(0)
+  const [count, setCount] = useState(0);
+  const dispatch = useDispatch()
+  const authOptions = useSelector(state=> state.auth)
+
+  useEffect(() => {
+    const token = localStorage.getItem('sibh_user_token');
+    const exp = localStorage.getItem('sibh_user_expires');
+    
+    dispatch(setToken(token))
+    dispatch(setExpires(exp))
+  }, []);
+
+  useEffect(_=>{
+    if(authOptions.token){
+      dispatch(getMeData(authOptions.token))
+    }
+  },[authOptions.token])
 
   return (
     <>
@@ -40,15 +60,18 @@ function App() {
         <Map/>
         <ToastContainer
           position="bottom-right"
-          autoClose={2000}
+          autoClose={3000}
+          pauseOnHover={false}
           pauseOnFocusLoss={false}
-          theme="dark"
+          theme="light"
         /> 
         
         <SideChart/>
         <TopLoader/>
         <ContextMenu/>
         <ModalChart/>
+        <LoginComponent/>
+        
       </Suspense>
       
       

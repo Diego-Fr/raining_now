@@ -10,6 +10,8 @@ import { setEndDate, setStartDate, setGroupType } from '../../store/modalChartSl
 import Loading from './Loading'
 import Select from '../../components/form/select/Select'
 import StatusBox from './StatusBox'
+import { isLogged } from '../../utils/authUtils'
+import { colorByMeasurementClassification } from '../../utils/measurementUtils'
 
 
 
@@ -45,6 +47,7 @@ const ModalChart = () =>{
 
     const stations = useSelector(state=> state.station.stations)
     const context = useSelector(state=> state.context.context)
+    const authOptions = useSelector(state=>state.auth)
 
     const dispatch = useDispatch()    
 
@@ -72,7 +75,8 @@ const ModalChart = () =>{
             setChartState(state=>({
                 ...state,
                 show:true,
-                isLoading: true
+                isLoading: true,
+                selectedMeasurement: false
             }))
             
             
@@ -86,7 +90,7 @@ const ModalChart = () =>{
             
             let res
             try{
-                res = await fetchStationMeasurements(chartOptions.station_id, {start_date: start_date.format('YYYY-MM-DD HH:mm'), end_date: end_date.format('YYYY-MM-DD HH:mm'), groupType})
+                res = await fetchStationMeasurements(chartOptions.station_id, {start_date: start_date.format('YYYY-MM-DD HH:mm'), end_date: end_date.format('YYYY-MM-DD HH:mm'), groupType, token: authOptions.token})
             } catch(e){
                 console.log('Erro ao buscar dados do posto');
             }
@@ -123,6 +127,12 @@ const ModalChart = () =>{
 
     const generateChart = async _ =>{
         if(counter != 1){
+
+            setChartState(state=>({
+                ...state,
+                selectedMeasurement: null
+            }))
+
             if(context === 'rain'){
                 chartInstanceRef.current = await generatePluChart(measurements, chartRef.current, zoomEventHandle,chartSeriesClick) 
             } else if(context === 'level'){
@@ -146,6 +156,27 @@ const ModalChart = () =>{
             generateChart()
         }
     }, [chartState.isLoading])
+
+    //alterando a cor da barra para sugerir seleção no momento do click caso o usuário esteja logado e o dado nao esteja agrupado
+    useEffect(_=>{
+        if(chartState.selectedMeasurement && isLogged(authOptions) && groupType === 'minute'){
+            
+            let colors = []
+
+            chartInstanceRef.current.data.datasets[0].data.forEach(item=>{
+                if(item.x === chartState.selectedMeasurement.x){                    
+                    colors.push('blue')
+                    
+                } else {
+                    colors.push(colorByMeasurementClassification(item.classification))
+                }
+            })
+            chartInstanceRef.current.data.datasets[0].backgroundColor = colors;
+
+            // Atualize o gráfico
+            chartInstanceRef.current.update();
+        }        
+    },[chartState.selectedMeasurement])
 
     useEffect(_=>{
         dispatch(setStartDate())
@@ -184,6 +215,7 @@ const ModalChart = () =>{
     }
 
     const chartSeriesClick = (item) =>{
+        // console.log(item);
         
         if(item){
             if(context === 'rain'){                
@@ -226,8 +258,10 @@ const ModalChart = () =>{
                         </div>
                         
                     </div>
-
-                    <StatusBox selectedMeasurement={chartState.selectedMeasurement} statusBoxClose={statusBoxClose}/>
+                    {isLogged(authOptions) && groupType === 'minute' &&  
+                        <StatusBox selectedMeasurement={chartState.selectedMeasurement} statusBoxClose={statusBoxClose}/>
+                    }
+                    
                     
                 </div>
                 <div className={styles.body} style={{height: chartState.mapContainerSize}}>
