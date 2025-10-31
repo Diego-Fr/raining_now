@@ -17,6 +17,7 @@ import LoginComponent from './features/login/LoginComponent'
 import {useDispatch, useSelector} from 'react-redux'
 import { getMeData, setExpires, setToken } from './store/authSlice'
 import { isLogged } from './utils/authUtils'
+import Lightning from './features/lightning/Lightning'
 
 const Map = lazy(_=> import('./features/map/Map'))
 const ModalChart = lazy(_=> import('./features/modal_chart/ModalChart'))
@@ -71,6 +72,7 @@ function App() {
         <ContextMenu/>
         <ModalChart/>
         <LoginComponent/>
+        <Lightning></Lightning>
         
       </Suspense>
       

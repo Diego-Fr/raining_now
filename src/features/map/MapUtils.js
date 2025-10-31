@@ -31,19 +31,26 @@ const geoLayersToFeatureGroupPPDC = (layers=[], stations, citiesLimiares) =>{
                     })
                 }
 
-                l.bindTooltip(`${nm_mun}<br>
+                l.bindPopup(`${nm_mun}<br>
                             ${stat?.max >= 0 ? `<span style='color:var(--toastify-color-info);font-weight:600;font-size:larger'>Acc: ${stat.max.toFixed(2)} mm</span> <br>` : ''}
-                            ${limiar?.limiares['ppdc'] ? `PPDC ${limiar?.limiares['ppdc']}` : limiar?.limiares['ipt'] ? `IPT ${limiar?.limiares['ipt']}` : ''}
+                            ${limiar?.limiares['ppdc'] ? `PPDC: ${limiar?.limiares['ppdc']} mm` : limiar?.limiares['ipt'] ? `IPT: ${limiar?.limiares['ipt']} mm` : ''}
                             `, {
                     sticky: true, 
                     // permanent: false,
                     direction: 'top',
                     interactive: false
-                });
+                }).on({
+                    mouseover(e) {
+                        this.openPopup();
+                    },
+                    mouseout(e) {
+                        this.closePopup();
+                    },
+                    });
 
-                l.on('mouseout', function () {
-                    l.closeTooltip();
-                });                
+                // l.on('mouseout', function () {
+                //     l.closeTooltip();
+                // });                
                 
             }
         }).addTo(featureGroup)

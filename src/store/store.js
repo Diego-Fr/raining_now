@@ -8,6 +8,7 @@ import authSlice from './authSlice'
 import radarSlice from './radarSlice'
 import timelineSlice from './timelineSlice'
 import sidemenu from './sideMenuSlice'
+import lightningSlice from './lightningSlice'
 
 export const store = configureStore({
     reducer: {
@@ -19,7 +20,8 @@ export const store = configureStore({
         auth: authSlice,
         radar: radarSlice,
         timeline: timelineSlice,
-        sidemenu: sidemenu
+        sidemenu: sidemenu,
+        lightning: lightningSlice
     },
     //desativando analise de serialização para poder salvar um L.map na variavel map
     middleware: (getDefaultMiddleware) => getDefaultMiddleware({
