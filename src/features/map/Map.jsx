@@ -41,14 +41,13 @@ const Map = () =>{
             updateStations()
         )
         if (mapRef.current && !mapInstanceRef.current) {
-            const map = L.map(mapRef.current, {zoomControl: false, minZoom: 7, zoomDelta: 0.1,
-    wheelPxPerZoomLevel: 3100}).setView([-23.55, -46.63], 8)
+            const map = L.map(mapRef.current, 
+                {zoomControl: false, minZoom: 7, zoomDelta: 0.1, wheelPxPerZoomLevel: 3100})
+                .setView([-23.55, -46.63], 8)
       
             L.tileLayer('https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png', {
               attribution: '&copy; OpenStreetMap contributors',
             }).addTo(map)
-
-            console.log(map);
             
 
             let svg = L.svg().addTo(map)
@@ -56,11 +55,14 @@ const Map = () =>{
             // Guarda instância no ref
             mapInstanceRef.current = map
 
-            var markersCanvas = new L.MarkersCanvas();
-
             dispatch(setMap(map))
             
             setBlocked(false)   
+
+            window.addEventListener('resize', () => {
+                if(!map) return;
+                map.invalidateSize()
+            });
             
         }
     },[])
