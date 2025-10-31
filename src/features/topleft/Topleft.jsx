@@ -23,15 +23,22 @@ const Topleft = () =>{
     
     const radarShow = useRef(false)
     const lightningShow = useRef(false)
+    const showFilter = useRef(false)
     
     const [items, setItems] = useState({
-        filter: {id: 'filter', label: 'filtrar', icon: !filterFormOptions.show ? <FaFilter/> : <FaTimes/>, onclick: filterToggle, active:false},
+        filter: {id: 'filter', label: 'filtrar', icon: !showFilter.current ? <FaFilter/> : <FaTimes/>, onclick: filterToggle, active:false},
         radar: {id: 'radar', label: 'radar', icon: <GiRadarDish/>, onclick: radarToggle, active:false},
         lightning: {id: 'lightning', label: 'raios', icon: <BsFillLightningChargeFill/>, onclick: lightningToggle, active:false},
     })
 
     
-
+    useEffect(_=>{
+        showFilter.current = filterFormOptions.show
+        setItems(state=>({
+            ...state,
+            filter: {...state.filter, icon: !showFilter.current ? <FaFilter/> : <FaTimes/>} 
+        }))
+    }, [filterFormOptions.show])
     
 
     function radarToggle(){
@@ -65,7 +72,7 @@ const Topleft = () =>{
 
 
     function filterToggle(){
-       dispatch(setFilterFormOption({field:'show', value:!filterFormOptions.show}))
+       dispatch(setFilterFormOption({field:'show', value:!showFilter.current}))       
     }
 
     function infoToggle(){
@@ -82,6 +89,7 @@ const Topleft = () =>{
                     <div 
                         onClick={item.onclick} 
                         className={`${styles.item} ${item.active ? styles.active : ''}`}  
+                        title={item.label}
                         key={item.id}>{item.icon}
                     </div> )}
             </div>

@@ -22,8 +22,8 @@ function generateMarkerSVG(lightning){
            L85 55 
            H65 
            Z"
-        fill="#FFD700"
-        stroke="#DAA520"
+        fill="${diff <= 30 ? '#fa3c3c' : '#FFD700'}"
+        stroke="${diff <= 30 ? '#941616' : '#DAA520'}"
         stroke-width="5"
         opacity="${opacity}"
         stroke-linejoin="round"

@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from 'react'
+import { use, useEffect, useRef, useState } from 'react'
 import {useSelector} from 'react-redux'
 import { fetchLightnings } from '../../services/api'
 import { generateMarkerSVG } from './LightningUtil'
@@ -8,27 +8,50 @@ const Lightning = () =>{
     const map = useSelector(state=>state.map.map)
     const markersFeatureGroup = useRef(new L.MarkersCanvas())
     const lightningOptions = useSelector(state => state.lightning)
-    const stations = useSelector((state) => state.station.stations)
+    const INTERVAL = useRef()
+
+    const UPDATE_TIMER_SECONDS = 300
 
     const [lightnings, setLightnings] = useState([])
 
     useEffect(_=>{
         
         if(map){
-            if(!map.hasLayer(markersFeatureGroup.current)){                
-                map.addLayer(markersFeatureGroup.current)
-            }
-            if(lightningOptions.show && stations.length > 0){
+            
+            
+            if(lightningOptions.show){
                 showLightnings()
+                if(!INTERVAL.current){
+                    INTERVAL.current = setInterval(_=>{
+                        showLightnings()
+                    }, UPDATE_TIMER_SECONDS * 1000)
+                }
             } else {
+                if(INTERVAL.current) {
+                    
+                    clearInterval(INTERVAL.current)
+                    INTERVAL.current = undefined
+                }                
                 removeLightnings()
             }
             
         }
-    }, [lightningOptions, stations])
+    }, [lightningOptions])
+
+    useEffect(_=>{
+       
+        if(!map) return;
+        if(!map.hasLayer(markersFeatureGroup.current)){           
+            map.addLayer(markersFeatureGroup.current)
+            markersFeatureGroup.current._reset();
+        }
+    },[map])
 
     useEffect(_=>{
         if(!map) return;
+        
+        markersFeatureGroup.current.clear()
+
         let markers_list = []
         lightnings.forEach(lightning=>{
                 
@@ -42,7 +65,7 @@ const Lightning = () =>{
                 iconAnchor: [15, 15]
             });
 
-            var marker = L.marker([lightning.latitude, lightning.longitude], {icon: icon})
+            var marker = L.marker([lightning.latitude, lightning.longitude], {icon: icon, interactive:false})
             marker.bindPopup(`${diffHandler(lightning)}`).on({
             mouseover(e) {                
                 this.openPopup();
@@ -58,6 +81,9 @@ const Lightning = () =>{
         })
         
         markersFeatureGroup.current.addMarkers(markers_list);
+        
+        
+        // markersFeatureGroup.current._redraw();
 
     }, [lightnings])
 
@@ -77,8 +103,7 @@ const Lightning = () =>{
 
     const removeLightnings = () =>{
         if(!markersFeatureGroup.current) return;
-
-        markersFeatureGroup.current.clear()
+        setLightnings([])
     }
 
     return (

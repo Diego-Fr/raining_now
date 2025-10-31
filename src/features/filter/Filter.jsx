@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react'
 import {useDispatch, useSelector} from 'react-redux'
 import styles from './Filter.module.scss'
 import Select from '../../components/form/select/Select'
-import { setFilterOption } from '../../store/filterSlice'
+import { setFilterFormOption, setFilterOption } from '../../store/filterSlice'
 import { filterStations } from '../../store/stationSlice'
 import { IoFilterSharp } from "react-icons/io5";
 // import Select from 'react-select'
@@ -58,13 +58,17 @@ const Filter = () =>{
     const onChangeHandle = ({field, values}) =>{
         dispatch(setFilterOption({field, value: values}))
     }
+    
+    const closeForm = () =>{
+        dispatch(setFilterFormOption({field:'show', value:false}))
+    }
 
     return (
         <div className={`${styles.container} ${filterOptions.filterFormOptions.show ? styles.show : ''}`}>
             <div className={styles.title}>
                 <IoFilterSharp style={{marginRight: '10px'}} />
                 FILTRO DE DADOS
-                
+                <div style={{position:'absolute', right: 20, padding:5, cursor:'pointer'}} onClick={closeForm}>x</div>
             </div>
             <div className={styles.formGroup}>
                 <label>Ugrhi</label>
