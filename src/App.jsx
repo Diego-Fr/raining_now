@@ -9,8 +9,8 @@ import Legend from './features/legend/Legend'
 
 import { ToastContainer } from 'react-toastify'
 import Loader from './features/loader/Loader'
-import Topleft from './features/topleft/Topleft'
-import TopRight from './features/topright/TopRight'
+import Topleft from './features/panels/topleft/Topleft'
+import TopRight from './features/panels/topright/TopRight'
 import Timeline from './features/timeline/Timeline'
 import LoginComponent from './features/login/LoginComponent'
 
@@ -18,6 +18,7 @@ import {useDispatch, useSelector} from 'react-redux'
 import { getMeData, setExpires, setToken } from './store/authSlice'
 import { isLogged } from './utils/authUtils'
 import Lightning from './features/lightning/Lightning'
+import BottomRight from './features/panels/bottomright/BottomRIght'
 
 const Map = lazy(_=> import('./features/map/Map'))
 const ModalChart = lazy(_=> import('./features/modal_chart/ModalChart'))
@@ -79,6 +80,7 @@ function App() {
       
       <Topleft/>
       <TopRight/>
+      <BottomRight/>
       
     </>
   )

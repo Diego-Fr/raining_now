@@ -1,7 +1,7 @@
 import styles from "./TopRight.module.scss"
 import { FaChartBar } from "react-icons/fa";
 import {useDispatch} from 'react-redux'
-import { setShow } from "../../store/sideMenuSlice";
+import { setShow } from "../../../store/sideMenuSlice";
 
 
 const TopRight = _ =>{

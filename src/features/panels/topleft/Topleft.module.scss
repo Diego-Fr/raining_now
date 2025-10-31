@@ -7,6 +7,30 @@
     left: 15px;
     position: absolute;
 
+    .titleWrapper{
+        // line-height: 50px;
+        padding-top: 20px;
+        margin-bottom: 20px;
+        .title{
+            color: #525252;
+            font-family: 'Fugaz One', sans-serif;
+            font-weight: 900;
+            font-size: 60px;
+            line-height: 50px;
+            height: fit-content;
+        }
+
+        .subtitle{
+            font-weight: 900;
+            line-height: 10px;
+            font-size: 15px;
+            color: #525252;
+            text-align: center;
+        }
+    }
+
+    
+
     .logo{
         width: 150px;
         filter: drop-shadow(1px 1px 1px black);

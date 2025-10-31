@@ -3,13 +3,13 @@ import styles from './Topleft.module.scss'
 import { FaFilter } from "react-icons/fa6";
 import { FaInfo, FaTimes } from "react-icons/fa";
 import {useDispatch, useSelector} from 'react-redux'
-import { setFilterFormOption } from '../../store/filterSlice';
-import spaguaslogocolored from '@assets/SP-Águas---Branco.png'
-import { setShow } from '../../store/radarSlice';
-import { setShow as setShowSidemenu } from '../../store/sideMenuSlice'
+import { setFilterFormOption } from '../../../store/filterSlice';
+
+import { setShow } from '../../../store/radarSlice';
+import { setShow as setShowSidemenu } from '../../../store/sideMenuSlice'
 import { GiRadarDish } from "react-icons/gi";
 import { BsFillLightningChargeFill } from "react-icons/bs";
-import { setShow as setLightningShow } from '../../store/lightningSlice';
+import { setShow as setLightningShow } from '../../../store/lightningSlice';
 
 
 
@@ -81,8 +81,9 @@ const Topleft = () =>{
 
     return (
         <div className={styles.container}>
-            <div className={styles.logo}>
-                <img src={spaguaslogocolored} width={'100%'}></img>
+            <div className={styles.titleWrapper}>
+                {/* <div className={styles.title}>CHUVA AGORA</div> */}
+                {/* <div className={styles.subtitle}>SIBH</div> */}
             </div>
             <div className={styles.itemsWrapper}>
                 {Object.values(items).map(item=> 
