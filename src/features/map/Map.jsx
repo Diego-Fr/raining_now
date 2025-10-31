@@ -41,11 +41,15 @@ const Map = () =>{
             updateStations()
         )
         if (mapRef.current && !mapInstanceRef.current) {
-            const map = L.map(mapRef.current, {zoomControl: false}).setView([-23.55, -46.63], 8)
+            const map = L.map(mapRef.current, {zoomControl: false, minZoom: 7, zoomDelta: 0.1,
+    wheelPxPerZoomLevel: 3100}).setView([-23.55, -46.63], 8)
       
-            L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+            L.tileLayer('https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png', {
               attribution: '&copy; OpenStreetMap contributors',
             }).addTo(map)
+
+            console.log(map);
+            
 
             let svg = L.svg().addTo(map)
       
