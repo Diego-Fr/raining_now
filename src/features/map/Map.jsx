@@ -61,7 +61,9 @@ const Map = () =>{
 
             window.addEventListener('resize', () => {
                 if(!map) return;
+                setMapHeight(window.innerHeight)
                 map.invalidateSize()
+                
             });
             
         }
