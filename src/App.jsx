@@ -18,7 +18,8 @@ import {useDispatch, useSelector} from 'react-redux'
 import { getMeData, setExpires, setToken } from './store/authSlice'
 import { isLogged } from './utils/authUtils'
 import Lightning from './features/lightning/Lightning'
-import BottomRight from './features/panels/bottomright/BottomRIght'
+import BottomRight from './features/panels/bottomright/BottomRight'
+import BottomLeft from './features/panels/bottomleft/BottomLeft'
 
 const Map = lazy(_=> import('./features/map/Map'))
 const ModalChart = lazy(_=> import('./features/modal_chart/ModalChart'))
@@ -81,6 +82,7 @@ function App() {
       <Topleft/>
       <TopRight/>
       <BottomRight/>
+      <BottomLeft/>
       
     </>
   )
