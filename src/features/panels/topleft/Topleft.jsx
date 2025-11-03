@@ -10,6 +10,7 @@ import { setShow as setShowSidemenu } from '../../../store/sideMenuSlice'
 import { GiRadarDish } from "react-icons/gi";
 import { BsFillLightningChargeFill } from "react-icons/bs";
 import { setShow as setLightningShow } from '../../../store/lightningSlice';
+import spaguaslogocolored from '@assets/logo_chuva_agora.png'
 
 
 
@@ -82,8 +83,8 @@ const Topleft = () =>{
     return (
         <div className={styles.container}>
             <div className={styles.titleWrapper}>
-                {/* <div className={styles.title}>CHUVA AGORA</div> */}
-                {/* <div className={styles.subtitle}>SIBH</div> */}
+                <img src={spaguaslogocolored} width={'100%'}></img>
+                <div className={styles.sibh_name}>SIBH</div>
             </div>
             <div className={styles.itemsWrapper}>
                 {Object.values(items).map(item=> 
