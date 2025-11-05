@@ -1,0 +1,26 @@
+.inputContainer{
+    display: flex;
+    align-items: center;
+    height: 30px;
+    .input{
+        border: none;
+        height: 100%;
+        border-radius: 5px;
+        border: 1px solid rgb(241, 241, 241);
+        width: 100%;
+        &:focus{
+            outline: none
+        }
+    }
+
+    .button{
+        width: 40px;
+        height: 100%;
+        background-color: white;
+    }
+}
+
+.listContainer{
+    width: 100%;
+    background-color: white;
+}

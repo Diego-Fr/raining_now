@@ -11,6 +11,7 @@ import { GiRadarDish } from "react-icons/gi";
 import { BsFillLightningChargeFill } from "react-icons/bs";
 import { setShow as setLightningShow } from '../../../store/lightningSlice';
 import spaguaslogocolored from '@assets/logo_chuva_agora.png'
+import SearchInput from './SearchInput';
 
 
 
@@ -85,6 +86,9 @@ const Topleft = () =>{
             <div className={styles.titleWrapper}>
                 <img src={spaguaslogocolored} width={'100%'}></img>
                 <div className={styles.sibh_name}>SIBH</div>
+            </div>
+            <div style={{marginBottom: 10}}>
+                <SearchInput/>
             </div>
             <div className={styles.itemsWrapper}>
                 {Object.values(items).map(item=> 

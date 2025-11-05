@@ -86,6 +86,23 @@ const fetchLightnings = async () =>{
     return res.data
 }
 
+const searchAddress = async (query, abortController) =>{
+    const url = `https://photon.komoot.io/api/?q=${query}&osm_tag=place:municipality`
+    let res = await axios.get(url, {signal: abortController.signal})
+  
+    return res
+}
+
+async function getCityByPoint(lat, lng) {
+    
+  const url = `https://geodados.daee.sp.gov.br/geoserver/ows?service=WFS&version=1.1.0&request=GetFeature&typeName=geonode:municipios_sp&outputFormat=application/json&CQL_FILTER=INTERSECTS(geometry,SRID=4326;POINT(${lng} ${lat}))`;
+
+  const res = await axios.get(url);
+
+  return res.data;
+}
+
 export {
-    fetchMeasurements,fetchStationMeasurements,feachCityLimiares,feachCitiesBbox,feachSubugrhisBbox,updateMeasurementStatus,getRadarLastImagesKeys,fetchLightnings
+    fetchMeasurements,fetchStationMeasurements,feachCityLimiares,feachCitiesBbox,feachSubugrhisBbox,updateMeasurementStatus,getRadarLastImagesKeys,fetchLightnings,
+    searchAddress, getCityByPoint
 }

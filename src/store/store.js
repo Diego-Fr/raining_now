@@ -9,6 +9,7 @@ import radarSlice from './radarSlice'
 import timelineSlice from './timelineSlice'
 import sidemenu from './sideMenuSlice'
 import lightningSlice from './lightningSlice'
+import searchSlice from './searchSlice'
 
 export const store = configureStore({
     reducer: {
@@ -21,7 +22,8 @@ export const store = configureStore({
         radar: radarSlice,
         timeline: timelineSlice,
         sidemenu: sidemenu,
-        lightning: lightningSlice
+        lightning: lightningSlice,
+        search: searchSlice
     },
     //desativando analise de serialização para poder salvar um L.map na variavel map
     middleware: (getDefaultMiddleware) => getDefaultMiddleware({
