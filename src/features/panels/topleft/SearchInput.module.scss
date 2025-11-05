@@ -1,26 +1,79 @@
-.inputContainer{
-    display: flex;
-    align-items: center;
-    height: 30px;
-    .input{
-        border: none;
-        height: 100%;
-        border-radius: 5px;
+.wrapper{
+    max-width: 300px;
+    .inputContainer{
+        min-width: 250px;
+        display: flex;
+        align-items: center;
+        height: 40px;
+        border-radius: 10px;
+        
         border: 1px solid rgb(241, 241, 241);
-        width: 100%;
-        &:focus{
-            outline: none
+        box-shadow: 1px 1px 2px rgba(0,0,0,.2);
+        overflow: hidden;
+        .input{
+            border: none;
+            height: 100%;
+            width: 100%;
+            padding-left: 10px;
+            &:focus{
+                outline: none
+            }
+        }
+
+        .button{
+            width: 40px;
+            height: 100%;
+            background-color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border: none;
+
+            &:hover{
+                cursor: pointer;
+                filter: brightness(.95);
+                // color: rgb(43, 43, 43);
+            }
         }
     }
 
-    .button{
-        width: 40px;
-        height: 100%;
+    .listContainer{
+        width: 100%;
         background-color: white;
+        margin-top: 5px;
+        border-radius: 5px;
+        overflow: hidden;
+        box-shadow: 1px 1px 3px rgba(0,0,0,.2);
+        max-height: 500px;
+        overflow: auto;
+        // z-index: 99000;
+
+        .item{
+            padding-bottom: 10px;
+            padding-top: 10px;
+            background-color: white;
+            transition: 0.2s all;
+            cursor: pointer;
+            &:hover{
+                filter: brightness(.95);
+            }
+
+            // padding-bottom: 10px;
+            .title{
+                font-weight: 600;
+                // padding-top: 10px;
+                
+                line-height: 15px;
+            }
+
+            .type{
+                text-transform: capitalize;
+                font-size:x-small;
+                font-weight: 600;
+                color: gray;
+            }
+
+        }
     }
 }
 
-.listContainer{
-    width: 100%;
-    background-color: white;
-}

@@ -21,24 +21,19 @@ const LayerControl = _ =>{
 
     const dispatch = useDispatch()
 
-    
-
     const clickHandler = layer =>{
-        // console.log(id,map);
-        // if(!layer.layer){
-        //     let l = addLayer(map, layer.layer_name, "cd_mun='3550308'")
-        //     layer.layer = l
-        // } else {
-        //     layer.layer.remove()
-        //     layer.layer = undefined
-        // }
-
         let copy = Object.assign(layersShowing[layer.id])
-
         
         setLayersShowing({...layersShowing, copy})
 
     }
+
+    const resetBounds = () =>[
+        map.fitBounds([
+            [-25.3, -53.1],
+            [-19.7, -44.2]
+        ]) //bbox estado de SP
+    ]
 
     useEffect(_=>{
         if(map && !layersShowing.state.layer){
@@ -103,35 +98,52 @@ const LayerControl = _ =>{
         } else if(counter.length === 0 && map){
             
             Object.keys(layersShowing).filter(x=>['city_id', 'subugrhi_id'].includes(x)).map(x=> layersShowing[x].layer?.remove())
-            // map.fitBounds([
-            //     [-25.3, -53.1],
-            //     [-19.7, -44.2]
-            // ]) //bbox estado de SP
+            
         }
         
         
     }, [filterOptions])
 
     useEffect(_=>{
-
+        if(!map) return;
         layersShowing['municipios_sp']?.layer?.remove()
+        layersShowing['subugrhis_sp']?.layer?.remove()
 
-        if(searchOptions.cod === null || searchOptions.cod === undefined || searchOptions.cod === '') return;
+
+        const namesByKey = {
+            'município': {layer:'municipios_sp', field: 'cd_mun', station_field: 'cod_ibge'},
+            'subugrhi': {layer:'subugrhis_sp', field: 'n_subugrhi', station_field: 'subugrhi_cod'}
+        }
         
-        dispatch(setFilterOption({field: 'cod_ibge', value: [searchOptions.cod]}))
+        if(searchOptions.cod === null || searchOptions.cod === undefined || searchOptions.cod === '') {
+            resetBounds()
+            dispatch(setFilterOption({field: 'cod_ibge', value: []}))
+            dispatch(setFilterOption({field: 'subugrhi_cod', value: []}))            
+            return;
+        }
         
-        let l = addLayer(map, `geonode:municipios_sp`, `cd_mun in (${searchOptions.cod})`, {style: 'municipios_sp_raining_now'})
+        dispatch(setFilterOption({field: namesByKey[searchOptions.type].station_field, value: [searchOptions.cod]}))
+        
+        let l = addLayer(map, namesByKey[searchOptions.type].layer, `${namesByKey[searchOptions.type].field} in (${searchOptions.type != 'subugrhi' ? searchOptions.cod : prepareCod(searchOptions.cod)})`, {style: 'municipios_sp_raining_now'})
         
         setLayersShowing(prev => ({
             ...prev,
-            ['municipios_sp']: {...prev['municipios_sp'], layer: l}
+            [namesByKey[searchOptions.type].layer]: {...prev[namesByKey[searchOptions.type].layer], layer: l}
         }))
         
         if(searchOptions.bbox){
             map.fitBounds(searchOptions.bbox)
+        } else {
+            resetBounds()
         }
         
     },[searchOptions])
+
+    const prepareCod = (cod) =>{
+        let c = parseInt(cod)
+        c = c < 1000 ? (c / 10).toFixed(1) : (c / 100).toFixed(2)
+        return c
+    }
     
 
     return (

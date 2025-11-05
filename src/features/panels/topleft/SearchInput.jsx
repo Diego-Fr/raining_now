@@ -1,9 +1,12 @@
-import { useEffect, useRef, useState } from 'react'
+import { useEffect, useMemo, useRef, useState } from 'react'
 import styles from './SearchInput.module.scss'
 import { getCityByPoint, searchAddress } from '../../../services/api'
 import {  setSearchProps } from '../../../store/searchSlice'
 import {useDispatch} from 'react-redux'
 import { getBoundingBox } from '../../layer_control/utils'
+import { useGetCitiesQuery,useGetSubugrhisQuery } from '../../../services/sibh_api'
+import { FaTimes } from "react-icons/fa";
+
 
 
 const SearchInput = () =>{
@@ -13,7 +16,23 @@ const SearchInput = () =>{
     const abortControllerRef = useRef(null)
     const dispatch = useDispatch()
 
-    const [citiesList, setCitiesList] = useState([{name: 'teste'}])
+    const [optionsList, setOptionsList] = useState([])
+
+    const {data: cities, isError, isLoading} = useGetCitiesQuery()
+    const {data: subugrhis} = useGetSubugrhisQuery()
+
+    const [selectedItem, setSelectedItem] = useState()
+
+    const citiesList = useMemo(_=>{
+        if (!cities) return []
+        return cities.map(x=>({...x, name_normalize:x.name.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "")}))
+        // return cities.map(x=>x)
+    })
+
+    const subugrhisList = useMemo(_=>{
+        if (!subugrhis) return []
+        return subugrhis.map(x=>({...x, name_normalize:x.name.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "")}))
+    })
 
     useEffect(_=>{
         //psequisar só quando tiver ao menos 3 caracteres
@@ -21,6 +40,33 @@ const SearchInput = () =>{
             searchText()
         }
     },[inputAddressValue])
+
+    /*
+        A idéia é procurar o valor digitado na lista de cidades, ugrhis e subugrhis já baixadas
+        Comparar com os campos 'nome' e 'códigos' dessas entidades
+        Se encontrar, montar uma lista composta para o usuário selecionar
+    */
+
+    const searchArea = async () =>{
+        
+        let value = inputAddressValue.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "")
+        let obj = []
+        if(citiesList){
+            //procurar o valor digitado na lista de cidades
+            let list = citiesList.filter(x=>x.name_normalize.includes(value)).map(x=>({...x, cod:x.cod_ibge, type: 'município'}))
+            obj.push(...list)
+        }
+
+        if(subugrhisList){
+            //procurar o valor digitado na lista de subugrhis
+            let list = subugrhisList.filter(x=>x.name_normalize.includes(value)).map(x=>({...x, type: 'subugrhi'}))
+            obj.push(...list)
+        }
+        
+        setOptionsList(obj)
+
+    }
+    
 
     /*
         1 - Busca texto da caixa no geolocalizador
@@ -38,26 +84,7 @@ const SearchInput = () =>{
             abortControllerRef.current = new AbortController()
 
             //axios usando abortcontroller como signal param
-            // let results = await searchAddress(inputAdressValue, abortControllerRef.current)
-            let results = await searchAddress(inputAddressValue,abortControllerRef.current)
-            
-            //limpando controller para indicar que n tem request ativa
-            abortControllerRef.current = null
-
-            if (results?.data?.features?.length > 0) {    
-
-                //filtrando apenas resultados com o valor são paulo na descrição
-                results = filterResults(results.data.features).slice(0,5)
-                
-                // setList(results)
-
-                if(results.length > 0){
-                    setCitiesList(results.map(x=>({name:x.properties.name, lat: x.geometry.coordinates[1], lng:x.geometry.coordinates[0]})))                    
-                    
-                }
-                // console.log(results);
-                
-            }
+            searchArea()
 
             // setState('loaded')
         } catch (e){
@@ -68,35 +95,45 @@ const SearchInput = () =>{
         }    
     }
 
-    const filterResults = list => list.filter(x=>x.properties.state === 'São Paulo' && ['city', 'town', 'village', 'municipality'].includes(x.properties.osm_value))
-
     const clickHandler = async item => {
-        console.log(item);
+
+        dispatch(setSearchProps({text:inputAddressValue, cod: item.cod, bbox:item.bbox_json,  name: item.name,  type: item.type }))
+
+        setInputAddressValue(item.name)
         
-        //pegando informações do ponto, como nome e cod_ibge do muni
-        let res = await getCityByPoint(item.lat, item.lng)
+        setTimeout(_=>{
+            setOptionsList([])
+        }, 100)
+        
+        setSelectedItem(item)
 
-        if(res){            
-            //dispatch desse lat lng para que outros componentes escutem
-            dispatch(setSearchProps({text:inputAddressValue, cod: res.features[0].properties.cd_mun, bbox:getBoundingBox(res.features[0].geometry.coordinates[0][0]),  name: res.features[0].properties.nm_mun }))
-        }
 
-        setCitiesList([])
+    }
+
+    const clearClickHandler = _ =>{
+        setInputAddressValue('')
+        setOptionsList([])
+        dispatch(setSearchProps({text: null, cod: null, bbox: null,  name: null, type: null}))
+        setSelectedItem(undefined)
     }
     
 
     return (
+        (!isLoading && !isError) &&
         <div className={styles.wrapper}>
             <div className={styles.inputContainer}>
                 <input 
                     className={styles.input}
                     onChange={e=>setInputAddressValue(e.target.value)}
                     value={inputAddressValue}
-                    placeholder="Pesquisar região"
+                    placeholder="Buscar cidade / subugrhi"
+                    readOnly={selectedItem !== undefined}
+                    style={{cursor: selectedItem !== undefined ? 'auto' : 'auto'}}
                     />
-                <div className={styles.button}>P</div>
+                {(inputAddressValue.length > 0 || selectedItem) && <div className={styles.button} onClickCapture={clearClickHandler}><FaTimes/></div>}
+                
             </div>
-            <div className={styles.listContainer}>{citiesList.map((item, index)=><div key={index} onClickCapture={_=>clickHandler(item)}>{item.name}</div> )}</div>
+            <div className={styles.listContainer}>{optionsList.map((item, index)=><div key={index} onClickCapture={_=>clickHandler(item)} className={styles.item}><div className={styles.title}>{item.name}</div><div className={styles.type}>{item.type}</div></div> )}</div>
         </div>
     )
 }

@@ -43,7 +43,6 @@ const Map = () =>{
         if (mapRef.current && !mapInstanceRef.current) {
             const map = L.map(mapRef.current, 
                 {zoomControl: false, minZoom: 7, zoomDelta: 0.1, wheelPxPerZoomLevel: 3100})
-                .setView([-23.55, -46.63], 8)
       
             L.tileLayer('https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png', {
               attribution: '&copy; OpenStreetMap contributors',
@@ -57,7 +56,12 @@ const Map = () =>{
 
             dispatch(setMap(map))
             
-            setBlocked(false)   
+            setBlocked(false)
+            
+            map.fitBounds([
+                [-25.3, -53.1],
+                [-19.7, -44.2]
+            ]) //bbox estado de SP
 
             window.addEventListener('resize', () => {
                 if(!map) return;

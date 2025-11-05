@@ -17,6 +17,12 @@
         padding-top: 20px;
         margin-bottom: 20px;
         position: relative;
+        text-align: left;
+        img{
+            backdrop-filter: blur(2px);
+        }
+        
+
         .sibh_name{
             font-weight: 900;
             color: rgb(117 117 117);

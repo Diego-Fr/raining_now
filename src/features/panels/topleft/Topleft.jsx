@@ -28,19 +28,19 @@ const Topleft = () =>{
     const showFilter = useRef(false)
     
     const [items, setItems] = useState({
-        filter: {id: 'filter', label: 'filtrar', icon: !showFilter.current ? <FaFilter/> : <FaTimes/>, onclick: filterToggle, active:false},
+        // filter: {id: 'filter', label: 'filtrar', icon: !showFilter.current ? <FaFilter/> : <FaTimes/>, onclick: filterToggle, active:false},
         radar: {id: 'radar', label: 'radar', icon: <GiRadarDish/>, onclick: radarToggle, active:false},
         lightning: {id: 'lightning', label: 'raios', icon: <BsFillLightningChargeFill/>, onclick: lightningToggle, active:false},
     })
 
     
-    useEffect(_=>{
-        showFilter.current = filterFormOptions.show
-        setItems(state=>({
-            ...state,
-            filter: {...state.filter, icon: !showFilter.current ? <FaFilter/> : <FaTimes/>} 
-        }))
-    }, [filterFormOptions.show])
+    // useEffect(_=>{
+    //     showFilter.current = filterFormOptions.show
+    //     setItems(state=>({
+    //         ...state,
+    //         filter: {...state.filter, icon: !showFilter.current ? <FaFilter/> : <FaTimes/>} 
+    //     }))
+    // }, [filterFormOptions.show])
     
 
     function radarToggle(){
@@ -73,18 +73,10 @@ const Topleft = () =>{
     }
 
 
-    function filterToggle(){
-       dispatch(setFilterFormOption({field:'show', value:!showFilter.current}))       
-    }
-
-    function infoToggle(){
-        
-    }
-
     return (
         <div className={styles.container}>
             <div className={styles.titleWrapper}>
-                <img src={spaguaslogocolored} width={'100%'}></img>
+                <img src={spaguaslogocolored}></img>
                 <div className={styles.sibh_name}>SIBH</div>
             </div>
             <div style={{marginBottom: 10}}>
