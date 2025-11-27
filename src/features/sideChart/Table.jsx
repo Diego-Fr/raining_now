@@ -10,20 +10,20 @@ import statesFlu from '../../data/statesFlu'
 const Table = ({stations,menuContext}) =>{
     
     const context = useSelector(state=> state.context.context)
-    // console.log(stations);
+    console.log(stations);
     
 
     
     return <>
         <div className={styles.container}>
             <div className={`${styles.line} ${styles.title}`}>
-                <div>{menuContext === 'point' ? 'Prefixo' : menuContext === 'city' ? 'Município' : 'Ugrhi'} </div>
+                <div>{menuContext === 'point' ? 'Nome' : menuContext === 'city' ? 'Município' : 'Ugrhi'} </div>
                 <div>{context === 'rain' ? 'Valor (mm)' : 'Classificação'}</div>
             </div>
             {
                 stations.map((station, index)=>
                     <div key={index} className={styles.line}>
-                        <div>{menuContext === 'point' ? station.prefix : menuContext === 'city' ?  station.city : station.ugrhi_name}</div>
+                        <div style={{textAlign:'left', fontSize: '12px'}}>{menuContext === 'point' ? station.station_name : menuContext === 'city' ?  station.city : station.ugrhi_name}</div>
                         <div style={{textTransform: 'capitalize'}}>
                             {
                                 context === 'rain' ? <span style={{color: statesPlu[station.legend]?.color }}>{station.value.toFixed(2).replace('.',',')}</span>

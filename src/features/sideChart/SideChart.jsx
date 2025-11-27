@@ -117,7 +117,7 @@ const SideChart = () =>{
                         chartRef.current, 
                         barClickHandler, 
                         undefined, 
-                        menuContext === 'point' ? 'prefix' : menuContext === 'city' ? 'city' : 'ugrhi_name'
+                        menuContext === 'point' ? 'station_name' : menuContext === 'city' ? 'city' : 'ugrhi_name'
                     )
                     
                 }
