@@ -1,7 +1,6 @@
 import axios from "axios"
 
-const isLogged = (authOptions={}) =>{
-    
+const isLogged = (authOptions={}) =>{    
     if(authOptions.expires && new Date(authOptions.expires*1000) > new Date() && authOptions.token){
         return true
     } 
@@ -20,7 +19,12 @@ const getUserData = async (token) =>{
     return res.data
 }
 
+const hasAnyOfRoles = ({roles: authRoles=[]}, roles=[]) =>{
+    return roles.some(x=> authRoles.includes(x))
+}
+
 export {
     isLogged,
-    getUserData
+    getUserData,
+    hasAnyOfRoles
 }

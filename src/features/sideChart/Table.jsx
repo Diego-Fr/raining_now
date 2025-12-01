@@ -10,8 +10,6 @@ import statesFlu from '../../data/statesFlu'
 const Table = ({stations,menuContext}) =>{
     
     const context = useSelector(state=> state.context.context)
-    console.log(stations);
-    
 
     
     return <>

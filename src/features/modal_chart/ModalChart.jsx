@@ -10,11 +10,11 @@ import { setEndDate, setStartDate, setGroupType } from '../../store/modalChartSl
 import Loading from './Loading'
 import Select from '../../components/form/select/Select'
 import StatusBox from './StatusBox'
-import { isLogged } from '../../utils/authUtils'
+import { hasAnyOfRoles, isLogged } from '../../utils/authUtils'
 import { colorByMeasurementClassification } from '../../utils/measurementUtils'
-
-
-
+import { FaEye } from "react-icons/fa6";
+import Visibility from './components/Visibility'
+import { useGetStationQuery } from '../../services/sibh_api'
 
 
 const ModalChart = () =>{
@@ -49,7 +49,13 @@ const ModalChart = () =>{
     const context = useSelector(state=> state.context.context)
     const authOptions = useSelector(state=>state.auth)
 
-    const dispatch = useDispatch()    
+    const dispatch = useDispatch()
+
+    const [selectedStationId, setSelectedStationId] = useState(null)
+    
+    const { data: station } = useGetStationQuery(selectedStationId, {
+        skip: !selectedStationId,
+    });
 
     const setStation = (station_id) =>{
         let station = stations.find(x=> x.station_prefix_id.toString() === station_id.toString())
@@ -159,7 +165,7 @@ const ModalChart = () =>{
 
     //alterando a cor da barra para sugerir seleção no momento do click caso o usuário esteja logado e o dado nao esteja agrupado
     useEffect(_=>{
-        if(chartState.selectedMeasurement && isLogged(authOptions) && groupType === 'minute'){
+        if(chartState.selectedMeasurement && isLogged(authOptions) && hasAnyOfRoles(authOptions, ['dev', 'admin']) && groupType === 'minute'){
             
             let colors = []
 
@@ -239,7 +245,11 @@ const ModalChart = () =>{
             <div onMouseDown={e=>e.stopPropagation()} className={styles.wrapper} ref={wrapperRef}>
                 <div ref={titleRef} className={styles.title_container}>
                     <div className={styles.title_wrapper}>
-                        <div className={styles.title}><div>{stationInfo.station_name}</div><div className={styles.prefix}>{stationInfo.station_prefix} - {stationInfo.station_owner}</div></div>
+                        <div className={styles.title}>
+                            <div className={styles.name}>{stationInfo.station_name}</div>
+                            <div className={styles.prefix}>{stationInfo.station_prefix} - {stationInfo.station_owner}</div>
+                            {isLogged(authOptions) && hasAnyOfRoles(authOptions, ['dev', 'admin']) &&<div className={styles.public}><FaEye /> <div style={{marginLeft:5}}><Visibility/></div></div>}
+                        </div>
                     </div>
                     <div className={styles.fieldsWrapper}>
                         <DatePicker/>
@@ -258,7 +268,7 @@ const ModalChart = () =>{
                         </div>
                         
                     </div>
-                    {isLogged(authOptions) && groupType === 'minute' &&  
+                    {isLogged(authOptions) && hasAnyOfRoles(authOptions, ['dev', 'admin']) && groupType === 'minute' &&  
                         <StatusBox selectedMeasurement={chartState.selectedMeasurement} statusBoxClose={statusBoxClose}/>
                     }
                     

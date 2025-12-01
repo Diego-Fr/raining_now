@@ -45,18 +45,27 @@
         display: flex;
         justify-content: space-between;
         
+        .name{
+            font-size: xx-large;
+        }
 
         .title{
             width: 100%;
             font-weight: 600;
             padding: 1.5rem;
-            font-size: xx-large;
             text-align: left;
         }
 
         .prefix{
             font-size: medium;
             color: gray;
+        }
+
+        .public{
+            font-size: smaller;
+            display: flex;
+            // gap: 10px;
+            align-items: center;
         }
 
         .fieldsWrapper{
