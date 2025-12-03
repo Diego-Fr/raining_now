@@ -14,7 +14,7 @@ import { hasAnyOfRoles, isLogged } from '../../utils/authUtils'
 import { colorByMeasurementClassification } from '../../utils/measurementUtils'
 import { FaEye } from "react-icons/fa6";
 import Visibility from './components/Visibility'
-import { useGetStationQuery } from '../../services/sibh_api'
+import MeasurementsTable from './components/MeasurementsTable'
 
 
 const ModalChart = () =>{
@@ -35,6 +35,10 @@ const ModalChart = () =>{
         lat: '', lng: ''
     })
 
+    const [modalOptions, setModalOptions] = useState({
+        type: 'table'
+    })
+
     const [measurements, setMeasurements] = useState([])
 
     const chartRef = useRef()
@@ -51,11 +55,6 @@ const ModalChart = () =>{
 
     const dispatch = useDispatch()
 
-    const [selectedStationId, setSelectedStationId] = useState(null)
-    
-    const { data: station } = useGetStationQuery(selectedStationId, {
-        skip: !selectedStationId,
-    });
 
     const setStation = (station_id) =>{
         let station = stations.find(x=> x.station_prefix_id.toString() === station_id.toString())
@@ -278,11 +277,14 @@ const ModalChart = () =>{
                     {chartState.isLoading ? 
                         <Loading text="Carregando"/> : 
                         <>
-                            {!chartState.noData ? 
-                            <>
-                                <canvas ref={chartRef}></canvas>
-                                {chartState.isZoomed && <button className={styles.resetZoomButton} onClick={_=>{resetChartZoom(false)}}>Remover Zoom</button>}
-                            </> : <div>Sem dado</div>
+                            {
+                                modalOptions.type === 'chart' ?
+                                    !chartState.noData ? 
+                                        <>
+                                            <canvas ref={chartRef}></canvas>
+                                            {chartState.isZoomed && <button className={styles.resetZoomButton} onClick={_=>{resetChartZoom(false)}}>Remover Zoom</button>}
+                                        </> : <div>Sem dado</div>
+                                    :<MeasurementsTable measurements={measurements}></MeasurementsTable>
                             }
                         </>
                         }
