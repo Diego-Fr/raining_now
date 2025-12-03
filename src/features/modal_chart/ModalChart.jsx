@@ -14,7 +14,7 @@ import { hasAnyOfRoles, isLogged } from '../../utils/authUtils'
 import { colorByMeasurementClassification } from '../../utils/measurementUtils'
 import { FaEye } from "react-icons/fa6";
 import Visibility from './components/Visibility'
-import MeasurementsTable from './components/MeasurementsTable'
+import MeasurementsTable from './components/MeasurementsTable/MeasurementsTable'
 
 
 const ModalChart = () =>{
@@ -75,21 +75,19 @@ const ModalChart = () =>{
     const getMeasurements = async _ =>{
         
         if(counter != 1){
-
-            
             setChartState(state=>({
                 ...state,
                 show:true,
                 isLoading: true,
                 selectedMeasurement: false
             }))
-            
-            
-            setChartSize()
- 
             if(chartInstanceRef.current){
                 chartInstanceRef.current.destroy()
-            }        
+            }  
+            // if(modalOptions.type === 'chart'){
+                setChartSize() 
+            // }
+            
             
             setStation(chartOptions.station_id)
             
@@ -157,10 +155,10 @@ const ModalChart = () =>{
     }
 
     useEffect(_=>{
-        if(!chartState.isLoading){            
+        if(!chartState.isLoading && modalOptions.type === 'chart'){            
             generateChart()
         }
-    }, [chartState.isLoading])
+    }, [chartState.isLoading,modalOptions.type])
 
     //alterando a cor da barra para sugerir seleção no momento do click caso o usuário esteja logado e o dado nao esteja agrupado
     useEffect(_=>{
@@ -241,7 +239,7 @@ const ModalChart = () =>{
 
     return (
         <div onMouseDown={_=>{outsideClick()}} className={`${styles.container} ${chartState.show ? styles.show : ''}`}>
-            <div onMouseDown={e=>e.stopPropagation()} className={styles.wrapper} ref={wrapperRef}>
+            <div onMouseDown={e=>e.stopPropagation()} className={styles.wrapper} style={{height:'90vh'}} ref={wrapperRef}>
                 <div ref={titleRef} className={styles.title_container}>
                     <div className={styles.title_wrapper}>
                         <div className={styles.title}>
@@ -284,7 +282,7 @@ const ModalChart = () =>{
                                             <canvas ref={chartRef}></canvas>
                                             {chartState.isZoomed && <button className={styles.resetZoomButton} onClick={_=>{resetChartZoom(false)}}>Remover Zoom</button>}
                                         </> : <div>Sem dado</div>
-                                    :<MeasurementsTable measurements={measurements}></MeasurementsTable>
+                                    :<MeasurementsTable measurements={measurements} chartContainerSize={chartState.mapContainerSize}></MeasurementsTable>
                             }
                         </>
                         }
