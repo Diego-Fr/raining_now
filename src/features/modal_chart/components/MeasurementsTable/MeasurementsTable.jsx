@@ -1,45 +1,91 @@
 import { DataGrid } from '@mui/x-data-grid';
 import { useEffect, useMemo, useRef } from 'react';
+import {useSelector} from 'react-redux'
 import { useState } from 'react';
 import DataTable from 'react-data-table-component';
 import FilterInput from './FilterInput';
+import ClassificationButton from './ClassificationButtons';
+import { isLogged,hasAnyOfRoles } from "@utils/authUtils"
+import { MdOutlineCheckBox,MdOutlineCheckBoxOutlineBlank,MdOutlineIndeterminateCheckBox } from "react-icons/md";
 
 
-const columns = [
-	{
-		name: 'Date',
-		selector: row => row.date,
-    sortable: true
-	},
-	{
-		name: 'Value',
-		selector: row => row.value,
-    sortable: true
-	},
-  {
-    name: 'Classificação do dado',
-    selector: row => row.classification,
-    sortable: true
-  }
-];
+
 
 
 
 const MeasurementsTable = ({measurements, chartContainerSize}) =>{
     const [rows, setRows] = useState([])
     const [filterText, setFilterText] = useState('');
+    
+    const authOptions = useSelector(state=>state.auth)
+    const modalChartOptions = useSelector(state=>state.modalchart)
+
     const filteredRows = useMemo(_=>rows.filter(row=> (filterText === '' || row.date.toLowerCase().includes(filterText.toLowerCase()))),[rows, filterText]);
     const [selectedRows, setSelectedRows] = useState([]);
-    const inputFilterRef = useRef(null);
+    const [selectAll, setSelectAll] = useState(0)    
+    
+    const canEdit = useMemo(_=> isLogged(authOptions) && hasAnyOfRoles(authOptions, ['dev', 'admin']) && modalChartOptions.groupType === 'minute', [authOptions,modalChartOptions.groupType])
+
+    useEffect(_=>{
+      if(selectAll === 1){
+        setSelectedRows(filteredRows);
+      } else if(selectAll === 2 || selectAll === 0) {
+        setSelectedRows([]);
+      }
+      
+    }, [selectAll])
+
+
+    const columns = [
+      ...(canEdit ? [{
+        name: (
+          <div
+            onClick={() => setSelectAll(selectAll === 0 ? 1 : 0)}
+            style={{
+              cursor: 'pointer',
+              // padding: "4px 8px",
+              fontSize: 18,
+              textAlign:'left'
+              // border:'1px solid gray'
+            }}
+          >
+            {selectAll === 0 ? <MdOutlineCheckBoxOutlineBlank/> : <MdOutlineCheckBox/> }
+          </div>
+        ),
+        cell: () => null,
+        // width: "72px",
+        ignoreRowClick: true,
+        allowOverflow: true,
+        button: true,
+        sortable: false,
+      }] :[]),
+      {
+        name: 'Data',
+        selector: row => row.date,
+        sortable: true
+      },
+      {
+        name: 'Value (mm)',
+        selector: row => row.value,
+        sortable: true
+      },
+      {
+        name: 'Classificação do dado',
+        selector: row => row.classification,
+        sortable: true
+      }
+    ];
 
     const subHeader = () =>{
-      return <div><FilterInput filterText={filterText} onFilterTextChange={setFilterText}/></div>
+      return <div style={{display: 'flex', gap: 5, alignItems: 'center', justifyContent: 'center'}}><FilterInput filterText={filterText} onFilterTextChange={setFilterText}/><ClassificationButton selectedRows={selectedRows}/></div>
     }
 
     useEffect(_=>{
         if(measurements){          
+
             const formattedRows = measurements.map((measurement, index) => ({
                 id: index + 1,
+                measurement_id: measurement.measurement_id,
                 date: measurement.date,
                 value: measurement.value.toFixed(2).replace('.',','),
                 classification: getClassificationType(measurement.measurement_classification_type_id?.toString())
@@ -49,8 +95,10 @@ const MeasurementsTable = ({measurements, chartContainerSize}) =>{
     },[measurements])
 
     const handleRowClick = row =>{
+      if(!canEdit) return;
+
       const isSelected = selectedRows.some(r => r.id === row.id);
-      console.log(row);
+      
       
       if (isSelected) {
         setSelectedRows(selectedRows.filter(r => r.id !== row.id));
@@ -64,7 +112,7 @@ const MeasurementsTable = ({measurements, chartContainerSize}) =>{
             <DataTable
               columns={columns}
               data={filteredRows}
-              selectableRows //habilitar seleção de linhas
+              selectableRows={canEdit} //habilitar seleção de linhas
               pagination //paginação
               fixedHeader //header fixo
               fixedHeaderScrollHeight={chartContainerSize ? `${chartContainerSize - 150}px` : '400px'} //altura do header fixo
@@ -75,11 +123,12 @@ const MeasurementsTable = ({measurements, chartContainerSize}) =>{
               dense={false} //modo compacto
               subHeader //ativar subheader
               subHeaderComponent={subHeader()} //componente do subheader
-              pointerOnHover //mouse pointer on hover
-              highlightOnHover //highlight row on hover
+              pointerOnHover={canEdit} //mouse pointer on hover
+              highlightOnHover={canEdit} //highlight row on hover
               selectableRowSelected={row => //override na seleção da linha para a variavel de estado
                 selectedRows.some(r => r.id === row.id)
               }
+              selectableRowsNoSelectAll
             />
         </div>
     )
@@ -87,8 +136,12 @@ const MeasurementsTable = ({measurements, chartContainerSize}) =>{
 
 const getClassificationType = (typeId) => {
   switch(typeId) {
+    case '2':
+      return 'pré-consistido';
     case '3':
       return 'bruto';
+    case '4':
+      return 'suspeito'
     default:
       return typeId;
   }

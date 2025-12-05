@@ -31,7 +31,14 @@ export const api = createApi({
         body: data
       })
     }),
+    setMeasurementsClassification: builder.mutation({
+      query: (data) => ({
+        url: `measurements/update_classification`,
+        method: 'POST',
+        body: data
+      }) 
+    })
   }),
 });
 
-export const { useGetCitiesQuery, useGetStationQuery, useGetSubugrhisQuery,useSetStationPublicMutation } = api;
+export const { useGetCitiesQuery, useGetStationQuery, useGetSubugrhisQuery,useSetStationPublicMutation, useSetMeasurementsClassificationMutation } = api;
