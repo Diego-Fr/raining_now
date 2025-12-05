@@ -20,7 +20,7 @@ const MeasurementsTable = ({measurements, chartContainerSize}) =>{
     const authOptions = useSelector(state=>state.auth)
     const modalChartOptions = useSelector(state=>state.modalchart)
 
-    const filteredRows = useMemo(_=>rows.filter(row=> (filterText === '' || row.date.toLowerCase().includes(filterText.toLowerCase()))),[rows, filterText]);
+    const filteredRows = useMemo(_=>rows.filter(row=> (filterText === '' || row.value.includes(filterText.toLowerCase()) || row.classification.toLowerCase().includes(filterText.toLowerCase()) || row.date.toLowerCase().includes(filterText.toLowerCase()))),[rows, filterText]);
     const [selectedRows, setSelectedRows] = useState([]);
     const [selectAll, setSelectAll] = useState(0)    
     
@@ -53,11 +53,12 @@ const MeasurementsTable = ({measurements, chartContainerSize}) =>{
           </div>
         ),
         cell: () => null,
-        // width: "72px",
+        width: "30px",
         ignoreRowClick: true,
         allowOverflow: true,
         button: true,
         sortable: false,
+        
       }] :[]),
       {
         name: 'Data',
@@ -72,12 +73,40 @@ const MeasurementsTable = ({measurements, chartContainerSize}) =>{
       {
         name: 'Classificação do dado',
         selector: row => row.classification,
-        sortable: true
+        cell: row => (
+          <div
+            style={{
+              textTransform: 'capitalize',
+              color: row.classification === 'pré-consistido' ? 'green' : row.classification === 'suspeito' && 'red',
+            }}
+          >
+            {row.classification}
+          </div>
+        )
       }
     ];
 
+    const onStatusUpdate = (data, status) =>{
+      // atualizar a classificação das linhas selecionadas
+      const updatedRows = rows.map(row => {
+        if(selectedRows.some(r => r.id === row.id)){
+          return {
+            ...row,
+            classification: getClassificationType(status.toString())
+          }
+        }
+        return row;
+      });
+      setRows(updatedRows);
+      
+      // limpar seleção
+      setSelectedRows([]);
+      setSelectAll(0);
+    }
+      
+
     const subHeader = () =>{
-      return <div style={{display: 'flex', gap: 5, alignItems: 'center', justifyContent: 'center'}}><FilterInput filterText={filterText} onFilterTextChange={setFilterText}/><ClassificationButton selectedRows={selectedRows}/></div>
+      return <div style={{display: 'flex', gap: 5, alignItems: 'center', justifyContent: 'center'}}><ClassificationButton onStatusUpdate={onStatusUpdate} selectedRows={selectedRows}/><FilterInput filterText={filterText} onFilterTextChange={setFilterText}/></div>
     }
 
     useEffect(_=>{
@@ -107,8 +136,12 @@ const MeasurementsTable = ({measurements, chartContainerSize}) =>{
       }
     }
 
+    
+    
+    
+
     return (
-        <div style={{ height: '100%', width: '100%'}}>
+        <div style={{ height: '100%', width: '100%', borderTop: '1px solid rgb(243, 243, 243)' }}>
             <DataTable
               columns={columns}
               data={filteredRows}
@@ -120,7 +153,7 @@ const MeasurementsTable = ({measurements, chartContainerSize}) =>{
               paginationRowsPerPageOptions={[20, 50]} //opções de linhas por página
               onRowClicked={handleRowClick} //evento de clique na linha
               selectableRowsHighlight //highlight selected row
-              dense={false} //modo compacto
+              dense={true} //modo compacto
               subHeader //ativar subheader
               subHeaderComponent={subHeader()} //componente do subheader
               pointerOnHover={canEdit} //mouse pointer on hover
