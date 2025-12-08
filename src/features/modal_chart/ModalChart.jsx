@@ -15,6 +15,7 @@ import { colorByMeasurementClassification } from '../../utils/measurementUtils'
 import { FaEye } from "react-icons/fa6";
 import Visibility from './components/Visibility'
 import MeasurementsTable from './components/MeasurementsTable/MeasurementsTable'
+import ContextSelector from './components/ContextSelector'
 
 
 const ModalChart = () =>{
@@ -36,7 +37,7 @@ const ModalChart = () =>{
     })
 
     const [modalOptions, setModalOptions] = useState({
-        type: 'table'
+        type: 'chart'
     })
 
     const [measurements, setMeasurements] = useState([])
@@ -54,6 +55,8 @@ const ModalChart = () =>{
     const authOptions = useSelector(state=>state.auth)
 
     const dispatch = useDispatch()
+
+    const modalFooter = useRef()
 
 
     const setStation = (station_id) =>{
@@ -148,9 +151,10 @@ const ModalChart = () =>{
     const setChartSize = async () =>{
         
         await new Promise(resolve => setTimeout(resolve, 1)) //workaround
-
+        console.log(wrapperRef.current.offsetHeight);
+        
         setChartState(state=>({
-            ...state, mapContainerSize: wrapperRef.current.offsetHeight - titleRef.current.offsetHeight
+            ...state, mapContainerSize: wrapperRef.current.offsetHeight - titleRef.current.offsetHeight - modalFooter.current.offsetHeight
         }))
     }
 
@@ -285,7 +289,12 @@ const ModalChart = () =>{
                                     :<MeasurementsTable measurements={measurements} chartContainerSize={chartState.mapContainerSize}></MeasurementsTable>
                             }
                         </>
-                        }
+                    }
+
+                    
+                </div>
+                <div ref={modalFooter} style={{height:'fit-content', padding: 10, display:'flex', alignItems:'center', justifyContent: 'center'}}>
+                    <ContextSelector modalOptions={modalOptions} setModalOptions={setModalOptions}/>
                 </div>
             </div>
         </div>

@@ -1,0 +1,37 @@
+.container{
+    display: flex;
+    // position: absolute;
+    height: 100%;
+    background-color: white;
+    bottom: 0; 
+    left: 50%;
+    // transform: translate(-50%, 0%);
+    width: fit-content;
+
+    .button{
+        padding: 5px 15px;
+        border: 1px solid rgb(233, 233, 233);
+        cursor: pointer;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        gap: 3px;
+
+        &:first-child{
+            border-radius: 5px 0px 0px 5px;
+        }
+
+        &:last-child{
+            border-radius: 0px 5px 5px 0px;
+            border-left: none;
+        }
+
+        &.active{
+            background-color: #2eb2d1;
+            color: white;
+            border: none;
+        }
+
+    }
+
+}

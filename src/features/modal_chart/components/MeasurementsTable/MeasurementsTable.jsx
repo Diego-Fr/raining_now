@@ -8,11 +8,6 @@ import ClassificationButton from './ClassificationButtons';
 import { isLogged,hasAnyOfRoles } from "@utils/authUtils"
 import { MdOutlineCheckBox,MdOutlineCheckBoxOutlineBlank,MdOutlineIndeterminateCheckBox } from "react-icons/md";
 
-
-
-
-
-
 const MeasurementsTable = ({measurements, chartContainerSize}) =>{
     const [rows, setRows] = useState([])
     const [filterText, setFilterText] = useState('');
@@ -25,6 +20,9 @@ const MeasurementsTable = ({measurements, chartContainerSize}) =>{
     const [selectAll, setSelectAll] = useState(0)    
     
     const canEdit = useMemo(_=> isLogged(authOptions) && hasAnyOfRoles(authOptions, ['dev', 'admin']) && modalChartOptions.groupType === 'minute', [authOptions,modalChartOptions.groupType])
+
+    const [lastRowId, setLastRowId] = useState()
+    const [isShiftPress, setIsShiftPress] = useState(false)
 
     useEffect(_=>{
       if(selectAll === 1){
@@ -103,11 +101,32 @@ const MeasurementsTable = ({measurements, chartContainerSize}) =>{
       setSelectedRows([]);
       setSelectAll(0);
     }
-      
 
     const subHeader = () =>{
       return <div style={{display: 'flex', gap: 5, alignItems: 'center', justifyContent: 'center'}}><ClassificationButton onStatusUpdate={onStatusUpdate} selectedRows={selectedRows}/><FilterInput filterText={filterText} onFilterTextChange={setFilterText}/></div>
     }
+
+    useEffect(() => {
+      const handleKeyDown = (e) => {
+        if (e.key === "Shift") {
+          setIsShiftPress(true)
+        }
+      };
+
+      const handleKeyUp = (e) =>{
+        if (e.key === "Shift") {
+          setIsShiftPress(false)
+        }
+      }
+
+      window.addEventListener("keydown", handleKeyDown);
+      window.addEventListener("keyup", handleKeyUp);
+
+      return () => {
+        window.removeEventListener("keydown", handleKeyDown);
+        window.removeEventListener("keyup", handleKeyUp);
+      };
+    }, []);
 
     useEffect(_=>{
         if(measurements){          
@@ -128,17 +147,27 @@ const MeasurementsTable = ({measurements, chartContainerSize}) =>{
 
       const isSelected = selectedRows.some(r => r.id === row.id);
       
-      
       if (isSelected) {
+        //desselecionando
         setSelectedRows(selectedRows.filter(r => r.id !== row.id));
       } else {
         setSelectedRows([...selectedRows, row]);
       }
-    }
 
-    
-    
-    
+      if(!lastRowId){
+        setLastRowId(row.id)
+      } else {
+        if(isShiftPress){
+          //adcionando a lista de seleçoes as linhas between
+          setSelectedRows([...selectedRows, ...filteredRows.filter(r => r.id >= Math.min(row.id, lastRowId) && r.id <= Math.max(row.id, lastRowId))]);  
+
+          setLastRowId(row.id)
+        } else {
+          setLastRowId(row.id)
+        }
+        
+      }
+    }
 
     return (
         <div style={{ height: '100%', width: '100%', borderTop: '1px solid rgb(243, 243, 243)' }}>

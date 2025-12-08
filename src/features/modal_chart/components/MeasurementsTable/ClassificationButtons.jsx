@@ -50,11 +50,11 @@ const ClassificationButton = ({selectedRows, onStatusUpdate= _ =>{} }) =>{
     return (
          canEdit && 
             selectedRows.length > 0 && <div style={{marginRight: 10, heigth: '100%', fontSize:10, cursor: 'pointer', textAlign:'center'}}>
-                <div >Classificar Dados</div>
+                <div >Classificar Dados ({selectedRows.length})</div>
                 <div style={{display: 'flex', gap:5,heigth: '100%', fontSize:12, cursor: 'pointer'}}>
-                    <div style={{borderRadius:5, paddingRight: 5, paddingLeft: 5,backgroundColor: 'red', color: 'white'}} onClick={_=>clickHandler(4)}>Suspeito ({selectedRows.length})</div>
-                    <div style={{borderRadius:5, paddingRight: 5, paddingLeft: 5,backgroundColor: '#797979ff', color: 'white'}} onClick={_=>clickHandler(3)}>Bruto ({selectedRows.length})</div>
-                    <div style={{borderRadius:5, paddingRight: 5, paddingLeft: 5,backgroundColor: '#2ac937', color: 'white'}} onClick={_=>clickHandler(2)}>Pré-consistido ({selectedRows.length})</div>
+                    <div style={{borderRadius:5, paddingRight: 5, paddingLeft: 5,backgroundColor: 'red', color: 'white'}} onClick={_=>clickHandler(4)}>Suspeito</div>
+                    <div style={{borderRadius:5, paddingRight: 5, paddingLeft: 5,backgroundColor: '#797979ff', color: 'white'}} onClick={_=>clickHandler(3)}>Bruto</div>
+                    <div style={{borderRadius:5, paddingRight: 5, paddingLeft: 5,backgroundColor: '#2ac937', color: 'white'}} onClick={_=>clickHandler(2)}>Pré-consistido</div>
                 </div>
             </div>
     )
