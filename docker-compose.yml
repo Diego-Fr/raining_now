@@ -1,0 +1,8 @@
+version: "3.9"
+
+services:
+  raining-now:
+    build: .
+    ports:
+      - "50000:80"
+    restart: always
