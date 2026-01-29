@@ -21,6 +21,10 @@ import Lightning from './features/lightning/Lightning'
 import BottomRight from './features/panels/bottomright/BottomRight'
 import BottomLeft from './features/panels/bottomleft/BottomLeft'
 
+import ReactGA from "react-ga4";
+
+ReactGA.initialize("G-YNVNQE0KN4");
+
 const Map = lazy(_=> import('./features/map/Map'))
 const ModalChart = lazy(_=> import('./features/modal_chart/ModalChart'))
 
