@@ -5,6 +5,7 @@ import Inspect from 'vite-plugin-inspect';
 
 // https://vite.dev/config/
 export default defineConfig({
+  base: "/sibh/chuva_agora/",
   plugins: [react(), Inspect()],
   resolve: {
     alias: {
