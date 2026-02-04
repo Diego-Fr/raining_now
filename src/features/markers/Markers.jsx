@@ -80,10 +80,14 @@ const Markers = options =>{
         }
     } 
 
+
+
     useEffect(_=>{
         
         if(map && !map.hasLayer(markersFeatureGroup.current)){
             map.addLayer(markersFeatureGroup.current)
+            markersFeatureGroup.current._reset()
+            
         }
 
         if(map && stations?.length > 0){            

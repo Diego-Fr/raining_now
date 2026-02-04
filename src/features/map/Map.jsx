@@ -4,12 +4,14 @@ import { setMap } from "../../store/mapSlice";
 import Markers from "../markers/Markers";
 import { updateStations } from "../../store/stationSlice";
 
-import 'leaflet-markers-canvas'
+// import 'leaflet-markers-canvas'
 import { getGeoCities } from "../../utils/geoLayers";
 import { featurePPDCStyle, geoLayersToFeatureGroupPPDC } from "./MapUtils";
 import { feachCityLimiares } from "../../services/api";
 import { ToastContainer, toast } from 'react-toastify'
 import { setHours } from "../../store/contextSlice";
+import Lightning from "../lightning/Lightning";
+import { CanvasMarkerProvider, useCanvasMarkerReady } from "../../context/CanvasMarkerContext";
 
 const Map = () =>{
     const mapRef = useRef(null);
@@ -28,6 +30,8 @@ const Map = () =>{
     const [cityLimiares, setCityLimiares] = useState()
 
     const stationContext = useSelector(state=>state.station)
+
+    const {canvasMarkersReady} = useCanvasMarkerReady()
 
     
     const removeCityFeatureFromMap = () =>{
@@ -150,10 +154,19 @@ const Map = () =>{
         mapInstanceRef.current.invalidateSize()
     })
 
+    useEffect(_=>{
+        if(canvasMarkersReady){            
+            mapInstanceRef.current.invalidateSize()
+        }
+    }, [canvasMarkersReady])
+
+
 
     return (
         <div ref={mapRef} style={{height: `${mapHeight}px`, width:'100%', position:'relative'}}>
-            <Markers />
+            
+            {canvasMarkersReady && <><Markers /><Lightning/></>}
+            
         </div>
     )
 }

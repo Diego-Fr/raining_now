@@ -5,6 +5,9 @@ import { generateMarkerSVG } from './LightningUtil'
 import moment from 'moment'
 
 const Lightning = () =>{
+
+    if(!L.MarkersCanvas){return;}
+    
     const map = useSelector(state=>state.map.map)
     const markersFeatureGroup = useRef(new L.MarkersCanvas())
     const lightningOptions = useSelector(state => state.lightning)

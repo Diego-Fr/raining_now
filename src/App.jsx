@@ -17,13 +17,13 @@ import LoginComponent from './features/login/LoginComponent'
 import {useDispatch, useSelector} from 'react-redux'
 import { getMeData, setExpires, setToken } from './store/authSlice'
 import { isLogged } from './utils/authUtils'
-import Lightning from './features/lightning/Lightning'
+
 import BottomRight from './features/panels/bottomright/BottomRight'
 import BottomLeft from './features/panels/bottomleft/BottomLeft'
 
 import ReactGA from "react-ga4";
-
-ReactGA.initialize("G-YNVNQE0KN4");
+import { CanvasMarkerProvider } from './context/CanvasMarkerContext'
+import Lightning from './features/lightning/Lightning'
 
 const Map = lazy(_=> import('./features/map/Map'))
 const ModalChart = lazy(_=> import('./features/modal_chart/ModalChart'))
@@ -31,6 +31,7 @@ const ModalChart = lazy(_=> import('./features/modal_chart/ModalChart'))
 const SideChart = lazy(_=> import('./features/sideChart/SideChart'))
 const TopLoader = lazy(_=> import('./features/loader/top_loader/TopLoader'))
 const ContextMenu = lazy(_=> import('./features/context_menu/ContextMenu'))
+
 
 function App() {
   const [count, setCount] = useState(0);
@@ -43,6 +44,14 @@ function App() {
     
     dispatch(setToken(token))
     dispatch(setExpires(exp))
+  }, []);
+
+  useEffect(() => {
+    try {
+      ReactGA.initialize("G-YNVNQE0KN4");
+    } catch (e) {
+      console.warn("GA não carregou:", e);
+    }
   }, []);
 
   useEffect(_=>{
@@ -64,7 +73,10 @@ function App() {
       <Loader/>
       <Timeline/>
       <Suspense fallback={null}>
-        <Map/>
+        <CanvasMarkerProvider>
+          <Map/>
+          <Lightning/>
+        </CanvasMarkerProvider>
         <ToastContainer
           position="bottom-right"
           autoClose={3000}
@@ -78,7 +90,6 @@ function App() {
         <ContextMenu/>
         <ModalChart/>
         <LoginComponent/>
-        <Lightning></Lightning>
         
       </Suspense>
       
