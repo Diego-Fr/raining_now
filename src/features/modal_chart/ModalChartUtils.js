@@ -161,7 +161,7 @@ const generateFluChart = async (measurements, chart_element, zoomEventHandle, st
             tension: 0.0,
             yAxisID: 'y1'
         })
-    }
+    }    
 
     let chart =  new Chart(chart_element, {
         data: {
@@ -203,7 +203,8 @@ const generateFluChart = async (measurements, chart_element, zoomEventHandle, st
                         display: true,
                         text: 'Vazão (m³/s)'
                     },
-                    position: 'right'
+                    position: 'right',
+                    display: data_vazao.length > 0
                 }
             },
             plugins: {
