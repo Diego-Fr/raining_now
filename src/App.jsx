@@ -67,7 +67,7 @@ function App() {
       
       
       <LayerControl/>
-      
+      <TimeSelector/>
       
       <Legend/>
       
