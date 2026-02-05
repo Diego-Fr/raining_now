@@ -21,6 +21,9 @@ export const api = createApi({
     getSubugrhis: builder.query({
       query: () => 'subugrhis?with_bbox=true',
     }),
+    getUgrhis: builder.query({
+      query: () => 'ugrhis?with_bbox=true',
+    }),
     getStation:builder.query({
       query: (id) => `stations/${id}`,
     }),
@@ -41,4 +44,4 @@ export const api = createApi({
   }),
 });
 
-export const { useGetCitiesQuery, useGetStationQuery, useGetSubugrhisQuery,useSetStationPublicMutation, useSetMeasurementsClassificationMutation } = api;
+export const { useGetCitiesQuery, useGetStationQuery, useGetSubugrhisQuery,useSetStationPublicMutation, useSetMeasurementsClassificationMutation, useGetUgrhisQuery } = api;

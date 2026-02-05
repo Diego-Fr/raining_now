@@ -4,7 +4,7 @@ import { getCityByPoint, searchAddress } from '../../../services/api'
 import {  setSearchProps } from '../../../store/searchSlice'
 import {useDispatch} from 'react-redux'
 import { getBoundingBox } from '../../layer_control/utils'
-import { useGetCitiesQuery,useGetSubugrhisQuery } from '../../../services/sibh_api'
+import { useGetCitiesQuery,useGetSubugrhisQuery, useGetUgrhisQuery } from '../../../services/sibh_api'
 import { FaTimes } from "react-icons/fa";
 
 
@@ -20,6 +20,7 @@ const SearchInput = () =>{
 
     const {data: cities, isError, isLoading} = useGetCitiesQuery()
     const {data: subugrhis} = useGetSubugrhisQuery()
+    const {data: ugrhis} = useGetUgrhisQuery()
 
     const [selectedItem, setSelectedItem] = useState()
 
@@ -32,6 +33,11 @@ const SearchInput = () =>{
     const subugrhisList = useMemo(_=>{
         if (!subugrhis) return []
         return subugrhis.map(x=>({...x, name_normalize:x.name.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "")}))
+    })
+
+    const ugrhisList = useMemo(_=>{
+        if(!ugrhis) return []
+        return ugrhis.map(x=>({...x, name_normalize:x.name.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "")}))
     })
 
     useEffect(_=>{
@@ -60,6 +66,12 @@ const SearchInput = () =>{
         if(subugrhisList){
             //procurar o valor digitado na lista de subugrhis
             let list = subugrhisList.filter(x=>x.name_normalize.includes(value)).map(x=>({...x, type: 'subugrhi'}))
+            obj.push(...list)
+        }
+
+        if(ugrhisList){
+            //procurar o valor digitado na lista de subugrhis
+            let list = ugrhisList.filter(x=>x.name_normalize.includes(value)).map(x=>({...x, type: 'ugrhi'}))
             obj.push(...list)
         }
         

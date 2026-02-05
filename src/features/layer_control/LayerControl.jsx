@@ -54,7 +54,8 @@ const LayerControl = _ =>{
         
         const namesByKey = {
             city_id: {layer:'municipios_sp', field: 'cd_mun', feachFunc:feachCitiesBbox},
-            subugrhi_id: {layer:'subugrhis_sp', field: 'n_subugrhi', feachFunc:feachSubugrhisBbox}
+            subugrhi_id: {layer:'subugrhis_sp', field: 'n_subugrhi', feachFunc:feachSubugrhisBbox},
+            ugrhi_id: {layer:'ugrhis_sp', field: 'ogc_fid', feachFunc:[]}
         }
 
         if(counter.length > 0){
@@ -69,6 +70,9 @@ const LayerControl = _ =>{
                     } else if(key === 'subugrhi_id'){                        
                         let cod = parseInt(station.subugrhi_cod)
                         cod = cod < 1000 ? (cod / 10).toFixed(1) : (cod / 100).toFixed(2)
+                        items[cod] = undefined
+                    } else if(key === 'ugrhi_id'){                        
+                        let cod = parseInt(station.ugrhi_cod)
                         items[cod] = undefined
                     }
                     
@@ -97,7 +101,7 @@ const LayerControl = _ =>{
             
         } else if(counter.length === 0 && map){
             
-            Object.keys(layersShowing).filter(x=>['city_id', 'subugrhi_id'].includes(x)).map(x=> layersShowing[x].layer?.remove())
+            Object.keys(layersShowing).filter(x=>['city_id', 'subugrhi_id', 'ugrhi_id'].includes(x)).map(x=> layersShowing[x].layer?.remove())
             
         }
         
@@ -108,17 +112,20 @@ const LayerControl = _ =>{
         if(!map) return;
         layersShowing['municipios_sp']?.layer?.remove()
         layersShowing['subugrhis_sp']?.layer?.remove()
+        layersShowing['ugrhis_sp']?.layer?.remove()
 
 
         const namesByKey = {
             'município': {layer:'municipios_sp', field: 'cd_mun', station_field: 'cod_ibge'},
-            'subugrhi': {layer:'subugrhis_sp', field: 'n_subugrhi', station_field: 'subugrhi_cod'}
+            'subugrhi': {layer:'subugrhis_sp', field: 'n_subugrhi', station_field: 'subugrhi_cod'},
+            'ugrhi': {layer:'ugrhis_sp', field: 'codigo', station_field: 'ugrhi_cod'}
         }
         
         if(searchOptions.cod === null || searchOptions.cod === undefined || searchOptions.cod === '') {
             resetBounds()
             dispatch(setFilterOption({field: 'cod_ibge', value: []}))
-            dispatch(setFilterOption({field: 'subugrhi_cod', value: []}))            
+            dispatch(setFilterOption({field: 'subugrhi_cod', value: []}))        
+            dispatch(setFilterOption({field: 'ugrhi_cod', value: []}))
             return;
         }
         
