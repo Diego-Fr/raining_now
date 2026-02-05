@@ -82,7 +82,7 @@ const Timeline = () =>{
                 showingOverlay.current = overlay
             }
             
-            if(!config.showingCircle){
+            if(!config.showingCircle && map){
 
                 let l = showCircle(map)
 

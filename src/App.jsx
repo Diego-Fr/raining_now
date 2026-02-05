@@ -2,6 +2,7 @@ import { useState, lazy, Suspense, useEffect } from 'react'
 import './App.css'
 // import Map from './features/map/Map'
 import Filter from './features/filter/Filter'
+import 'react-leaflet'
 
 import LayerControl from './features/layer_control/LayerControl'
 import TimeSelector from './features/time_selector/TimeSelector'
@@ -66,16 +67,16 @@ function App() {
       
       
       <LayerControl/>
-      <TimeSelector/>
+      
       
       <Legend/>
       
       <Loader/>
-      <Timeline/>
+      
       <Suspense fallback={null}>
-        <CanvasMarkerProvider>
+        <CanvasMarkerProvider> 
           <Map/>
-          <Lightning/>
+          <Timeline/>
         </CanvasMarkerProvider>
         <ToastContainer
           position="bottom-right"

@@ -154,11 +154,11 @@ const Map = () =>{
         mapInstanceRef.current.invalidateSize()
     })
 
-    useEffect(_=>{
-        if(canvasMarkersReady){            
-            mapInstanceRef.current.invalidateSize()
-        }
-    }, [canvasMarkersReady])
+    // useEffect(_=>{
+    //     if(canvasMarkersReady){            
+    //         mapInstanceRef.current.invalidateSize()
+    //     }
+    // }, [canvasMarkersReady])
 
 
 
