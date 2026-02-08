@@ -71,3 +71,11 @@ button:focus-visible {
 .leaflet-interactive:focus {
   outline: none;
 }
+
+.leaflet-image-layer {
+  image-rendering: pixelated;
+  image-rendering: -moz-crisp-edges;
+  image-rendering: -webkit-crisp-edges;
+  image-rendering: crisp-edges;
+  -ms-interpolation-mode: nearest-neighbor;
+}

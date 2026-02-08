@@ -1,4 +1,5 @@
 import { getRadarLastImagesKeys } from "../../services/api";
+import * as turf from '@turf/turf'
 
 const getImages = async (hours=2) =>{
 
@@ -13,14 +14,22 @@ const getImages = async (hours=2) =>{
 }
 
 const showCircle = map =>{
+
+    const circle = turf.circle(
+        [-45.972222, -23.600000],
+        203.14,
+        { units: 'kilometers', steps: 64 }
+    );
+    let l
     try{
-        let l = L.circle([-23.600795, -45.97279], {
-            radius: 203140, //em metros - raiz quadrada da Área / PI = raio
-            color:'black',
-            opacity: 0.5,
-            fill:false,
-            dashArray: '5, 10',
-            weight: 2
+        l = L.geoJSON(circle, {
+        style: {
+            color: 'black',
+            weight: 2,
+            dashArray: '5,10',
+            fill: false,
+            opacity: 0.5
+        }
         }).addTo(map);
     } catch(e){
         console.log(e, 'erro ao adicionar círculo')
