@@ -107,7 +107,7 @@ const Timeline = () =>{
                 showingOverlay.current = undefined
             }
 
-            if(config.showingCircle){
+            if(config.showingCircle && config.showingCircle !== true){
                 map.removeLayer(config.showingCircle)
                 setConfig(state=>({
                     ...state,
