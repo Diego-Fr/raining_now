@@ -13,14 +13,19 @@ const getImages = async (hours=2) =>{
 }
 
 const showCircle = map =>{
-    let l = L.circle([-23.600795, -45.97279], {
-        radius: 203140, //em metros - raiz quadrada da Área / PI = raio
-        color:'black',
-        opacity: 0.5,
-        fill:false,
-        dashArray: '5, 10',
-        weight: 2
-    }).addTo(map);
+    try{
+        let l = L.circle([-23.600795, -45.97279], {
+            radius: 203140, //em metros - raiz quadrada da Área / PI = raio
+            color:'black',
+            opacity: 0.5,
+            fill:false,
+            dashArray: '5, 10',
+            weight: 2
+        }).addTo(map);
+    } catch(e){
+        console.log(e, 'erro ao adicionar círculo')
+        return true
+    }
 
     return l
 }
