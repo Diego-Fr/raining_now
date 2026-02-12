@@ -62,6 +62,8 @@ const ModalChart = () =>{
     const setStation = (station_id) =>{
         let station = stations.find(x=> x.station_prefix_id.toString() === station_id.toString())
 
+        if(!station) return
+
         setStationInfo(state=>({
             ...state,
             station_name:station.station_name || 'NOME DO POSTO',
@@ -151,7 +153,6 @@ const ModalChart = () =>{
     const setChartSize = async () =>{
         
         await new Promise(resolve => setTimeout(resolve, 1)) //workaround
-        console.log(wrapperRef.current.offsetHeight);
         
         setChartState(state=>({
             ...state, mapContainerSize: wrapperRef.current.offsetHeight - titleRef.current.offsetHeight - modalFooter.current.offsetHeight
