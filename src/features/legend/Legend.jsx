@@ -5,11 +5,13 @@ import statesPlu from '@data/statesPlu'
 import statesFlu from '@data/statesFlu'
 import { setFilterOption } from '../../store/filterSlice'
 import statesPPDC from '@data/statesPPDC'
+import { useIsMobile } from '../../hooks/isMobile'
 
 const Legend = () =>{
     const context = useSelector(state=> state.context.context)
     const [states, setStates] = useState([])
     const dispatch = useDispatch()
+    const isMobile = useIsMobile()
 
     
     useEffect(_=>{
@@ -50,7 +52,7 @@ const Legend = () =>{
     
     
     return (
-        <div className={styles.container}>
+        <div className={`${styles.container} ${isMobile ? styles.mobile : ''}`}>
             {states.map((state, index)=> <div key={index} onClick={_=>itemClickHandler(state.id)} className={styles.legendItem} style={{backgroundColor: state.show ? state.color : 'gray'}}>{state.title}</div> )}
         </div>
     )

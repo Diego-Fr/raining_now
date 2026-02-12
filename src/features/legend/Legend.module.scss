@@ -13,6 +13,17 @@
     display: flex;
     gap: 3px;
 
+    &.mobile{
+        bottom: 0px;
+        gap:0px;
+        width: 100%;
+        transform: translate(-50%,-100%);
+
+        .legendItem{
+            flex: 1;
+        }
+    }
+
 
     .legendItem{
         border: 1px solid rgb(255, 255, 255);
@@ -37,6 +48,6 @@
 
 @media only screen and (max-height: 800px) {
     .container{
-        bottom: 0.5rem;
+        bottom: 0px;
     }
 }

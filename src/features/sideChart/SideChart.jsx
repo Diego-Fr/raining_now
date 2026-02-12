@@ -8,6 +8,7 @@ import Table from './Table';
 import ContextSelector from './ContextSelector'
 import { classifyStation } from '../../utils/stationUtils';
 import { setShow } from '../../store/sideMenuSlice';
+import { useIsMobile } from '../../hooks/isMobile';
 
 
 
@@ -21,6 +22,7 @@ const SideChart = () =>{
     const [menuLimit, setMenuLimit] = useState(20)
     const [charTitle, setChartTitle] = useState('')
     const sidemenu = useSelector(state=>state.sidemenu)
+    const isMobile = useIsMobile()
     
     const menuContextAvailables = {
         rain: ['point', 'city', 'ugrhi']
@@ -70,6 +72,12 @@ const SideChart = () =>{
         }
         
     },[menuContext,context])
+
+    useEffect(_=>{
+        dispatch(setShow(!isMobile))
+        
+        
+    }, [isMobile])
 
     //useMemo no stations, para criar uma lista de postos com contexto validos para plu e flu:
     //plu apenas os top 20 com valores >= 1 e filtrados atualmente
