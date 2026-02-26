@@ -67,7 +67,7 @@ export const filterStations = _ => async (dispatch, getState) =>{
   
   const {station, filter} = getState()
   const stations = station.stations
-  // console.log(filter);
+
   
   let updated_stations = stations.map(station=>{
     let shows = [];

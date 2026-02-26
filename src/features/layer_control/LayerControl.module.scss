@@ -6,7 +6,47 @@
     z-index: 1000;
     top: 50px;
     right: 50px;
-    border-radius: 10px;
-    border: 1px solid gray;
-    display: none;
+    border-radius: 5px;
+    overflow: hidden;
+    display: block;
+    
+    .headerWrapper{
+
+    }
+
+    .itemWrapper{
+        box-sizing: border-box;
+        padding: 10px;
+        border-bottom: 1px solid #c7c7c7;
+        width: 100%;
+        height: fit-content;
+        text-align: left;
+        display: flex;
+        gap: 10px;
+        cursor: pointer;
+
+
+        &.active{
+            background-color: rgb(135, 255, 229);
+        }
+
+        .iconWrapper{
+            width: 100px;
+            height: 100px;
+            background-color: #ececec;
+            // background-color: purple;
+            border-radius: 5px;
+            overflow: hidden;
+        }
+
+        .descWrapper{
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            .desc{
+                font-size: x-small;
+            }
+        }
+        
+    }
 }

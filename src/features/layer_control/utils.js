@@ -1,11 +1,19 @@
+import hidroicon from '@assets/hidrografia.png'
+
 const addLayer = (map, layer_name, filter, options={}) =>{
     let l = L.tileLayer.wms('https://geodados.daee.sp.gov.br/geoserver/ows', {
         layers: layer_name,
         format: 'image/png8',
         transparent: true,
         styles: options.style || '',
-        CQL_FILTER: filter || ''
+        CQL_FILTER: filter || '',
+        env: 'cor:fc0328',
     }).addTo(map)
+
+    l.on('loading', function () {
+        console.log("Carregando WMS...");
+    });
+
     return l
 }
 
@@ -21,8 +29,19 @@ const getBoundingBox  = (coords) => {
     });
     
     return [ [minY, minX], [maxY, maxX]];
-  }
+}
+
+const iconByLayer = layer_id =>{
+    console.log(layer_id);
+    
+    switch(layer_id){
+        case 'hidro':
+            return hidroicon
+        default:
+            return ''
+    }
+}
 
 export {
-  addLayer,getBoundingBox
+  addLayer,getBoundingBox, iconByLayer
 }

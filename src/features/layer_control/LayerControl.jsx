@@ -2,29 +2,42 @@ import styles from './LayerControl.module.scss'
 import layerControlList from '../../data/layerControlList'
 import {useDispatch, useSelector} from 'react-redux'
 import { useEffect, useState } from 'react'
-import { getBoundingBox, addLayer } from './utils'
+import { getBoundingBox, addLayer, iconByLayer } from './utils'
 import { feachCitiesBbox, feachSubugrhisBbox } from '../../services/api'
 import { setFilterOption } from '../../store/filterSlice'
+
+import hidro_icon from '@assets/hidrografia.png'
+import LayerItem from './LayerItem'
 
 const LayerControl = _ =>{
 
     const map = useSelector(state=> state.map.map)
-    const filterOptions = useSelector(state=>state.filter.filterOptions)
-    const stations = useSelector(state=> state.station.stations)
+    
     const [layersShowing, setLayersShowing] = useState({
         'city_id': {show: false, layer:undefined},
-        'state': {show:true, layer:undefined}
+        'state': {show:true, layer:undefined},
+        'hidro': {show: false, layer: undefined}
     })
-    const context = useSelector(state=>state.context.context)
+
+    const [layersList, setLayersList] = useState({
+        city_id: {id: 'city_id', layer:'municipios_sp', type:'município', field: 'cd_mun', station_field: 'cod_ibge', feachFunc:feachCitiesBbox, layer_instance: undefined},
+        subugrhi_id: {layer:'subugrhis_sp', type: 'subugrhi', field: 'n_subugrhi', station_field: 'subugrhi_cod', feachFunc:feachSubugrhisBbox, layer_instance: undefined},
+        ugrhi_id: {layer:'ugrhis_sp', type: 'ugrhi', field: 'ogc_fid', feachFunc:[], station_field: 'ugrhi_cod', layer_instance: undefined},
+        hidro: {layer: 'hidrografia_completa', layer_instance: undefined}
+    })
 
     const searchOptions = useSelector(state=>state.search)
 
     const dispatch = useDispatch()
 
-    const clickHandler = layer =>{
-        let copy = Object.assign(layersShowing[layer.id])
+
+
+    const clickHandler = item =>{
+
+        let show = !item.show
         
-        setLayersShowing({...layersShowing, copy})
+        setLayersList(prev => ({...prev, [item.id]: {...prev[item.id], show}}))
+
 
     }
 
@@ -40,81 +53,16 @@ const LayerControl = _ =>{
             
             let f = addLayer(map, `geonode:limiteestadualsp`, '', {style:'estadual_chuva_agora'})
             
-            setLayersShowing(state=>({...layersShowing, 'state': {...state.state, layer: f} }))
+            setLayersShowing(state=>({...state, 'state': {...state.state, layer: f} }))
         }
         
     }, [map])
 
-    useEffect(_=>{
-        let {city_id, subugrhi_id, ugrhi_id } = filterOptions
-        
-        let a = {city_id, ugrhi_id, subugrhi_id} //transformando em obj com keys        
-        
-        let counter = Object.entries(a).filter(([id, array])=>array?.length > 0)
-        
-        const namesByKey = {
-            city_id: {layer:'municipios_sp', field: 'cd_mun', feachFunc:feachCitiesBbox},
-            subugrhi_id: {layer:'subugrhis_sp', field: 'n_subugrhi', feachFunc:feachSubugrhisBbox},
-            ugrhi_id: {layer:'ugrhis_sp', field: 'ogc_fid', feachFunc:[]}
-        }
 
-        if(counter.length > 0){
-            let item = counter[0][1]
-            let key = counter[0][0]
-            let items = {}
-            
-            stations.forEach(station=>{
-                if(item.includes(station[key]?.toString())){
-                    if(key === 'city_id'){
-                        items[station.cod_ibge] = undefined
-                    } else if(key === 'subugrhi_id'){                        
-                        let cod = parseInt(station.subugrhi_cod)
-                        cod = cod < 1000 ? (cod / 10).toFixed(1) : (cod / 100).toFixed(2)
-                        items[cod] = undefined
-                    } else if(key === 'ugrhi_id'){                        
-                        let cod = parseInt(station.ugrhi_cod)
-                        items[cod] = undefined
-                    }
-                    
-                }
-                
-            })
-                
-            layersShowing[key]?.layer?.remove()
-            
-            if(namesByKey[key]){
-                if(context != 'ppdc'){
-                    let l = addLayer(map, `geonode:${namesByKey[key].layer}`, `${namesByKey[key].field} in (${Object.keys(items).map(x=> x )})`)
-                    // l.addTo(map)
-                    setLayersShowing(prev => ({
-                        ...prev,
-                        [key]: {...prev[key], layer: l}
-                    }))
-                }                 
-
-                // namesByKey[key].feachFunc(Object.keys(items)).then(resp=>{
-                //     map.fitBounds(getBoundingBox(resp.map(x=>x.bbox_json)))
-                // })
-            }
-            
-
-            
-        } else if(counter.length === 0 && map){
-            
-            Object.keys(layersShowing).filter(x=>['city_id', 'subugrhi_id', 'ugrhi_id'].includes(x)).map(x=> layersShowing[x].layer?.remove())
-            
-        }
-        
-        
-    }, [filterOptions])
-
+    //analisa alteração no searchOptions e disparada eventos do filter
     useEffect(_=>{
         if(!map) return;
-        layersShowing['municipios_sp']?.layer?.remove()
-        layersShowing['subugrhis_sp']?.layer?.remove()
-        layersShowing['ugrhis_sp']?.layer?.remove()
-
-
+    
         const namesByKey = {
             'município': {layer:'municipios_sp', field: 'cd_mun', station_field: 'cod_ibge'},
             'subugrhi': {layer:'subugrhis_sp', field: 'n_subugrhi', station_field: 'subugrhi_cod'},
@@ -129,33 +77,17 @@ const LayerControl = _ =>{
             return;
         }
         
+        
         dispatch(setFilterOption({field: namesByKey[searchOptions.type].station_field, value: [searchOptions.cod]}))
-        
-        let l = addLayer(map, namesByKey[searchOptions.type].layer, `${namesByKey[searchOptions.type].field} in (${searchOptions.type != 'subugrhi' ? searchOptions.cod : prepareCod(searchOptions.cod)})`, {style: 'municipios_sp_raining_now'})
-        
-        setLayersShowing(prev => ({
-            ...prev,
-            [namesByKey[searchOptions.type].layer]: {...prev[namesByKey[searchOptions.type].layer], layer: l}
-        }))
-        
-        if(searchOptions.bbox){
-            map.fitBounds(searchOptions.bbox)
-        } else {
-            resetBounds()
-        }
         
     },[searchOptions])
 
-    const prepareCod = (cod) =>{
-        let c = parseInt(cod)
-        c = c < 1000 ? (c / 10).toFixed(1) : (c / 100).toFixed(2)
-        return c
-    }
-    
 
     return (
         <div className={styles.container}>
-            {layerControlList.list.map((item, index) => <div key={index}><input type='checkbox' onClick={_=>clickHandler(item)}></input>{item.title}</div> )}
+            {Object.values(layersList).map((item, index) => <div key={index} className={`${styles.itemWrapper} ${item.show ? styles.active : ''}`} onClick={_=>clickHandler(item)}>
+                <LayerItem options={item}/>
+            </div> )}
         </div>
     )
 }
