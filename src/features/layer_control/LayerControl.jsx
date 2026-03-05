@@ -21,9 +21,9 @@ const LayerControl = _ =>{
 
     const [layersList, setLayersList] = useState({
         city_id: {id: 'city_id', layer:'municipios_sp', type:'município', field: 'cd_mun', station_field: 'cod_ibge', feachFunc:feachCitiesBbox, layer_instance: undefined},
-        subugrhi_id: {layer:'subugrhis_sp', type: 'subugrhi', field: 'n_subugrhi', station_field: 'subugrhi_cod', feachFunc:feachSubugrhisBbox, layer_instance: undefined},
-        ugrhi_id: {layer:'ugrhis_sp', type: 'ugrhi', field: 'ogc_fid', feachFunc:[], station_field: 'ugrhi_cod', layer_instance: undefined},
-        hidro: {layer: 'hidrografia_completa', layer_instance: undefined}
+        subugrhi_id: {id: 'subugrhi_id',layer:'subugrhis_sp', type: 'subugrhi', field: 'n_subugrhi', station_field: 'subugrhi_cod', feachFunc:feachSubugrhisBbox, layer_instance: undefined},
+        ugrhi_id: {id: 'ugrhi_id',layer:'ugrhis_sp', type: 'ugrhi', field: 'ogc_fid', feachFunc:[], station_field: 'ugrhi_cod', layer_instance: undefined},
+        hidro: {id: 'hidro',layer: 'hidrografia_completa', layer_instance: undefined}
     })
 
     const searchOptions = useSelector(state=>state.search)
@@ -85,9 +85,9 @@ const LayerControl = _ =>{
 
     return (
         <div className={styles.container}>
-            {Object.values(layersList).map((item, index) => <div key={index} className={`${styles.itemWrapper} ${item.show ? styles.active : ''}`} onClick={_=>clickHandler(item)}>
-                <LayerItem options={item}/>
-            </div> )}
+            {Object.values(layersList).map((item, index) => 
+                <LayerItem key={index} options={item} onclick={clickHandler}/>
+            )}
         </div>
     )
 }

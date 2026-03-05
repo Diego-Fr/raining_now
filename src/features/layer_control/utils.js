@@ -7,7 +7,7 @@ const addLayer = (map, layer_name, filter, options={}) =>{
         transparent: true,
         styles: options.style || '',
         CQL_FILTER: filter || '',
-        env: 'cor:fc0328',
+        env: options.env || '',
     }).addTo(map)
 
     l.on('loading', function () {
