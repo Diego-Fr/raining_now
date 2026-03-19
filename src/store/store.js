@@ -11,6 +11,7 @@ import sidemenu from './sideMenuSlice'
 import lightningSlice from './lightningSlice'
 import searchSlice from './searchSlice'
 import { api } from '@services/sibh_api'
+import layersControlSlice from './layersControlSlice'
 
 export const store = configureStore({
     reducer: {
@@ -25,6 +26,7 @@ export const store = configureStore({
         sidemenu: sidemenu,
         lightning: lightningSlice,
         search: searchSlice,
+        layerscontrol: layersControlSlice,
         [api.reducerPath]: api.reducer, 
     },
     //desativando analise de serialização para poder salvar um L.map na variavel map

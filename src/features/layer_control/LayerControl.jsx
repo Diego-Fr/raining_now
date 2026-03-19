@@ -2,16 +2,24 @@ import styles from './LayerControl.module.scss'
 import layerControlList from '../../data/layerControlList'
 import {useDispatch, useSelector} from 'react-redux'
 import { useEffect, useState } from 'react'
-import { getBoundingBox, addLayer, iconByLayer } from './utils'
 import { feachCitiesBbox, feachSubugrhisBbox } from '../../services/api'
 import { setFilterOption } from '../../store/filterSlice'
-
+import limitemunicipal from '@assets/municipios.png'
+import limiteestadual from '@assets/limiteestadual.png'
+import limitesubugrhi from '@assets/limitesubugrhi.png'
+import limiteugrhi from '@assets/limiteugrhi.png'
 import hidro_icon from '@assets/hidrografia.png'
 import LayerItem from './LayerItem'
+import { IoIosCloseCircleOutline } from "react-icons/io";
+import { IoCloseOutline } from "react-icons/io5";
+
+
 
 const LayerControl = _ =>{
 
     const map = useSelector(state=> state.map.map)
+
+    const {show} = useSelector(state => state.layerscontrol)
     
     const [layersShowing, setLayersShowing] = useState({
         'city_id': {show: false, layer:undefined},
@@ -20,10 +28,11 @@ const LayerControl = _ =>{
     })
 
     const [layersList, setLayersList] = useState({
-        city_id: {id: 'city_id', layer:'municipios_sp', type:'município', field: 'cd_mun', station_field: 'cod_ibge', feachFunc:feachCitiesBbox, layer_instance: undefined},
-        subugrhi_id: {id: 'subugrhi_id',layer:'subugrhis_sp', type: 'subugrhi', field: 'n_subugrhi', station_field: 'subugrhi_cod', feachFunc:feachSubugrhisBbox, layer_instance: undefined},
-        ugrhi_id: {id: 'ugrhi_id',layer:'ugrhis_sp', type: 'ugrhi', field: 'ogc_fid', feachFunc:[], station_field: 'ugrhi_cod', layer_instance: undefined},
-        hidro: {id: 'hidro',layer: 'hidrografia_completa', layer_instance: undefined}
+        state: {id: 'state', style: {rangeValue: .05, strokeColor: '#212121', fillColor: '#a2a2a2', strokeWidth: 2}, show: true, icon: limiteestadual, layer: 'limiteestadualsp', strokeControl: {show: true}, fillControl: {show: true}, layer_instance: undefined},
+        city_id: {id: 'city_id', icon:limitemunicipal,  strokeControl: {show: true}, fillControl: {show: true},  layer:'municipios_sp', type:'município', field: 'cd_mun', station_field: 'cod_ibge', feachFunc:feachCitiesBbox, layer_instance: undefined},
+        subugrhi_id: {id: 'subugrhi_id', icon: limitesubugrhi, strokeControl: {show: true}, fillControl: {show: true},layer:'subugrhis_sp', type: 'subugrhi', field: 'n_subugrhi', station_field: 'subugrhi_cod', feachFunc:feachSubugrhisBbox, layer_instance: undefined},
+        ugrhi_id: {id: 'ugrhi_id', icon: limiteugrhi, strokeControl: {show: true}, fillControl: {show: true}, layer:'ugrhis_sp', type: 'ugrhi', field: 'ogc_fid', feachFunc:[], station_field: 'ugrhi_cod', layer_instance: undefined},
+        hidro: {id: 'hidro', icon: hidro_icon, layer: 'hidrografia_completa', strokeControl: {show:true}, layer_instance: undefined}
     })
 
     const searchOptions = useSelector(state=>state.search)
@@ -48,12 +57,16 @@ const LayerControl = _ =>{
         ]) //bbox estado de SP
     ]
 
+    const closeControl = () =>{
+
+    }
+
     useEffect(_=>{
         if(map && !layersShowing.state.layer){
             
-            let f = addLayer(map, `geonode:limiteestadualsp`, '', {style:'estadual_chuva_agora'})
+            // let f = addLayer(map, `geonode:limiteestadualsp`, '', {style:'raining_now_default_layer'})
             
-            setLayersShowing(state=>({...state, 'state': {...state.state, layer: f} }))
+            // setLayersShowing(state=>({...state, 'state': {...state.state, layer: f} }))
         }
         
     }, [map])
@@ -77,16 +90,16 @@ const LayerControl = _ =>{
             return;
         }
         
-        
         dispatch(setFilterOption({field: namesByKey[searchOptions.type].station_field, value: [searchOptions.cod]}))
         
     },[searchOptions])
 
 
     return (
-        <div className={styles.container}>
+        <div className={`${styles.container} ${show ? styles.show : ''}`}>
+            <div className={styles.title}><span>Camadas Auxiliares</span><div style={{float: 'right', cursor: 'pointer'}} onClick={closeControl}><IoCloseOutline/></div></div>
             {Object.values(layersList).map((item, index) => 
-                <LayerItem key={index} options={item} onclick={clickHandler}/>
+                <LayerItem key={index} options={item} onclick={clickHandler} />
             )}
         </div>
     )

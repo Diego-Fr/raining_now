@@ -3,16 +3,24 @@ import { useSelector } from 'react-redux'
 import styles from './LayerControl.module.scss'
 import { addLayer } from './utils'
 import { HexColorPicker } from 'react-colorful'
-import { BlockPicker, CompactPicker, SketchPicker, SliderPicker } from 'react-color';
+
 
 
 export default function LayerItem({options, onclick}){
-
+    
     const [itemOptions, setItemOptions] = useState({
         bbox: undefined,
-        rangeValue: 1,
-        fillColor: '#4287f5',
-        showFillPicker: false
+        style: {
+            rangeValue: .2,
+            strokeRangeValue: .8,
+            fillColor: '#4287f5',
+            strokeColor: '#4287f5',
+            strokeWidth:1,
+            ...(options.style || {})
+        },
+        
+        showFillPicker: false,
+        pickerName: 'stroke'
     })
 
     const layer_instance = useRef(null)
@@ -34,10 +42,11 @@ export default function LayerItem({options, onclick}){
         
     },[searchOptions])
 
-    useEffect(_=>{
+    useEffect(_=>{        
         
         if(searchOptions.type === options.type){
-            // layer_instance.current?.remove()
+            
+            layer_instance.current?.remove()
             
             if(filterOptions[options.station_field] && filterOptions[options.station_field].length > 0){
                 let l = showLayerOnMap()
@@ -53,9 +62,10 @@ export default function LayerItem({options, onclick}){
             layer_instance.current.remove()
         }
         
-    },[filterOptions])
+    },[filterOptions.cod_ibge, filterOptions.ugrhi_cod, filterOptions.subugrhi_cod])
 
-    useEffect(_=>{        
+    useEffect(_=>{
+        if(!map) return;
         if(options.show){
             layer_instance.current = showLayerOnMap()
             // layer_instance.current.setOpacity(itemOptions.rangeValue)
@@ -67,13 +77,20 @@ export default function LayerItem({options, onclick}){
     }, [options.show])
 
     useEffect(_=>{
-        if(itemOptions.rangeValue < 0 || !layer_instance.current) return;
+        if(itemOptions.style.rangeValue < 0 || !layer_instance.current) return;
 
         // layer_instance.current.setOpacity(itemOptions.rangeValue)
         layer_instance.current.setParams({
-            env: `fillopacity:${itemOptions.rangeValue};fillcolor:${itemOptions.fillColor.replace('#', '')}`
+            env: `fillopacity:${itemOptions.style.rangeValue};fillcolor:${itemOptions.style.fillColor.replace('#', '')};stroke:${itemOptions.style.strokeColor.replace('#', '')};strokeopacity:${itemOptions.style.strokeRangeValue}`
         }) // não redesenha ainda
-    }, [itemOptions.rangeValue, itemOptions.fillColor])
+    }, [itemOptions.style.rangeValue, itemOptions.style.fillColor, itemOptions.style.strokeColor, itemOptions.style.strokeRangeValue])
+
+    //loaading do mapa inicial, colocar camadas definidas como show=true (default)
+    useEffect(_=>{
+        if(!map || !options.show) return;        
+        layer_instance.current = showLayerOnMap()
+        
+    }, [map])
 
     const prepareCod = (cod) =>{
         let c = parseInt(cod)
@@ -83,9 +100,9 @@ export default function LayerItem({options, onclick}){
 
     const showLayerOnMap = ()=>{
         if(searchOptions.type){
-            return addLayer(map, options.layer, `${options.field} in (${searchOptions.type != 'subugrhi' ? filterOptions[options.station_field] : prepareCod(filterOptions[options.station_field])})`, {style: 'municipios_sp_raining_now'})
+            return addLayer(map, options.layer, `${options.field} in (${searchOptions.type != 'subugrhi' ? filterOptions[options.station_field] : prepareCod(filterOptions[options.station_field])})`, {style:'raining_now_default_layer'})
         } else {
-            return addLayer(map, options.layer, '')
+            return addLayer(map, options.layer, '',{style:'raining_now_default_layer', env: `fillopacity:${itemOptions.style.rangeValue};fillcolor:${itemOptions.style.fillColor.replace('#', '')};stroke:${itemOptions.style.strokeColor.replace('#', '')};strokeopacity:${itemOptions.style.strokeRangeValue}`})
         }
         
     }
@@ -96,26 +113,33 @@ export default function LayerItem({options, onclick}){
         }
     }
 
-    const inputRangeChange = (e) =>{
+    const inputRangeChange = (e, field='rangeValue') =>{
         setItemOptions(prev=>({
             ...prev,
-            rangeValue: e.target.value
+            style: {...prev.style, [field]: e.target.value}
         }))
     }
 
-    const inputColorChange = color =>{
+    const inputColorChange = (color,name) =>{
+        // let field = name === 'stroke' ? 'strokeColor' : 'fillColor'
+        let field = itemOptions.pickerName === 'stroke' ? 'strokeColor' : 'fillColor'
+        
+        
         if(!color) return;
+        
+        
         setItemOptions(prev=>({
             ...prev,
-            fillColor: color
+            style: {...prev.style, [field]: color}
         }))
     }
     
-    const fillColorButtonClick = _ =>{
+    const fillColorButtonClick = pickerName =>{
         let boolean = !itemOptions.showFillPicker
         setItemOptions(prev=>({
             ...prev,
-            showFillPicker: boolean
+            showFillPicker: boolean,
+            pickerName
         }))
     }
 
@@ -126,40 +150,69 @@ export default function LayerItem({options, onclick}){
         }))
     }
 
+    const t = (text) =>{
+        switch(text){
+            case 'municipios_sp': return 'municípios';
+            case 'subugrhis_sp': return 'subugrhis';
+            case 'ugrhis_sp': return 'ugrhis';
+            case 'hidrografia_completa': return 'hidrografia'
+            case 'limiteestadualsp': return 'limite estadual'
+            default: return text
+        }
+    }
+
     return (
         <div className={`${styles.itemWrapper} ${options.show ? styles.active : ''}`} onClick={e=>itemClickHandler(e)}>
-            <div className={styles.iconWrapper}>
-                <div>LOADING</div>
-                
-            </div>
+            {/* <div className={styles.iconWrapper}>
+                <img src={options.icon || ''} style={{width: '100px'}}></img>
+            </div> */}
             <div className={styles.descWrapper}>
-                <div>{options.layer}</div>
+                <div style={{textTransform: 'uppercase', fontWeight: 500}}>{t(options.layer)}</div>
                 {options.show ?
-                    <div ref={controlsRef} className={styles.controlsContainer}>
-                        <div style={{marginBottom: 5, display: 'flex', alignItems: 'center'}}>
-                            <label>Opacidade</label>
-                            <input type='range' value={itemOptions.rangeValue} min='0' max='1' step='.1' onChange={inputRangeChange} ></input>
-                            {itemOptions.rangeValue*100}%
-                        </div>
-                        
-                        {/* <div style={{width:20, height:20, backgroundColor: itemOptions.fillColor, borderRadius:5}}></div> */}
-                        <div>
-                            <label>Cor preenchimento</label>
-                            <div style={{display: 'flex', gap: 5}}>
-                                <div onClick={fillColorButtonClick} style={{width: 20, height: 20, backgroundColor: itemOptions.fillColor}}></div>
-                                <div style={{flex:1}}><input value={itemOptions.fillColor} type='text' style={{width:'100%',borderRadius:3, heigth:'100%', border:'1px solid #e9e9e9'}}/></div>
-                            </div>
-                            {
-                                itemOptions.showFillPicker && 
-                                    <div style={{position: 'absolute', left: 0, top:0, transform: 'translateX(-100%)', padding:5, backgroundColor:'white'}}>
-                                    <HexColorPicker 
-                                        color={itemOptions.fillColor}
-                                        onChange={inputColorChange} />
-                                    <div style={{width: '100%', backgroundColor:'#a9ffa9', marginTop: 5}} onClick={confirmColor}>Confirmar</div>
+                    <div ref={controlsRef}>
+                        {options.strokeControl?.show && 
+                            <div className={styles.controlsContainer} style={{marginBottom: 5}}>
+                                <div style={{fontSize: 'x-small'}}>Contorno</div>
+                                <div style={{marginBottom: 5, display: 'flex', alignItems: 'center'}}>
+                                    <label>Opacidade</label>
+                                    <input type='range' value={itemOptions.style.strokeRangeValue} min='0' max='1' step='.05' onChange={e=>inputRangeChange(e, 'strokeRangeValue')} ></input>
+                                    <label>{(itemOptions.style.strokeRangeValue*100).toFixed(0)}%</label>
+                                </div>
+                                <div>
+                                    <div style={{display: 'flex', gap: 5}}>
+                                        <div onClick={_=>fillColorButtonClick('stroke')} style={{width: 20, height: 20, backgroundColor: itemOptions.style.strokeColor}}></div>
+                                        <div><input value={itemOptions.style.strokeColor} type='text' style={{width:'100%',borderRadius:3, heigth:'100%', border:'1px solid #e9e9e9'}}/></div>
                                     </div>
-                            }
-                        </div>
+                                </div>
+                            </div>
+                        }
+                        {options.fillControl?.show && 
+                            <div className={styles.controlsContainer}>
+                                <div style={{fontSize: 'x-small'}}>Preenchimento</div>
+                                <div style={{marginBottom: 5, display: 'flex', alignItems: 'center'}}>
+                                    <label>Opacidade</label>
+                                    <input type='range' value={itemOptions.style.rangeValue} min='0' max='1' step='.05' onChange={inputRangeChange} ></input>
+                                    <label>{(itemOptions.style.rangeValue*100).toFixed(0)}%</label>
+                                </div>
+                                <div>
+                                    <div style={{display: 'flex', gap: 5}}>
+                                        <div onClick={_=>fillColorButtonClick('fill')} style={{width: 20, height: 20, backgroundColor: itemOptions.style.fillColor}}></div>
+                                        <div><input value={itemOptions.style.fillColor} type='text' style={{width:'100%',borderRadius:3, heigth:'100%', border:'1px solid #e9e9e9'}}/></div>
+                                    </div>
+                                    {
+                                        itemOptions.showFillPicker && 
+                                            <div style={{position: 'absolute', left: 0, top:0, transform: 'translateX(-100%)', padding:5, backgroundColor:'white'}}>
+                                            <HexColorPicker 
+                                                color={itemOptions.style.fillColor}
+                                                onChange={e=>inputColorChange(e, itemOptions.pickerName)} />
+                                            <div style={{width: '100%', color: 'white', backgroundColor:'#3593b9', marginTop: 5, textAlign: 'center', borderRadius: 5}} onClick={confirmColor}>Confirmar</div>
+                                            </div>
+                                    }
+                                </div>
+                            </div>
+                        }
                     </div>
+                    
                     : <div className={styles.desc}>Lorem ipsum dolor sit amet, consectetur adipiscing elit.</div>
                 }
             </div>
