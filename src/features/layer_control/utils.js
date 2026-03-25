@@ -1,17 +1,21 @@
 import hidroicon from '@assets/hidrografia.png'
 
-const addLayer = (map, layer_name, filter, options={}) =>{
+const addLayer = (map, layer_name, filter, options={}, callbacks={}) =>{
     let l = L.tileLayer.wms('https://geodados.daee.sp.gov.br/geoserver/ows', {
         layers: layer_name,
         format: 'image/png8',
         transparent: true,
         styles: options.style || '',
         CQL_FILTER: filter || '',
-        env: options.env || '',
+        env: options.env || ''
     }).addTo(map)
 
     l.on('loading', function () {
-        console.log("Carregando WMS...");
+        callbacks.onLoading && callbacks.onLoading()
+    });
+
+    l.on('load', function () {
+        callbacks.onLoad && callbacks.onLoad()
     });
 
     return l

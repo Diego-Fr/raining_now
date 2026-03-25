@@ -12,6 +12,8 @@ import hidro_icon from '@assets/hidrografia.png'
 import LayerItem from './LayerItem'
 import { IoIosCloseCircleOutline } from "react-icons/io";
 import { IoCloseOutline } from "react-icons/io5";
+import { FaLayerGroup } from "react-icons/fa";
+import { setShow } from '../../store/layersControlSlice'
 
 
 
@@ -39,14 +41,11 @@ const LayerControl = _ =>{
 
     const dispatch = useDispatch()
 
-
-
     const clickHandler = item =>{
 
         let show = !item.show
         
         setLayersList(prev => ({...prev, [item.id]: {...prev[item.id], show}}))
-
 
     }
 
@@ -58,19 +57,8 @@ const LayerControl = _ =>{
     ]
 
     const closeControl = () =>{
-
+        dispatch(setShow(false))
     }
-
-    useEffect(_=>{
-        if(map && !layersShowing.state.layer){
-            
-            // let f = addLayer(map, `geonode:limiteestadualsp`, '', {style:'raining_now_default_layer'})
-            
-            // setLayersShowing(state=>({...state, 'state': {...state.state, layer: f} }))
-        }
-        
-    }, [map])
-
 
     //analisa alteração no searchOptions e disparada eventos do filter
     useEffect(_=>{
@@ -97,10 +85,12 @@ const LayerControl = _ =>{
 
     return (
         <div className={`${styles.container} ${show ? styles.show : ''}`}>
-            <div className={styles.title}><span>Camadas Auxiliares</span><div style={{float: 'right', cursor: 'pointer'}} onClick={closeControl}><IoCloseOutline/></div></div>
+            <div className={styles.title}><div className={styles.titleWrapper}><FaLayerGroup style={{marginRight: 5}}/><span>Camadas Auxiliares</span></div><div style={{float: 'right', cursor: 'pointer'}} onClick={closeControl}><IoCloseOutline/></div></div>
+            <div className={styles.itemsWrapper}>
             {Object.values(layersList).map((item, index) => 
                 <LayerItem key={index} options={item} onclick={clickHandler} />
             )}
+            </div>
         </div>
     )
 }

@@ -3,6 +3,8 @@ import { useSelector } from 'react-redux'
 import styles from './LayerControl.module.scss'
 import { addLayer } from './utils'
 import { HexColorPicker } from 'react-colorful'
+import { AiOutlineLoading3Quarters } from "react-icons/ai";
+
 
 
 
@@ -20,7 +22,8 @@ export default function LayerItem({options, onclick}){
         },
         
         showFillPicker: false,
-        pickerName: 'stroke'
+        pickerName: 'stroke',
+        loadingLayer:true
     })
 
     const layer_instance = useRef(null)
@@ -92,6 +95,18 @@ export default function LayerItem({options, onclick}){
         
     }, [map])
 
+    const onLoading = () =>{
+        setItemOptions(prev => ({
+            ...prev, loadingLayer: true
+        }))
+    }
+
+    const onLoad = () =>{
+        setItemOptions(prev => ({
+            ...prev, loadingLayer: false
+        }))
+    }
+
     const prepareCod = (cod) =>{
         let c = parseInt(cod)
         c = c < 1000 ? (c / 10).toFixed(1) : (c / 100).toFixed(2)
@@ -100,9 +115,9 @@ export default function LayerItem({options, onclick}){
 
     const showLayerOnMap = ()=>{
         if(searchOptions.type){
-            return addLayer(map, options.layer, `${options.field} in (${searchOptions.type != 'subugrhi' ? filterOptions[options.station_field] : prepareCod(filterOptions[options.station_field])})`, {style:'raining_now_default_layer'})
+            return addLayer(map, options.layer, `${options.field} in (${searchOptions.type != 'subugrhi' ? filterOptions[options.station_field] : prepareCod(filterOptions[options.station_field])})`, {style:'raining_now_default_layer'}, {onLoading,onLoad})
         } else {
-            return addLayer(map, options.layer, '',{style:'raining_now_default_layer', env: `fillopacity:${itemOptions.style.rangeValue};fillcolor:${itemOptions.style.fillColor.replace('#', '')};stroke:${itemOptions.style.strokeColor.replace('#', '')};strokeopacity:${itemOptions.style.strokeRangeValue}`})
+            return addLayer(map, options.layer, '',{style:'raining_now_default_layer', env: `fillopacity:${itemOptions.style.rangeValue};fillcolor:${itemOptions.style.fillColor.replace('#', '')};stroke:${itemOptions.style.strokeColor.replace('#', '')};strokeopacity:${itemOptions.style.strokeRangeValue}`}, {onLoading,onLoad})
         }
         
     }
@@ -167,8 +182,8 @@ export default function LayerItem({options, onclick}){
                 <img src={options.icon || ''} style={{width: '100px'}}></img>
             </div> */}
             <div className={styles.descWrapper}>
-                <div style={{textTransform: 'uppercase', fontWeight: 500}}>{t(options.layer)}</div>
-                {options.show ?
+                <div style={{textTransform: 'uppercase', fontWeight: 500}}>{options.show && itemOptions.loadingLayer && <AiOutlineLoading3Quarters className={styles.rotate} />} {t(options.layer)} {options.show ? <span style={{color: '#0c7bb3', fontSize: 'x-small', float: 'right'}}>{'exibindo'}</span> : ''}</div>
+                {options.show &&
                     <div ref={controlsRef}>
                         {options.strokeControl?.show && 
                             <div className={styles.controlsContainer} style={{marginBottom: 5}}>
@@ -213,7 +228,7 @@ export default function LayerItem({options, onclick}){
                         }
                     </div>
                     
-                    : <div className={styles.desc}>Lorem ipsum dolor sit amet, consectetur adipiscing elit.</div>
+                    // : <div className={styles.desc}>Lorem ipsum dolor sit amet, consectetur adipiscing elit.</div>
                 }
             </div>
         </div>

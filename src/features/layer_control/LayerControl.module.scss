@@ -1,19 +1,24 @@
 .container{
     background-color: white;
-    // width: 300px;
-    max-height: 80vh;
+    min-width: 250px;
+    
     // overflow: auto;
     position: absolute;
     z-index: 1000;
-    top: 50px;
-    right: 50px;
-    border-radius: 10px;
+    top: 50%;
+    right: 30px;
+    border-radius: 5px;
     // overflow: auto;
+    transform: translate(20px, -50%);
     display: none;
     box-shadow: rgba(0, 0, 0, 0.19) 0px 10px 20px, rgba(0, 0, 0, 0.23) 0px 6px 6px;
+    color: rgb(61, 61, 61);
 
     &.show{
         display: block;
+        animation-name: showContainer;
+        animation-duration: 0.3s;
+        animation-fill-mode: forwards;
     }
 
 
@@ -22,6 +27,17 @@
         font-weight: 600;
         padding: 15px 10px;
         text-transform: uppercase;
+        color: rgb(54, 54, 54);
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        border-bottom: 1px solid rgb(238, 238, 238);
+
+        .titleWrapper{
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
     }
     
     input[type="range"] {
@@ -31,59 +47,98 @@
         background-color: #007BFF; /* Custom color */
         height: 2px;
     }
-
-    .itemWrapper{
-        box-sizing: border-box;
-        padding: 10px;
-        // border-bottom: 1px solid #f3f3f3;
-        width: 100%;
-        height: fit-content;
-        text-align: left;
-        display: flex;
-        gap: 10px;
-        cursor: pointer;
-
-
-        &.active{
-            background-color: rgb(222, 247, 255);
-            // border-left: 1px solid rgb(169, 213, 255);
-        }
-
-        .iconWrapper{
-            min-width: 100px;
-            
-            height: 100px;
-            background-color: #ececec;
-            // background-color: purple;
-            border-radius: 5px;
-            overflow: hidden;
-        }
-
-        .descWrapper{
-            flex: 1;
+    .itemsWrapper{
+        max-height: 70vh;
+        overflow: auto;
+        .itemWrapper{
+            box-sizing: border-box;
+            padding: 10px 15px;
+            // border-bottom: 1px solid #f3f3f3;
+            width: 100%;
+            height: fit-content;
+            text-align: left;
             display: flex;
-            // gap: 1;
-            flex-direction: column;
             gap: 10px;
-            .desc{
-                font-size: x-small;
+            cursor: pointer;
+            transition: 0.3s border, background-color;
+            border: 1px solid transparent;
+            &:hover{
+                background-color: rgb(222, 247, 255);
+                border: 1px solid rgb(163, 200, 255);
             }
 
-            .controlsContainer{
+            &.active{
+                background-color: rgb(222, 247, 255);
+                // border-left: 1px solid rgb(169, 213, 255);
+            }
 
-                background-color: white;
-                padding: 5px;
+            .iconWrapper{
+                min-width: 100px;
+                
+                height: 100px;
+                background-color: #ececec;
+                // background-color: purple;
                 border-radius: 5px;
                 overflow: hidden;
-                box-shadow: rgba(0, 0, 0, 0.15) 1.95px 1.95px 2.6px;
-
-                label{
-                    font-size: x-small;
-                }
             }
 
+            .descWrapper{
+                flex: 1;
+                display: flex;
+                // gap: 1;
+                flex-direction: column;
+                gap: 10px;
+                .desc{
+                    font-size: x-small;
+                }
+
+                .controlsContainer{
+
+                    background-color: white;
+                    padding: 5px;
+                    border-radius: 5px;
+                    overflow: hidden;
+                    box-shadow: rgba(0, 0, 0, 0.15) 1.95px 1.95px 2.6px;
+
+                    label{
+                        font-size: x-small;
+                    }
+                }
+
+                
+            }
             
         }
-        
+    }
+    
+}
+
+@keyframes showContainer {
+    from {
+        opacity: 0;
+        transform: translate(0px, -50%);
+    }
+    to {
+        opacity: 1;
+        transform: translate(20px, -50%);
+    }
+}
+
+.rotate{
+    animation-name: rotate;
+    animation-duration: 1s;
+    animation-iteration-count: infinite;
+    animation-timing-function: linear;
+    opacity: .9;
+    color: rgb(129, 181, 223);
+    margin-right: 5px;
+}
+
+@keyframes rotate {
+    from {
+        transform: rotate(0deg);
+    }
+    to {
+        transform: rotate(1turn);
     }
 }
