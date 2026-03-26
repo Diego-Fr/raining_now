@@ -50,6 +50,21 @@
     .itemsWrapper{
         max-height: 70vh;
         overflow: auto;
+
+        &::-webkit-scrollbar {
+            width: 3px;       /* Largura da barra de rolagem vertical */
+            height: 0px;       /* Define 0 para ignorar a horizontal */
+        }
+
+        &::-webkit-scrollbar-track {
+            background: #535345;
+        }
+
+        &::-webkit-scrollbar-thumb {
+            background-color: rgb(96, 170, 255);
+            border-radius: 10px;
+            // border: 1px solid rgb(20, 166, 202);
+        }
         .itemWrapper{
             box-sizing: border-box;
             padding: 10px 15px;

@@ -8,7 +8,7 @@ import { AiOutlineLoading3Quarters } from "react-icons/ai";
 
 
 
-export default function LayerItem({options, onclick}){
+export default function LayerItem({options, onclick, setOptions}){
     
     const [itemOptions, setItemOptions] = useState({
         bbox: undefined,
@@ -46,16 +46,27 @@ export default function LayerItem({options, onclick}){
     },[searchOptions])
 
     useEffect(_=>{        
+        if(options.id === 'hidro' || options.id === 'state') return;
+        
         
         if(searchOptions.type === options.type){
             
             layer_instance.current?.remove()
             
             if(filterOptions[options.station_field] && filterOptions[options.station_field].length > 0){
-                let l = showLayerOnMap()
                 
-                layer_instance.current = l
-            }
+                if(options.show){
+                    layer_instance.current = showLayerOnMap()
+                } else {
+                    setOptions(prev =>({
+                        ...prev,
+                        [options.id]: { ...prev[options.id],  show: true}
+                    }))
+                }
+
+                
+                
+            } 
 
             if(itemOptions.bbox){
                 map.fitBounds(searchOptions.bbox)
@@ -63,6 +74,12 @@ export default function LayerItem({options, onclick}){
 
         } else if(layer_instance.current){
             layer_instance.current.remove()
+
+            if(options.show){
+                let l = showLayerOnMap()
+                
+                layer_instance.current = l
+            }
         }
         
     },[filterOptions.cod_ibge, filterOptions.ugrhi_cod, filterOptions.subugrhi_cod])
@@ -114,8 +131,8 @@ export default function LayerItem({options, onclick}){
     }    
 
     const showLayerOnMap = ()=>{
-        if(searchOptions.type){
-            return addLayer(map, options.layer, `${options.field} in (${searchOptions.type != 'subugrhi' ? filterOptions[options.station_field] : prepareCod(filterOptions[options.station_field])})`, {style:'raining_now_default_layer'}, {onLoading,onLoad})
+        if(searchOptions.type && (options.id != 'hidro' && options.id != 'state')){
+            return addLayer(map, options.layer, `${options.field} in (${searchOptions.type != 'subugrhi' ? filterOptions[options.station_field] : prepareCod(filterOptions[options.station_field])})`, {style:'municipios_sp_raining_now'}, {onLoading,onLoad})
         } else {
             return addLayer(map, options.layer, '',{style:'raining_now_default_layer', env: `fillopacity:${itemOptions.style.rangeValue};fillcolor:${itemOptions.style.fillColor.replace('#', '')};stroke:${itemOptions.style.strokeColor.replace('#', '')};strokeopacity:${itemOptions.style.strokeRangeValue}`}, {onLoading,onLoad})
         }
@@ -214,7 +231,10 @@ export default function LayerItem({options, onclick}){
                                         <div onClick={_=>fillColorButtonClick('fill')} style={{width: 20, height: 20, backgroundColor: itemOptions.style.fillColor}}></div>
                                         <div><input value={itemOptions.style.fillColor} type='text' style={{width:'100%',borderRadius:3, heigth:'100%', border:'1px solid #e9e9e9'}}/></div>
                                     </div>
-                                    {
+                                </div>
+                            </div>
+                        }
+                        {
                                         itemOptions.showFillPicker && 
                                             <div style={{position: 'absolute', left: 0, top:0, transform: 'translateX(-100%)', padding:5, backgroundColor:'white'}}>
                                             <HexColorPicker 
@@ -223,9 +243,6 @@ export default function LayerItem({options, onclick}){
                                             <div style={{width: '100%', color: 'white', backgroundColor:'#3593b9', marginTop: 5, textAlign: 'center', borderRadius: 5}} onClick={confirmColor}>Confirmar</div>
                                             </div>
                                     }
-                                </div>
-                            </div>
-                        }
                     </div>
                     
                     // : <div className={styles.desc}>Lorem ipsum dolor sit amet, consectetur adipiscing elit.</div>

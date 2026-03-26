@@ -63,7 +63,7 @@ const LayerControl = _ =>{
     //analisa alteração no searchOptions e disparada eventos do filter
     useEffect(_=>{
         if(!map) return;
-    
+        
         const namesByKey = {
             'município': {layer:'municipios_sp', field: 'cd_mun', station_field: 'cod_ibge'},
             'subugrhi': {layer:'subugrhis_sp', field: 'n_subugrhi', station_field: 'subugrhi_cod'},
@@ -88,7 +88,7 @@ const LayerControl = _ =>{
             <div className={styles.title}><div className={styles.titleWrapper}><FaLayerGroup style={{marginRight: 5}}/><span>Camadas Auxiliares</span></div><div style={{float: 'right', cursor: 'pointer'}} onClick={closeControl}><IoCloseOutline/></div></div>
             <div className={styles.itemsWrapper}>
             {Object.values(layersList).map((item, index) => 
-                <LayerItem key={index} options={item} onclick={clickHandler} />
+                <LayerItem key={index} options={item} onclick={clickHandler} setOptions={setLayersList} />
             )}
             </div>
         </div>
