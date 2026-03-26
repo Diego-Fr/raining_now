@@ -10,6 +10,7 @@
     // border-right: 3px solid transparent;
     color: white;
     flex: 1;
+    transition: 0.3s background-color;
     .iconWrapper{
         display: flex;
         align-items: center;
@@ -21,13 +22,13 @@
     }
 
     .title{
-        font-size: clamp(9px, .6vw, 1vw);
+        font-size: clamp(9px, .5vw, .8vw);
         font-weight: 600;
         text-transform: uppercase;
     }
     .icon{
         
-        font-size: clamp(25px, 2vw, 2vw);
+        font-size: clamp(25px, 1.8vw, 1.8vw);
         height: fit-content;
     }
 
@@ -46,6 +47,10 @@
             color: white;
 
         }
+    }
+
+    &:hover:not(.active){
+        background-color: rgba(31, 32, 32, 0.7);;
     }
 }
 

@@ -21,8 +21,15 @@
     flex-direction: column;
 }
 
+@media only screen and (max-height: 1700px){
+    .container{
+        width: clamp(65px, 4.0vw,4.0vw);
+    }
+}
+
 @media only screen and (max-height: 800px){
     .container{
         top: 60%;
     }
 }
+
