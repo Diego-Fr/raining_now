@@ -30,7 +30,7 @@ const LayerControl = _ =>{
     })
 
     const [layersList, setLayersList] = useState({
-        state: {id: 'state', style: {rangeValue: .05, strokeColor: '#212121', fillColor: '#a2a2a2', strokeWidth: 2}, show: true, icon: limiteestadual, layer: 'limiteestadualsp', strokeControl: {show: true}, fillControl: {show: true}, layer_instance: undefined},
+        state: {id: 'state', style: {rangeValue: .05, strokeColor: '#212121', fillColor: '#62fff6', strokeWidth: 2}, show: true, icon: limiteestadual, layer: 'limiteestadualsp', strokeControl: {show: true}, fillControl: {show: true}, layer_instance: undefined},
         city_id: {id: 'city_id', icon:limitemunicipal,  strokeControl: {show: true}, fillControl: {show: true},  layer:'municipios_sp', type:'município', field: 'cd_mun', station_field: 'cod_ibge', feachFunc:feachCitiesBbox, layer_instance: undefined},
         subugrhi_id: {id: 'subugrhi_id', icon: limitesubugrhi, strokeControl: {show: true}, fillControl: {show: true},layer:'subugrhis_sp', type: 'subugrhi', field: 'n_subugrhi', station_field: 'subugrhi_cod', feachFunc:feachSubugrhisBbox, layer_instance: undefined},
         ugrhi_id: {id: 'ugrhi_id', icon: limiteugrhi, strokeControl: {show: true}, fillControl: {show: true}, layer:'ugrhis_sp', type: 'ugrhi', field: 'ogc_fid', feachFunc:[], station_field: 'ugrhi_cod', layer_instance: undefined},

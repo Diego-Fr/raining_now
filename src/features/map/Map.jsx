@@ -46,7 +46,7 @@ const Map = () =>{
         )
         if (mapRef.current && !mapInstanceRef.current) {
             const map = L.map(mapRef.current, 
-                {zoomControl: false, minZoom: 7, zoomDelta: 0.1, wheelPxPerZoomLevel: 3100})
+                {zoomControl: false, minZoom: 7, zoomDelta: 0.1, wheelPxPerZoomLevel: 3100, attributionControl:false})
       
             L.tileLayer('https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png', {
               attribution: '&copy; OpenStreetMap contributors',

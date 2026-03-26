@@ -29,12 +29,12 @@ const ContextMenu = () =>{
 
     return (
         <div className={styles.container}>
-            <div className={styles.item}>
+            {/* <div className={styles.item}> */}
                 {items.map((item, index)=>  
                     (<Item key={index} id={item.id} icon={item.icon} title={item.title} customClass={item.customClass} onclick={itemClickHandler} />)
                 )}
                 
-            </div>
+            {/* </div> */}
         </div>
     )
 }

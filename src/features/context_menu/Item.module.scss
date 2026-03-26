@@ -9,22 +9,25 @@
     cursor: pointer;
     // border-right: 3px solid transparent;
     color: white;
+    flex: 1;
     .iconWrapper{
         display: flex;
         align-items: center;
         justify-content: center;
         flex-direction: column;
-        padding: 10px 15px;
+        // padding: 10px 15px;
+        
+        
     }
 
     .title{
-        font-size: small;
+        font-size: clamp(9px, .6vw, 1vw);
         font-weight: 600;
-        
+        text-transform: uppercase;
     }
     .icon{
         
-        font-size: x-large;
+        font-size: clamp(25px, 2vw, 2vw);
         height: fit-content;
     }
 
@@ -32,7 +35,7 @@
         // border-right: 3px solid #5cdcf3;
         background-color:  rgba(0, 204, 255, 0.7);
         &:not(:last-child){
-            border-bottom: 1px solid white;
+            border-bottom: 1px solid rgb(160, 160, 160);
         }
         // border-top: 1px solid white;
         .icon{
@@ -43,11 +46,6 @@
             color: white;
 
         }
-    }
-
-    &.ppdc{
-        color: red;
-        text-shadow: 2px 2px 2px #CE5937;
     }
 }
 
