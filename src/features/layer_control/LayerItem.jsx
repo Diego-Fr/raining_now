@@ -193,6 +193,12 @@ export default function LayerItem({options, onclick, setOptions}){
         }
     }
 
+    const fillInputChange = e =>{
+        // console.log(e);
+        // e.target.value
+        
+    }
+
     return (
         <div className={`${styles.itemWrapper} ${options.show ? styles.active : ''}`} onClick={e=>itemClickHandler(e)}>
             {/* <div className={styles.iconWrapper}>
@@ -229,7 +235,7 @@ export default function LayerItem({options, onclick, setOptions}){
                                 <div>
                                     <div style={{display: 'flex', gap: 5}}>
                                         <div onClick={_=>fillColorButtonClick('fill')} style={{width: 20, height: 20, backgroundColor: itemOptions.style.fillColor}}></div>
-                                        <div><input value={itemOptions.style.fillColor} type='text' style={{width:'100%',borderRadius:3, heigth:'100%', border:'1px solid #e9e9e9'}}/></div>
+                                        <div><input value={itemOptions.style.fillColor} type='text' style={{width:'100%',borderRadius:3, heigth:'100%', border:'1px solid #e9e9e9'}} onChange={e=>fillInputChange(e)} /></div>
                                     </div>
                                 </div>
                             </div>
