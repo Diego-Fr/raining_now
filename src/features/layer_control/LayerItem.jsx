@@ -13,7 +13,7 @@ export default function LayerItem({options, onclick, setOptions}){
     const [itemOptions, setItemOptions] = useState({
         bbox: undefined,
         style: {
-            rangeValue: .2,
+            rangeValue: .05,
             strokeRangeValue: .8,
             fillColor: '#4287f5',
             strokeColor: '#4287f5',

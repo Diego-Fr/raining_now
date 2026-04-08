@@ -1,7 +1,8 @@
 import { createSlice } from "@reduxjs/toolkit";
 
 const initialState = {
-    show:false
+    show:false,
+    opacity: 0.5,
 }
 
 const RadarSlice = createSlice({
@@ -13,10 +14,13 @@ const RadarSlice = createSlice({
         },
         setShow(state, action){
             state.show = action.payload
+        },
+        setOpacity(state, action){
+            state.opacity = action.payload
         }
     }
 })
 
 export default RadarSlice.reducer
 
-export const {setRadar, setShow} = RadarSlice.actions
+export const {setRadar, setShow, setOpacity} = RadarSlice.actions

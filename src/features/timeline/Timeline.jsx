@@ -8,6 +8,7 @@ import { FaPlay, FaPause } from "react-icons/fa6";
 import { toast } from 'react-toastify'
 import Draggable from './Draggable'
 import {setTimelineItems,setTimelineShowingIndex} from '@store/timelineSlice'
+import OpacityControl from './OpacityControl'
 
 
 const Timeline = () =>{
@@ -73,12 +74,13 @@ const Timeline = () =>{
             if(!items[timelineOptions.showingIndex]){
                 dispatch(setTimelineShowingIndex(0))
                 return
-            }
+            }            
 
             if(showingOverlay.current){                
                 showingOverlay.current.setUrl(items[timelineOptions.showingIndex].link, imageBounds);
+                showingOverlay.current.setOpacity(radarOptions.opacity)
             } else {
-                let overlay = L.imageOverlay(items[timelineOptions.showingIndex].link, imageBounds).addTo(map)
+                let overlay = L.imageOverlay(items[timelineOptions.showingIndex].link, imageBounds,{opacity:radarOptions.opacity}).addTo(map)
                 showingOverlay.current = overlay
             }
             
@@ -116,7 +118,7 @@ const Timeline = () =>{
             }
         }
         
-    }, [map, items, config.active, timelineOptions.showingIndex, config.play,radarOptions.show])
+    }, [map, items, config.active, timelineOptions.showingIndex, config.play,radarOptions.show,radarOptions.opacity])
 
 
     const parseDateFromKey = key =>{
@@ -167,11 +169,13 @@ const Timeline = () =>{
                         <Draggable containerRef={draggableContainer} onMove={onMoveHandler} text={items[timelineOptions.showingIndex] && moment(parseDateFromKey(items[timelineOptions.showingIndex]?.key), 'YYYYMMDDHHmm').subtract(3, 'hours').format('DD-MM-YYYY HH:mm')}></Draggable>
                     </div>
                     <div className={styles.bottomWrapper}>
+                        <OpacityControl/>
                         <div className={styles.speedContainer}>
                             {config.speedOptions.map((x,index)=> <div key={index} onClick={_=>speedButtonClickHandler(x)} className={`${styles.item} ${x === config.speed ? styles.active : ''}`}>{x}x</div> )}
                         </div>
                     </div>
                 </div>
+                
             </div>
         
     )
