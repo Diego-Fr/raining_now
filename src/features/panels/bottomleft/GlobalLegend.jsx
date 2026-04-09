@@ -66,14 +66,14 @@ const GlobalLegend = _ => {
         const interval = setInterval(_=>{
             const el = document.getElementById('context_menu')
             
-            if(el){
+            if(el && legendContainerRef.current){
                 let height = el.getBoundingClientRect().bottom
                 let screenSize = window.innerHeight
                 legendContainerRef.current.style.maxHeight = `${(screenSize - height - 15)}px`
                 clearInterval(interval)
             }
 
-        }, 100)
+        }, 500)
 
         return () => clearInterval(interval)
     }

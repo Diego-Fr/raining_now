@@ -69,7 +69,7 @@ const Map = () =>{
 
             window.addEventListener('resize', () => {
                 if(!map) return;
-                setMapHeight(window.innerHeight)
+                setMapHeight(window.visualViewport.height)
                 map.invalidateSize()
                 
             });
@@ -150,7 +150,7 @@ const Map = () =>{
     },[context])
 
     useEffect(_=>{
-        setMapHeight(window.innerHeight)
+        setMapHeight(window.visualViewport.height)
         mapInstanceRef.current.invalidateSize()
     })
 
