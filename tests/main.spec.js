@@ -18,7 +18,7 @@ test('screenshots responsivos', async ({ page }) => {
       height: size.height,
     });
 
-    await page.goto('http://localhost:5173/sibh/chuva_agora/');
+    await page.goto('http://localhost:5174/sibh/chuva_agora/');
 
     // espera carregar (ajusta conforme sua app)
     await page.waitForLoadState('networkidle');
