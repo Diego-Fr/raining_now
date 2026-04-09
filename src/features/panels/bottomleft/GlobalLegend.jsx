@@ -73,7 +73,7 @@ const GlobalLegend = _ => {
                 clearInterval(interval)
             }
 
-        }, 500)
+        }, 100)
 
         return () => clearInterval(interval)
     }
