@@ -163,7 +163,7 @@ const Map = () =>{
 
 
     return (
-        <div ref={mapRef} style={{height: `${mapHeight}px`, width:'100%', position:'relative'}}>
+        <div ref={mapRef} style={{height: '100dvh', width:'100%', position:'relative'}}>
             
             {canvasMarkersReady && <><Markers /><Lightning/></>}
             
