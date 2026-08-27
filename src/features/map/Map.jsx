@@ -12,6 +12,7 @@ import { ToastContainer, toast } from 'react-toastify'
 import { setHours } from "../../store/contextSlice";
 import Lightning from "../lightning/Lightning";
 import { CanvasMarkerProvider, useCanvasMarkerReady } from "../../context/CanvasMarkerContext";
+import '../../utils/TileLayer.Grayscale'
 
 const Map = () =>{
     const mapRef = useRef(null);
@@ -48,9 +49,9 @@ const Map = () =>{
             const map = L.map(mapRef.current, 
                 {zoomControl: false, minZoom: 7, zoomDelta: 0.1, wheelPxPerZoomLevel: 3100, attributionControl:false})
       
-            L.tileLayer('https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png', {
-              attribution: '&copy; OpenStreetMap contributors',
-            }).addTo(map)
+            L.tileLayer.grayscale('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
+                attribution: '&copy; OpenStreetMap contributors'
+            }).addTo(map);
             
 
             let svg = L.svg().addTo(map)
