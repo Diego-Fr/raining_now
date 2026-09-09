@@ -77,7 +77,7 @@ const Topleft = () =>{
         <div className={styles.container}>
             <div className={styles.titleWrapper}>
                 <img src={spaguaslogocolored}></img>
-                <div className={styles.sibh_name}>SIBH</div>
+                <div className={styles.sibh_name}>SSAP - SALA DE SITUAÇÃO ALFREDO PISANI</div>
             </div>
             <div style={{marginBottom: 10}}>
                 <SearchInput/>
