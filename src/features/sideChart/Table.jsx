@@ -25,7 +25,7 @@ const Table = ({stations,menuContext}) =>{
                         <div style={{textTransform: 'capitalize'}}>
                             {
                                 context === 'rain' ? <span style={{color: statesPlu[station.legend]?.color }}>{station.value.toFixed(2).replace('.',',')}</span>
-                                : <span style={{color: statesFlu[station.legend]?.color}}> {locale.t(station.legend)}</span>
+                                : <span className={styles.badge} style={{color: statesFlu[station.legend]?.color}}>{locale.t(station.legend)}</span>
                             }
                         </div>
                     </div>

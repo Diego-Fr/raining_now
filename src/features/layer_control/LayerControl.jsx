@@ -73,14 +73,30 @@ const LayerControl = _ =>{
         if(searchOptions.cod === null || searchOptions.cod === undefined || searchOptions.cod === '') {
             resetBounds()
             dispatch(setFilterOption({field: 'cod_ibge', value: []}))
-            dispatch(setFilterOption({field: 'subugrhi_cod', value: []}))        
+            dispatch(setFilterOption({field: 'subugrhi_cod', value: []}))
             dispatch(setFilterOption({field: 'ugrhi_cod', value: []}))
             return;
         }
-        
+
+        //zera o campo de área do tipo anterior (ex: ao trocar de busca por município direto pra subugrhi,
+        //sem limpar antes), pra não ficar com dois filtros de área diferentes ativos ao mesmo tempo
+        Object.values(namesByKey).forEach(({station_field})=>{
+            if(station_field !== namesByKey[searchOptions.type].station_field){
+                dispatch(setFilterOption({field: station_field, value: []}))
+            }
+        })
+
         dispatch(setFilterOption({field: namesByKey[searchOptions.type].station_field, value: [searchOptions.cod]}))
-        
+
     },[searchOptions])
+
+    //dá zoom na área buscada (município, subugrhi ou ugrhi). Centralizado aqui pra não depender
+    //do estado (com closure defasada) de cada LayerItem, que fazia o zoom falhar às vezes (e nunca no município)
+    useEffect(_=>{
+        if(!map || !searchOptions.bbox) return;
+
+        map.fitBounds(searchOptions.bbox)
+    },[map, searchOptions.bbox])
 
 
     return (

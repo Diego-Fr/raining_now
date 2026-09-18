@@ -6,7 +6,6 @@ import { generateSideChart, maxByCity, maxByField, top20rain } from './SideChart
 import { IoClose, IoChevronForward } from "react-icons/io5";
 import Table from './Table';
 import ContextSelector from './ContextSelector'
-import { classifyStation } from '../../utils/stationUtils';
 import { setShow } from '../../store/sideMenuSlice';
 import { useIsMobile } from '../../hooks/isMobile';
 
@@ -92,8 +91,14 @@ const SideChart = () =>{
                 return maxByField(stationsOptions.stations.filter(x=>x.show), 'ugrhi_name').sort((x,y) => y.value - x.value)
             }
             
-        } else if(context === 'level'){            
-            return stationsOptions.stations?.slice().filter((x)=>classifyStation(x, context).legend != 'normal').slice(0,20) || []
+        } else if(context === 'level'){
+            //da mais crítica pra menos crítica; dentro da mesma classificação, maior valor primeiro.
+            //o filter+slice tinha que vir antes do sort, senão o corte de 20 podia deixar de fora os postos mais críticos
+            const criticidadeOrder = ['extravasation', 'emergency', 'alert', 'attention']
+            return (stationsOptions.stations || [])
+                .filter(x=>x.legend != 'normal')
+                .sort((a,b)=> criticidadeOrder.indexOf(a.legend) - criticidadeOrder.indexOf(b.legend) || b.value - a.value)
+                .slice(0,20)
         }
         return []
         

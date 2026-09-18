@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useRef, useState } from 'react'
 import styles from './SearchInput.module.scss'
-import { getCityByPoint, searchAddress } from '../../../services/api'
+import { getCityByPoint, searchAddress, feachUgrhiBbox } from '../../../services/api'
 import {  setSearchProps } from '../../../store/searchSlice'
 import {useDispatch} from 'react-redux'
 import { getBoundingBox } from '../../layer_control/utils'
@@ -112,13 +112,24 @@ const SearchInput = () =>{
         dispatch(setSearchProps({text:inputAddressValue, cod: item.cod, bbox:item.bbox_json,  name: item.name,  type: item.type }))
 
         setInputAddressValue(item.name)
-        
+
         setTimeout(_=>{
             setOptionsList([])
         }, 100)
-        
+
         setSelectedItem(item)
 
+        //diferente de município/subugrhi, a api de ugrhi não vem com bbox pronto; busca à parte pra poder dar zoom
+        if(item.type === 'ugrhi' && !item.bbox_json){
+            try{
+                const bbox = await feachUgrhiBbox(item.cod)
+                if(bbox){
+                    dispatch(setSearchProps({text: item.name, cod: item.cod, bbox, name: item.name, type: item.type}))
+                }
+            } catch(e){
+                console.error('Erro ao buscar bbox da ugrhi:', e)
+            }
+        }
 
     }
 

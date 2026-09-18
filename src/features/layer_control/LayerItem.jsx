@@ -11,7 +11,6 @@ import { AiOutlineLoading3Quarters } from "react-icons/ai";
 export default function LayerItem({options, onclick, setOptions}){
     
     const [itemOptions, setItemOptions] = useState({
-        bbox: undefined,
         style: {
             rangeValue: .05,
             strokeRangeValue: .8,
@@ -27,61 +26,57 @@ export default function LayerItem({options, onclick, setOptions}){
     })
 
     const layer_instance = useRef(null)
+    //true quando essa camada foi ligada automaticamente por uma busca de área (não pelo usuário na lista de camadas).
+    //serve pra saber se, ao trocar/limpar a busca, a camada deve ser desligada em vez de ficar mostrando tudo sem filtro
+    const autoShownRef = useRef(false)
     const searchOptions = useSelector(state=> state.search)
     const {filterOptions} = useSelector(state=>state.filter)
     const map = useSelector(state=> state.map.map)
 
     const controlsRef = useRef()
 
-    //só pra pegar o bbox de maneira mais rápida. Poderia ser usado o cities do useGetCitiesQuery
     useEffect(_=>{
-        if(searchOptions.type != options.type) return;
-
-        setItemOptions(prev => ({
-            ...prev,
-            bbox: searchOptions.bbox
-        }))
-
-        
-    },[searchOptions])
-
-    useEffect(_=>{        
         if(options.id === 'hidro' || options.id === 'state') return;
-        
-        
+
+
         if(searchOptions.type === options.type){
-            
+
             layer_instance.current?.remove()
-            
+
             if(filterOptions[options.station_field] && filterOptions[options.station_field].length > 0){
-                
+
                 if(options.show){
                     layer_instance.current = showLayerOnMap()
                 } else {
+                    autoShownRef.current = true
                     setOptions(prev =>({
                         ...prev,
                         [options.id]: { ...prev[options.id],  show: true}
                     }))
                 }
 
-                
-                
-            } 
 
-            if(itemOptions.bbox){
-                map.fitBounds(searchOptions.bbox)
+
             }
 
         } else if(layer_instance.current){
             layer_instance.current.remove()
 
-            if(options.show){
+            if(autoShownRef.current){
+                //a camada só estava sendo exibida por causa da busca anterior; ao trocar de área ou limpar
+                //a busca, desliga em vez de redesenhar sem filtro (senão fica mostrando todas as features)
+                autoShownRef.current = false
+                setOptions(prev =>({
+                    ...prev,
+                    [options.id]: { ...prev[options.id],  show: false}
+                }))
+            } else if(options.show){
                 let l = showLayerOnMap()
-                
+
                 layer_instance.current = l
             }
         }
-        
+
     },[filterOptions.cod_ibge, filterOptions.ugrhi_cod, filterOptions.subugrhi_cod])
 
     useEffect(_=>{

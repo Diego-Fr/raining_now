@@ -22,7 +22,9 @@ const generateSideChart = async (dataList, chart_element, onBarClick = () => {},
                 {
                     label: 'Acumulado',
                     data,
-                    backgroundColor: data.map(x=> statesPlu[classifyStation({value:x}, 'rain').legend].color)  ,
+                    //classifica pelo valor real (número), não pelo texto já arredondado em 1 casa decimal (`data`) -
+                    //senão um valor como 69.96 vira "70.0" na tela e classifica como "high" (>=70) em vez de "medium"
+                    backgroundColor: dataList.map(m=> statesPlu[classifyStation({value: m[valueField]}, 'rain').legend].color)  ,
                     borderRadius: 1,
                     type: 'bar',
                 }

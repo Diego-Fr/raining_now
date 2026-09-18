@@ -64,6 +64,30 @@ const feachSubugrhisBbox = async(cods) =>{
     return res.data
 }
 
+//a api de ugrhis não retorna bbox (diferente de cities/subugrhis), então busca a geometria da camada no
+//geoserver e calcula o bbox a partir das coordenadas, no mesmo formato [[south,west],[north,east]] usado pelo fitBounds
+const feachUgrhiBbox = async(cod) =>{
+    let res = await axios.get(`https://geodados.daee.sp.gov.br/geoserver/sibh/ows?service=WFS&version=1.0.0&request=GetFeature&typeName=sibh%3Augrhis_sp&outputFormat=application%2Fjson&CQL_FILTER=ogc_fid%20in%20(${cod})`)
+
+    let minLng = Infinity, minLat = Infinity, maxLng = -Infinity, maxLat = -Infinity
+
+    const walk = coords =>{
+        if(typeof coords[0] === 'number'){
+            const [lng, lat] = coords
+            minLng = Math.min(minLng, lng); maxLng = Math.max(maxLng, lng)
+            minLat = Math.min(minLat, lat); maxLat = Math.max(maxLat, lat)
+        } else {
+            coords.forEach(walk)
+        }
+    }
+
+    res.data?.features?.forEach(f => f.geometry && walk(f.geometry.coordinates))
+
+    if(!isFinite(minLng)) return null
+
+    return [[minLat, minLng], [maxLat, maxLng]]
+}
+
 const updateMeasurementStatus = async(id, status, token) =>{
     console.log(token);
     
@@ -103,6 +127,6 @@ async function getCityByPoint(lat, lng) {
 }
 
 export {
-    fetchMeasurements,fetchStationMeasurements,feachCityLimiares,feachCitiesBbox,feachSubugrhisBbox,updateMeasurementStatus,getRadarLastImagesKeys,fetchLightnings,
+    fetchMeasurements,fetchStationMeasurements,feachCityLimiares,feachCitiesBbox,feachSubugrhisBbox,feachUgrhiBbox,updateMeasurementStatus,getRadarLastImagesKeys,fetchLightnings,
     searchAddress, getCityByPoint
 }
