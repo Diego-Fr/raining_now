@@ -1,10 +1,11 @@
 import axios from 'axios'
 import moment from 'moment'
+import { SIBH_HOST } from './apiHost'
 
 const fetchMeasurements = async (context) =>{     
     let res
     if(context.context === 'rain' || context.context === 'ppdc'){
-        let url = `https://apps.spaguas.sp.gov.br/sibh/api/v2/measurements/now?station_type_id=2&hours=${context.hours}&show_all=false&serializer=complete&public=true`
+        let url = `${SIBH_HOST}/sibh/api/v2/measurements/now?station_type_id=2&hours=${context.hours}&show_all=false&serializer=complete&public=true`
 
         if(context.endDate != undefined){           
             //esperando que seja moment
@@ -15,7 +16,7 @@ const fetchMeasurements = async (context) =>{
 
         res = res?.data?.measurements
     } else if(context.context === 'level') {
-        res = await axios.get(`https://apps.spaguas.sp.gov.br/sibh/api/v2/measurements/now_flu?references[]=extravasation&references[]=emergency&references[]=alert&references[]=attention&with_one_ref=true`)
+        res = await axios.get(`${SIBH_HOST}/sibh/api/v2/measurements/now_flu?references[]=extravasation&references[]=emergency&references[]=alert&references[]=attention&with_one_ref=true`)
         res = res?.data?.measurements
     }    
     
@@ -44,7 +45,7 @@ const fetchStationMeasurements = async (
 }
 
 const feachCityLimiares = async() =>{
-    let res = await axios.get('https://apps.spaguas.sp.gov.br/sibh/api/v2/cities?parameter_type_ids[]=4')
+    let res = await axios.get(`${SIBH_HOST}/sibh/api/v2/cities?parameter_type_ids[]=4`)
 
     res = res.data.map(x=> ({cod_ibge: x.cod_ibge, name: x.name, limiares: x.parameters[0].values['2024-01-01'].limiares}))
 
@@ -53,13 +54,13 @@ const feachCityLimiares = async() =>{
 
 
 const feachCitiesBbox = async(cods) =>{
-    let res = await axios.get(`https://apps.spaguas.sp.gov.br/sibh/api/v2/cities?with_bbox=true&${cods.map(cod=> `cod_ibges[]=${cod}`).join('&')}`)
+    let res = await axios.get(`${SIBH_HOST}/sibh/api/v2/cities?with_bbox=true&${cods.map(cod=> `cod_ibges[]=${cod}`).join('&')}`)
 
     return res.data
 }
 
 const feachSubugrhisBbox = async(cods) =>{
-    let res = await axios.get(`https://apps.spaguas.sp.gov.br/sibh/api/v2/subugrhis?with_bbox=true&${cods.map(cod=> `cods[]=${cod.replace('.','')}`).join('&')}`)
+    let res = await axios.get(`${SIBH_HOST}/sibh/api/v2/subugrhis?with_bbox=true&${cods.map(cod=> `cods[]=${cod.replace('.','')}`).join('&')}`)
 
     return res.data
 }
@@ -91,7 +92,7 @@ const feachUgrhiBbox = async(cod) =>{
 const updateMeasurementStatus = async(id, status, token) =>{
     console.log(token);
     
-    let res = await axios.post(`https://apps.spaguas.sp.gov.br/sibh/api/v2/measurements/${id}/classification`, {
+    let res = await axios.post(`${SIBH_HOST}/sibh/api/v2/measurements/${id}/classification`, {
         status: status
     }, {headers:{Authorization: `Bearer ${token}`}})
 
@@ -99,13 +100,13 @@ const updateMeasurementStatus = async(id, status, token) =>{
 }
 
 const getRadarLastImagesKeys = async (radarName, hours) =>{
-    let res = await axios.get(`https://apps.spaguas.sp.gov.br/sibh/api/v2/s3/radar/last_images?radar_name=${radarName}&hours=${hours}`)
+    let res = await axios.get(`${SIBH_HOST}/sibh/api/v2/s3/radar/last_images?radar_name=${radarName}&hours=${hours}`)
 
     return res.data.Contents
 }
 
 const fetchLightnings = async () =>{
-    let res = await axios.get('https://apps.spaguas.sp.gov.br/sibh/api/v2/lightnings/last_lightnings')
+    let res = await axios.get(`${SIBH_HOST}/sibh/api/v2/lightnings/last_lightnings`)
 
     return res.data
 }

@@ -1,9 +1,10 @@
 // services/api.js
 import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react'
+import { SIBH_HOST } from './apiHost'
 
 export const api = createApi({
-  baseQuery: fetchBaseQuery({ 
-    baseUrl: 'https://apps.spaguas.sp.gov.br/sibh/api/v2',
+  baseQuery: fetchBaseQuery({
+    baseUrl: `${SIBH_HOST}/sibh/api/v2`,
     prepareHeaders: (headers, { getState }) => {
       const token = getState().auth.token   // <--- Pega do Redux
 
