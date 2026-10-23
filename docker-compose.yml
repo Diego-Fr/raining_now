@@ -4,5 +4,5 @@ services:
   raining-now:
     build: .
     ports:
-      - "50000:80"
+      - "127.0.0.1:50000:80"
     restart: always
