@@ -99,8 +99,10 @@ const updateMeasurementStatus = async(id, status, token) =>{
     return res.data
 }
 
+//o serviço de imagens de radar (s3) ainda não foi colocado no hub.spaguas, diferente do resto da api - por isso
+//fica fixo no apps.spaguas por enquanto, independente do SIBH_HOST. quando migrar, troca pra usar SIBH_HOST também.
 const getRadarLastImagesKeys = async (radarName, hours) =>{
-    let res = await axios.get(`${SIBH_HOST}/sibh/api/v2/s3/radar/last_images?radar_name=${radarName}&hours=${hours}`)
+    let res = await axios.get(`https://apps.spaguas.sp.gov.br/sibh/api/v2/s3/radar/last_images?radar_name=${radarName}&hours=${hours}`)
 
     return res.data.Contents
 }

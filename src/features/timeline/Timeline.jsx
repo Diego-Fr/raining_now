@@ -60,12 +60,15 @@ const Timeline = () =>{
             
         }
         
-        if(stationOptions.stations.length > 0 && contextOptions.context && contextOptions.hours && radarOptions.show){            
-            Images()      
-        }      
+        //imagens de radar não dependem dos postos de chuva/nível terem carregado - são fontes de dados
+        //independentes (s3/radar x measurements). Exigir stations.length>0 aqui fazia o radar nunca aparecer
+        //quando a api de estações falha (ex: fora do ar), mesmo com a de radar funcionando normalmente.
+        if(contextOptions.context && contextOptions.hours && radarOptions.show){
+            Images()
+        }
         
         
-    },[stationOptions.stations,radarOptions.show])
+    },[stationOptions.stations,radarOptions.show,contextOptions.context,contextOptions.hours])
 
 
     useEffect(_=>{        

@@ -13,6 +13,7 @@ import { setHours } from "../../store/contextSlice";
 import Lightning from "../lightning/Lightning";
 import { CanvasMarkerProvider, useCanvasMarkerReady } from "../../context/CanvasMarkerContext";
 import '../../utils/TileLayer.Grayscale'
+import CoordinatesTooltip from "./CoordinatesTooltip";
 
 const Map = () =>{
     const mapRef = useRef(null);
@@ -165,9 +166,10 @@ const Map = () =>{
 
     return (
         <div ref={mapRef} style={{height: '100dvh', width:'100%', position:'relative'}}>
-            
+
             {canvasMarkersReady && <><Markers /><Lightning/></>}
-            
+            <CoordinatesTooltip/>
+
         </div>
     )
 }

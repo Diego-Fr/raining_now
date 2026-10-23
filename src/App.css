@@ -52,3 +52,10 @@
 .leaflet-popup {
   pointer-events: none;
 }
+
+.coords-tooltip {
+  font-family: monospace;
+  font-size: 12px;
+  font-weight: 600;
+  text-align: center;
+}
